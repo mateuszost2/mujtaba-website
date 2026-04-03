@@ -1,0 +1,382 @@
+<?php
+$pdo = new PDO("mysql:host=localhost;dbname=mujtabamanzoor", "root", "");
+$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+$allowed_tables = ['pictures', 'highlight_pictures', 'videos', 'highlight_videos'];
+
+// -------------------------
+// HANDLE VIDEO INSERT
+// -------------------------
+if (isset($_POST['video_url'])) {
+    $table = in_array($_POST['table'] ?? '', $allowed_tables) ? $_POST['table'] : 'videos';
+
+    $url   = trim($_POST['video_url']);
+    $title = trim($_POST['video_title'] ?? '');
+    $genre = trim($_POST['genre']);
+    $year  = intval($_POST['production_year']);
+
+    // extract Vimeo ID from URL
+    preg_match('/vimeo\.com\/(\d+)/', $url, $matches);
+    $vimeo_id = $matches[1] ?? null;
+
+    if (!$vimeo_id) {
+        echo "INVALID_URL";
+        exit;
+    }
+
+    $stmt = $pdo->prepare("
+        INSERT INTO `$table` (title, vimeo_id, url, genre, production_year)
+        VALUES (?, ?, ?, ?, ?)
+    ");
+    $stmt->execute([$title, $vimeo_id, $url, $genre, $year]);
+
+    echo "VIDEO_OK";
+    exit;
+}
+
+// -------------------------
+// HANDLE IMAGE INSERT
+// -------------------------
+if (isset($_FILES['zdjecie'])) {
+    if ($_FILES['zdjecie']['error'] === UPLOAD_ERR_OK) {
+        $table = in_array($_GET['table'] ?? '', $allowed_tables) ? $_GET['table'] : 'pictures';
+        $nazwa = $_FILES['zdjecie']['name'];
+        $dane = file_get_contents($_FILES['zdjecie']['tmp_name']);
+        $data_utworzenia = date("Y-m-d H:i:s", filemtime($_FILES['zdjecie']['tmp_name']));
+
+        $stmt = $pdo->prepare("
+            INSERT INTO `$table` (file_name, file_data, creation_date)
+            SELECT ?, ?, ?
+            WHERE NOT EXISTS (SELECT 1 FROM `$table` WHERE file_name = ?)
+        ");
+        $stmt->execute([$nazwa, $dane, $data_utworzenia, $nazwa]);
+
+        echo $stmt->rowCount() === 0 ? "DUPLICATE" : "OK";
+    }
+    exit;
+}
+
+// -------------------------
+// FETCH CURRENT TABLE CONTENT
+// -------------------------
+$table = in_array($_GET['table'] ?? '', $allowed_tables) ? $_GET['table'] : 'pictures';
+
+if ($table === 'pictures' || $table === 'highlight_pictures') {
+    $stmt = $pdo->query("SELECT * FROM `$table` ORDER BY creation_date ASC");
+    $media = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} else {
+    $stmt = $pdo->query("SELECT * FROM `$table` ORDER BY id DESC");
+    $media = $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Add Media — Mujtaba Manzoor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #f9f6f1; font-family: 'DM Sans', sans-serif; font-weight: 300; color: #1a1a1a; }
+.title { text-align: center; padding: 44px 20px 36px; }
+.title a { font-family: 'Playfair Display', serif; font-size: 2.8rem; text-decoration: none; color: #1a1a1a; letter-spacing: 0.04em; }
+hr { border: none; border-top: 1px solid #e2dbd0; }
+.navbar { display: flex; justify-content: center; padding: 0; }
+.nav-links { display: flex; list-style: none; }
+.nav-links a { display: block; text-decoration: none; color: #888; font-size: 0.75rem; font-weight: 400; letter-spacing: 0.12em; text-transform: uppercase; padding: 14px 22px; transition: color 0.2s, background 0.2s; }
+.nav-links a:hover, .nav-links a.active { background: #ede7dc; color: #1a1a1a; }
+.footer { text-align: center; padding: 36px; color: #bbb; font-size: 0.75rem; letter-spacing: 0.08em; border-top: 1px solid #e2dbd0; margin-top: 80px; }
+
+/* Upload section */
+.upload-section { max-width: 700px; margin: 56px auto 0; padding: 0 20px; }
+.upload-section h2 { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 400; margin-bottom: 4px; }
+.upload-section > p { font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: #aaa; margin-bottom: 32px; }
+
+/* Table toggle */
+.table-toggle { display: flex; gap: 0; margin-bottom: 28px; border: 1px solid #e2dbd0; border-radius: 4px; overflow: hidden; width: fit-content; }
+.table-toggle button { padding: 10px 24px; background: white; border: none; cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 0.72rem; font-weight: 400; letter-spacing: 0.12em; text-transform: uppercase; color: #888; transition: background 0.2s, color 0.2s; }
+.table-toggle button:not(:last-child) { border-right: 1px solid #e2dbd0; }
+.table-toggle button.active { background: #1a1a1a; color: white; }
+
+/* Drop zone */
+.drop-zone { border: 1.5px dashed #d4cdc3; border-radius: 4px; padding: 48px 32px; text-align: center; cursor: pointer; transition: border-color 0.2s, background 0.2s; background: white; margin-bottom: 20px; }
+.drop-zone:hover, .drop-zone.dragover { border-color: #1a1a1a; background: #faf8f5; }
+.drop-zone-icon { font-size: 2rem; margin-bottom: 12px; opacity: 0.3; }
+.drop-zone p { font-size: 0.8rem; color: #aaa; letter-spacing: 0.06em; margin-bottom: 4px; }
+.drop-zone span { font-size: 0.68rem; color: #ccc; letter-spacing: 0.1em; text-transform: uppercase; }
+#fileInput { display: none; }
+
+/* Video form */
+#videoForm input { width: 100%; padding: 10px; margin-bottom: 8px; border: 1px solid #ccc; border-radius: 4px; }
+
+/* Upload button */
+.upload-btn { width: 100%; padding: 14px; background: #1a1a1a; color: white; border: none; border-radius: 4px; font-family: 'DM Sans', sans-serif; font-size: 0.75rem; font-weight: 400; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; transition: background 0.2s; }
+.upload-btn:hover { background: #333; }
+.upload-btn:disabled { background: #ccc; cursor: not-allowed; }
+
+/* Progress bar */
+.progress-wrap { margin: 16px 0; height: 2px; background: #e8e1d5; border-radius: 2px; overflow: hidden; opacity: 0; transition: opacity 0.3s; }
+.progress-wrap.visible { opacity: 1; }
+.progress-bar { height: 100%; width: 0%; background: #1a1a1a; transition: width 0.3s; }
+
+/* Status */
+.status { font-size: 0.72rem; letter-spacing: 0.08em; color: #aaa; margin-top: 10px; min-height: 1.2em; text-align: center; }
+
+/* File list preview */
+.file-list { margin: 16px 0 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.file-chip { background: #f0ebe3; border-radius: 3px; padding: 5px 10px; font-size: 0.68rem; color: #666; letter-spacing: 0.04em; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* Gallery preview */
+.gallery-section { max-width: 1000px; margin: 56px auto 0; padding: 0 20px; }
+.gallery-section h2 { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 400; margin-bottom: 4px; }
+.gallery-section > p { font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: #aaa; margin-bottom: 24px; }
+.gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 8px; }
+.gallery-grid img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 3px; display: block; }
+.gallery-grid .video-title { font-size: 0.68rem; color: #555; text-align: center; margin-top: 4px; }
+
+@media (max-width: 640px) {
+.title a { font-size: 2rem; }
+.nav-links a { padding: 12px 12px; font-size: 0.68rem; }
+.table-toggle { width: 100%; }
+.table-toggle button { flex: 1; }
+}
+</style>
+</head>
+<body>
+
+<header class="title">
+<h1><a href="index.php">Mujtaba Manzoor</a></h1>
+</header>
+<hr>
+
+<nav class="navbar">
+<ul class="nav-links">
+    <li><a href="index.php">Portfolio</a></li>
+    <li><a href="#">About</a></li>
+    <li><a href="#">Contact</a></li>
+    <li><a href="add-pic.php" class="active">Add Media</a></li>
+    <li><a href="mm-videos.php">Videos</a></li>
+</ul>
+</nav>
+<hr>
+
+<!-- ── UPLOAD ── -->
+<section class="upload-section">
+<h2>Add Media</h2>
+<p>Upload to collection</p>
+
+<div class="table-toggle">
+    <button class="active" onclick="setTable('pictures', this)">Pictures</button>
+    <button onclick="setTable('highlight_pictures', this)">Highlights</button>
+    <button onclick="setTable('videos', this)">Videos</button>
+    <button onclick="setTable('highlight_videos', this)">Highlight Videos</button>
+</div>
+
+<div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+    <div class="drop-zone-icon">&#8679;</div>
+    <p>Drop images here or click to browse</p>
+    <span>JPG, PNG, WEBP</span>
+</div>
+<input type="file" id="fileInput" multiple accept="image/*">
+
+<!-- Video input form -->
+<div id="videoForm" style="display: none; margin-bottom: 24px;">
+    <input type="text" id="videoTitle" placeholder="Video Title">
+    <input type="text" id="videoUrl" placeholder="Vimeo URL">
+    <input type="text" id="videoGenre" placeholder="Genre">
+    <input type="number" id="videoYear" placeholder="Production Year">
+</div>
+
+<div class="file-list" id="fileList"></div>
+
+<div class="progress-wrap" id="progressWrap">
+    <div class="progress-bar" id="progressBar"></div>
+</div>
+
+<button class="upload-btn" id="uploadBtn">Upload</button>
+<p class="status" id="status"></p>
+</section>
+
+<!-- ── GALLERY PREVIEW ── -->
+<section class="gallery-section">
+<h2 id="galleryTitle"><?= ($table === 'pictures' || $table === 'highlight_pictures') ? ($table === 'pictures' ? 'Pictures' : 'Highlights') : 'Videos' ?></h2>
+<p>Current collection</p>
+<div class="gallery-grid" id="gallery">
+<?php foreach ($media as $m): ?>
+    <?php if ($table === 'pictures' || $table === 'highlight_pictures'): ?>
+        <img src="data:image/*;base64,<?= base64_encode($m['file_data']) ?>" alt="<?= htmlspecialchars($m['file_name']) ?>" loading="lazy">
+    <?php else: ?>
+        <div>
+            <img src="https://vumbnail.com/<?= $m['vimeo_id'] ?>.jpg" alt="<?= htmlspecialchars($m['url']) ?>" loading="lazy">
+            <?php if(!empty($m['title'])): ?>
+                <div class="video-title"><?= htmlspecialchars($m['title']) ?></div>
+            <?php endif; ?>
+        </div>
+    <?php endif; ?>
+<?php endforeach; ?>
+</div>
+</section>
+
+<footer class="footer">
+<p>&copy; 2024 Mujtaba Manzoor</p>
+</footer>
+
+<script>
+let selectedTable = '<?= $table ?>';
+
+// Set active table on toggle
+function setTable(table, btn) {
+    selectedTable = table;
+    document.querySelectorAll('.table-toggle button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    if (table === 'videos' || table === 'highlight_videos') {
+        document.getElementById('dropZone').style.display = 'none';
+        document.getElementById('fileInput').style.display = 'none';
+        document.getElementById('videoForm').style.display = 'block';
+    } else {
+        document.getElementById('dropZone').style.display = 'block';
+        document.getElementById('fileInput').style.display = 'block';
+        document.getElementById('videoForm').style.display = 'none';
+    }
+
+    document.getElementById('galleryTitle').textContent =
+        table === 'pictures' || table === 'highlight_pictures' ? (table === 'pictures' ? 'Pictures' : 'Highlights') : 'Videos';
+
+    fetch('add-pic.php?table=' + table)
+        .then(r => r.text())
+        .then(html => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            const newGrid = doc.getElementById('gallery');
+            document.getElementById('gallery').innerHTML = newGrid.innerHTML;
+        });
+}
+
+// Drop zone
+const dropZone = document.getElementById('dropZone');
+const fileInput = document.getElementById('fileInput');
+const fileList  = document.getElementById('fileList');
+
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+dropZone.addEventListener('drop', e => {
+    e.preventDefault(); dropZone.classList.remove('dragover'); fileInput.files = e.dataTransfer.files;
+    showFileChips(e.dataTransfer.files);
+});
+fileInput.addEventListener('change', () => showFileChips(fileInput.files));
+
+function showFileChips(files) {
+    fileList.innerHTML = '';
+    Array.from(files).forEach(f => {
+        const chip = document.createElement('div');
+        chip.className = 'file-chip';
+        chip.textContent = f.name;
+        fileList.appendChild(chip);
+    });
+}
+
+// Upload
+const btn = document.getElementById('uploadBtn');
+const progressWrap = document.getElementById('progressWrap');
+const progressBar = document.getElementById('progressBar');
+const status = document.getElementById('status');
+const gallery = document.getElementById('gallery');
+
+btn.addEventListener('click', async () => {
+    btn.disabled = true;
+    progressWrap.classList.add('visible');
+    progressBar.style.width = '0%';
+
+    if (selectedTable === 'videos' || selectedTable === 'highlight_videos') {
+        const url = document.getElementById('videoUrl').value.trim();
+        const title = document.getElementById('videoTitle').value.trim();
+        const genre = document.getElementById('videoGenre').value.trim();
+        const year = parseInt(document.getElementById('videoYear').value);
+
+        if (!url) { status.textContent = 'Enter Vimeo URL.'; btn.disabled=false; return; }
+
+        const formData = new FormData();
+        formData.append('video_title', title);
+        formData.append('video_url', url);
+        formData.append('genre', genre);
+        formData.append('production_year', year);
+        formData.append('table', selectedTable);
+
+        const response = await fetch('add-pic.php', { method: 'POST', body: formData });
+        const text = await response.text();
+
+        if (text.trim() === 'VIDEO_OK') {
+            status.textContent = 'Video added!';
+            document.getElementById('videoUrl').value = '';
+            document.getElementById('videoTitle').value = '';
+            document.getElementById('videoGenre').value = '';
+            document.getElementById('videoYear').value = '';
+        } else {
+            status.textContent = text;
+        }
+
+        progressBar.style.width = '100%';
+        btn.disabled = false;
+        return;
+    }
+
+    const files = fileInput.files;
+    if (!files.length) { status.textContent = 'Select files first.'; btn.disabled=false; return; }
+
+    let added = 0, skipped = 0;
+
+    for (let i = 0; i < files.length; i++) {
+        const formData = new FormData();
+        formData.append('zdjecie', files[i]);
+        formData.append('table', selectedTable);
+
+        status.textContent = `Uploading ${i+1} of ${files.length}…`;
+
+        await new Promise((resolve, reject) => {
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', '?table=' + selectedTable, true);
+
+            xhr.upload.addEventListener('progress', e => {
+                if (e.lengthComputable) {
+                    const percent = ((i + e.loaded / e.total)/files.length)*100;
+                    progressBar.style.width = percent + '%';
+                }
+            });
+
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    if (xhr.responseText.trim() === 'DUPLICATE') { skipped++; resolve(); }
+                    else {
+                        added++;
+                        const reader = new FileReader();
+                        reader.onload = e => {
+                            const img = document.createElement('img');
+                            img.src = e.target.result;
+                            img.alt = files[i].name;
+                            gallery.appendChild(img);
+                            resolve();
+                        };
+                        reader.readAsDataURL(files[i]);
+                    }
+                } else { status.textContent = `Error uploading ${files[i].name}`; reject(); }
+            };
+
+            xhr.send(formData);
+        });
+    }
+
+    progressBar.style.width = '100%';
+    btn.disabled = false;
+    fileList.innerHTML = '';
+    let msg = `${added} photo${added!==1?'s':''} added.`;
+    if (skipped>0) msg += ` ${skipped} duplicate${skipped!==1?'s':''} skipped.`;
+    status.textContent = msg;
+});
+</script>
+
+</body>
+</html> 

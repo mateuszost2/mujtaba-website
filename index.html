@@ -68,9 +68,9 @@
 }
 
   /* ── SCROLLBAR ── */
-  ::-webkit-scrollbar { width: 3px; }
-  ::-webkit-scrollbar-track { background: var(--bg); }
-  ::-webkit-scrollbar-thumb { background: var(--accent2); }
+::-webkit-scrollbar { width: 0px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: transparent; }
 
   /* ── NAVBAR ── */
   #navbar {
@@ -370,6 +370,9 @@
     justify-content: center;
     border-radius: 4px;
   }
+  #films {
+  padding-top: 25px;
+}
   .play-ring {
     width: 44px;
     height: 44px;
@@ -917,7 +920,7 @@
 
 <!-- ── HERO ── -->
 <section id="hero">
-  <div class="hero-overlay"></div>
+  <!-- <div class="hero-overlay"></div> -->
   <div id="hero-video-wrap">
     <!-- Replace VIDEO_ID with your Vimeo video ID -->
     <!-- Example: https://vimeo.com/123456789 → VIDEO_ID = 123456789 -->

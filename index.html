@@ -920,6 +920,18 @@
 
 <!-- ── HERO ── -->
 <section id="hero">
+<button id="unmute-btn" style="position:absolute;bottom:20px;right:20px;z-index:10;background:none;border:none;cursor:pointer;opacity:0.6;transition:opacity 250ms;line-height:0;" title="Toggle sound">
+<svg id="icon-sound" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(201,169,110,0.9)" stroke-width="1.5" style="display:none;">
+    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+    <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+    <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+  </svg>
+<svg id="icon-muted" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(201,169,110,0.9)" stroke-width="1.5">
+    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+    <line x1="23" y1="9" x2="17" y2="15"/>
+    <line x1="17" y1="9" x2="23" y2="15"/>
+  </svg>
+</button>
   <!-- <div class="hero-overlay"></div> -->
   <div id="hero-video-wrap">
     <!-- Replace VIDEO_ID with your Vimeo video ID -->
@@ -1109,6 +1121,7 @@ I see film and photography as tools of empathy — ways to observe life without 
    DATA — replace with real content
 ════════════════════════════════════ */
 const FILMS = [
+  { title: 'Film 0', meta: '2024', vimeoId: '1175220860', thumb: 'https://vumbnail.com/1175220860.jpg' },
   { title: 'Film 1', meta: '2024', vimeoId: '1175224372', thumb: 'https://vumbnail.com/1175224372.jpg' },
   { title: 'Film 2', meta: '2024', vimeoId: '1175929669', thumb: 'https://vumbnail.com/1175929669.jpg' },
   { title: 'Film 3', meta: '2024', vimeoId: '1177730026', thumb: 'https://vumbnail.com/1177730026.jpg' },
@@ -1384,14 +1397,25 @@ tag.onload = () => {
   iframe.style.opacity = '0';
   iframe.style.transition = 'opacity 1.2s ease';
   const player = new Vimeo.Player(iframe);
-  player.getDuration().then(duration => {
-    const randomStart = Math.random() * (duration - 5);
+  const MAX_TIME = 210;
+  player.getDuration().then(() => {
+    const randomStart = Math.random() * (MAX_TIME - 5);
     player.setCurrentTime(randomStart);
   });
   player.on('playing', () => {
-    setTimeout(() => {
-      iframe.style.opacity = '1';
-    }, 600);
+    setTimeout(() => { iframe.style.opacity = '1'; }, 600);
+  });
+  let muted = true;
+document.getElementById('unmute-btn').addEventListener('click', () => {
+  muted = !muted;
+  player.setMuted(muted);
+  document.getElementById('icon-sound').style.display = muted ? 'none' : 'block';
+  document.getElementById('icon-muted').style.display = muted ? 'block' : 'none';
+});
+  player.on('timeupdate', ({ seconds }) => {
+    if (seconds >= MAX_TIME) {
+      player.setCurrentTime(0);
+    }
   });
 };
 document.head.appendChild(tag);

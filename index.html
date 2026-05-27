@@ -1,47 +1,59 @@
-  <!DOCTYPE html>
-  <html lang="en">
-  <head>
-
-    <!-- ════════════════════════════════════
-        META
-    ════════════════════════════════════ -->
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <title>Mujtaba Manzoor — Filmmaker & Photographer</title>
-    <meta name="description"  content="Mujtaba Manzoor is a filmmaker and photographer based in Kashmir, Pakistan — telling stories through light and time.">
-    <meta name="keywords"     content="filmmaker, photographer, Kashmir, Pakistan, documentary, cinematography, Mujtaba Manzoor">
-    <meta name="author"       content="Mujtaba Manzoor">
-
-    <!-- Open Graph -->
-    <meta property="og:title"       content="Mujtaba Manzoor — Filmmaker & Photographer">
-    <meta property="og:description" content="Telling stories through light and time. Kashmir, Pakistan.">
-    <meta property="og:type"        content="website">
-    <meta property="og:url"         content="https://mujtabamanzoor.com">
-    <meta property="og:image"       content="https://your-hetzner-url.com/og-image.jpg">
-
-    <!-- Twitter -->
-    <meta name="twitter:card"        content="summary_large_image">
-    <meta name="twitter:title"       content="Mujtaba Manzoor — Filmmaker & Photographer">
-    <meta name="twitter:description" content="Telling stories through light and time.">
-
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-
-  <style>
- /* ════ LOADING SCREEN ════ */
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mujtaba Manzoor — Filmmaker & Photographer</title>
+  <meta name="description" content="Mujtaba Manzoor is a documentary filmmaker and photographer based in Kashmir — telling stories through light and time. Available internationally.">
+  <meta name="author" content="Mujtaba Manzoor">
+  <!-- SEO: canonical + hreflang -->
+  <link rel="canonical" href="https://mujtabamanzoor.com/">
+  <link rel="alternate" hreflang="en" href="https://mujtabamanzoor.com/">
+  <!-- Open Graph -->
+  <meta property="og:title" content="Mujtaba Manzoor — Filmmaker & Photographer">
+  <meta property="og:description" content="Documentary filmmaker and photographer from Kashmir. Telling stories through light and time.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://mujtabamanzoor.com/">
+  <meta property="og:image" content="https://mujtabamanzoor.com/og-image.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:locale" content="en_US">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Mujtaba Manzoor — Filmmaker & Photographer">
+  <meta name="twitter:description" content="Documentary filmmaker and photographer from Kashmir.">
+  <meta name="twitter:image" content="https://mujtabamanzoor.com/og-image.jpg">
+  <!-- Schema.org structured data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Mujtaba Manzoor",
+    "url": "https://mujtabamanzoor.com",
+    "jobTitle": ["Filmmaker", "Photographer", "Photojournalist"],
+    "description": "Documentary filmmaker and photographer from Kashmir. Erasmus Mundus Master's in Documentary Filmmaking (DocNomadsPlus).",
+    "knowsAbout": ["Documentary Filmmaking", "Photography", "Photojournalism", "Cinematography"],
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Kashmir",
+      "addressCountry": "PK"
+    },
+    "areaServed": "Worldwide",
+    "email": "mujtabamanzoor7866@gmail.com"
+  }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* ════ LOADING SCREEN ════ */
 #loader {
   position: fixed; inset: 0; z-index: 9999;
-  pointer-events: all; display: flex;
+  pointer-events: none; display: flex;
+  background: #000; overflow: hidden;
+  opacity: 1; transition: opacity 1.2s ease;
 }
-.curtain-left, .curtain-right { display: none; }
-
-#loader-iris {
-  position: absolute; inset: 0; z-index: 9999; pointer-events: none;
-}
-#loader.gone { display: none; } 
-
+#loader.open { opacity: 0; }
+#loader.gone { display: none; }
 .loader-content {
   position: fixed; left: 50%; top: 50%;
   transform: translate(-50%, -50%);
@@ -54,43 +66,27 @@
   font-family: 'Cormorant Garamond', serif;
   font-size: clamp(22px, 3vw, 36px);
   font-weight: 300; font-style: italic;
-  letter-spacing: 0.12em;
-  color: rgba(232, 228, 220, 0.9);
-  opacity: 0;
-  animation: loaderFadeIn 0.6s ease forwards 0.2s;
+  letter-spacing: 0.12em; color: rgba(232, 228, 220, 0.9);
+  opacity: 0; animation: loaderFadeIn 0.6s ease forwards 0.2s;
 }
-[data-theme="light"] .loader-name  { color: rgba(26, 25, 22, 0.9); }
+[data-theme="light"] .loader-name { color: rgba(26, 25, 22, 0.9); }
 [data-theme="light"] .loader-count { color: rgba(100, 75, 30, 0.9); }
-
 .loader-ring-wrap {
   position: relative; width: 64px; height: 64px;
   opacity: 0; animation: loaderFadeIn 0.6s ease forwards 0.4s;
 }
 .loader-ring-bg {
-  position: absolute; inset: 0;
-  border-radius: 50%;
+  position: absolute; inset: 0; border-radius: 50%;
   border: 1.5px solid rgba(255,255,255,0.1);
 }
 [data-theme="light"] .loader-ring-bg { border-color: rgba(0,0,0,0.1); }
-
-.loader-ring-svg {
-  position: absolute; inset: 0;
-  transform: rotate(-90deg);
-}
-.loader-ring-track {
-  fill: none; stroke: none;
-}
+.loader-ring-svg { position: absolute; inset: 0; transform: rotate(-90deg); }
 .loader-ring-progress {
-  fill: none;
-  stroke: #C9A96E;
-  stroke-width: 1.5;
-  stroke-linecap: round;
-  stroke-dasharray: 188.5;
-  stroke-dashoffset: 188.5;
+  fill: none; stroke: #C9A96E; stroke-width: 1.5;
+  stroke-linecap: round; stroke-dasharray: 188.5; stroke-dashoffset: 188.5;
   transition: stroke-dashoffset 0.08s linear;
 }
 [data-theme="light"] .loader-ring-progress { stroke: #9E7A3F; }
-
 .loader-count {
   position: absolute; inset: 0;
   display: flex; align-items: center; justify-content: center;
@@ -98,841 +94,713 @@
   font-size: 11px; letter-spacing: 0.14em;
   color: rgba(201, 169, 110, 0.8);
 }
-
 @keyframes loaderFadeIn {
   from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
+  to { opacity: 1; transform: translateY(0); }
 }
-    /* ════════════════════════════════════
-      RESET & BASE
-    ════════════════════════════════════ */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    html, body { max-width: 100%; overflow-x: hidden; }
+/* ════════════════════════════════════
+  RESET & BASE
+════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { max-width: 100%; overflow-x: hidden; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  width: 100%; padding-top: 64px;
+  background: var(--bg); color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300; line-height: 1.7;
+  transition: background var(--trans), color var(--trans);
+  overflow-x: hidden;
+}
 
-    html { scroll-behavior: smooth; font-size: 16px; }
+/* ════════════════════════════════════
+  DESIGN TOKENS
+════════════════════════════════════ */
+:root {
+  --bg: #0C0C0B; --bg2: #141412; --bg3: #1C1C19;
+  --text: #E8E4DC; --text2: #8C8880; --text3: #4A4845;
+  --accent: #C9A96E; --accent2: #7A6440;
+  --border: rgba(255, 255, 255, 0.07);
+  --nav-h: 64px;
+  --ease: cubic-bezier(0.25, 0.0, 0.0, 1.0);
+  --trans: 250ms var(--ease);
+  --section-gap: 96px;
+}
+[data-theme="light"] {
+  --bg: #F5F2EC; --bg2: #EDEAE3; --bg3: #E4E0D8;
+  --text: #1A1916; --text2: #6B6760; --text3: #B0ADA8;
+  --accent: #9E7A3F; --accent2: #C9A96E;
+  --border: rgba(0, 0, 0, 0.08);
+}
 
-    body {
-      width: 100%;
-      padding-top: 64px;
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 300;
-      line-height: 1.7;
-      transition: background var(--trans), color var(--trans);
-      overflow-x: hidden;
-    }
+/* ════════════════════════════════════
+  SCROLLBAR — subtelny (4px), nie całkowicie ukryty
+════════════════════════════════════ */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--text3); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text2); }
 
-    /* ════════════════════════════════════
-      DESIGN TOKENS
-    ════════════════════════════════════ */
-    :root {
-      --bg:      #0C0C0B;
-      --bg2:     #141412;
-      --bg3:     #1C1C19;
-      --text:    #E8E4DC;
-      --text2:   #8C8880;
-      --text3:   #4A4845;
-      --accent:  #C9A96E;
-      --accent2: #7A6440;
-      --border:  rgba(255, 255, 255, 0.07);
-      --nav-h:   64px;
-      --ease:    cubic-bezier(0.25, 0.0, 0.0, 1.0);
-      --trans:   250ms var(--ease);
-    }
+/* ════════════════════════════════════
+  NAVBAR
+════════════════════════════════════ */
+#navbar {
+  position: fixed; top: 0; left: 0; right: 0;
+  height: var(--nav-h); z-index: 1000;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 40px;
+  background: rgba(12, 12, 11, 0.88);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  transition: background 300ms var(--ease), border-color 300ms var(--ease);
+}
+#navbar.scrolled { background: rgba(12, 12, 11, 0.88); }
+[data-theme="light"] #navbar,
+[data-theme="light"] #navbar.scrolled { background: rgba(245, 242, 236, 0.88); }
+.nav-logo {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px; font-weight: 400;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--text); text-decoration: none;
+  opacity: 0.8; transition: opacity var(--trans);
+}
+.nav-logo:hover { opacity: 1; }
+.nav-links { display: flex; gap: 32px; align-items: center; list-style: none; }
+.nav-links a {
+  font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--text); text-decoration: none; opacity: 0.72;
+  transition: opacity var(--trans), color var(--trans);
+}
+.nav-links a:hover, .nav-links a.active { opacity: 1; }
+.nav-links a.active { color: var(--accent); }
+.nav-links a:focus-visible { opacity: 1; outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 2px; }
 
-    [data-theme="light"] {
-      --bg:      #F5F2EC;
-      --bg2:     #EDEAE3;
-      --bg3:     #E4E0D8;
-      --text:    #1A1916;
-      --text2:   #6B6760;
-      --text3:   #B0ADA8;
-      --accent:  #9E7A3F;
-      --accent2: #C9A96E;
-      --border:  rgba(0, 0, 0, 0.08);
-    }
+/* ════ NAV DROPDOWN ════ */
+.nav-item { position: relative; }
+.nav-dropdown {
+  position: absolute; top: 100%; left: 50%;
+  transform: translateX(-50%) translateY(-4px);
+  background: rgba(12, 12, 11, 0.96);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(12px);
+  padding: 8px 0; min-width: 160px;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.2s var(--ease), transform 0.2s var(--ease);
+}
+.nav-item:hover .nav-dropdown,
+.nav-item:focus-within .nav-dropdown {
+  opacity: 1; pointer-events: all;
+  transform: translateX(-50%) translateY(0);
+}
+.nav-dropdown a {
+  display: block; padding: 8px 20px;
+  font-size: 10px; letter-spacing: 0.12em;
+  text-transform: uppercase; opacity: 0.5;
+  white-space: nowrap; color: var(--text);
+}
+.nav-dropdown a:hover { opacity: 1; }
+[data-theme="light"] .nav-dropdown { background: rgba(245, 242, 236, 0.96); }
 
-    /* ════════════════════════════════════
-      SCROLLBAR
-    ════════════════════════════════════ */
-    ::-webkit-scrollbar       { width: 0px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: transparent; }
+#theme-toggle {
+  background: none; border: none; cursor: pointer;
+  width: 32px; height: 20px; opacity: 0.5; flex-shrink: 0;
+  transition: opacity var(--trans);
+}
+#theme-toggle:hover { opacity: 1; }
+#theme-toggle:focus-visible { opacity: 1; outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 2px; }
+#theme-toggle svg { width: 18px; height: 18px; fill: var(--text); }
+#hamburger {
+  display: none; flex-direction: column; gap: 5px;
+  background: none; border: none; cursor: pointer; padding: 4px;
+}
+#hamburger:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 2px; }
+#hamburger span {
+  display: block; width: 22px; height: 1px; background: var(--text);
+  transition: transform var(--trans), opacity var(--trans);
+}
+#hamburger.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+#hamburger.open span:nth-child(2) { opacity: 0; }
+#hamburger.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+#mobile-menu {
+  display: none; position: fixed; inset: 0;
+  background: var(--bg); z-index: 999;
+  flex-direction: column; align-items: center; justify-content: center; gap: 36px;
+}
+#mobile-menu.open { display: flex; }
+#mobile-menu a {
+  font-size: 24px; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--text); text-decoration: none; opacity: 0.6;
+  font-family: 'Cormorant Garamond', serif; font-style: italic;
+}
+#mobile-menu a:hover { opacity: 1; color: var(--accent); }
 
-    /* ════════════════════════════════════
-      NAVBAR
-    ════════════════════════════════════ */
-    #navbar {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      height: var(--nav-h);
-      z-index: 1000;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 40px;
-      background: rgba(12, 12, 11, 0.88);
-      border-bottom: 1px solid var(--border);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      transition: background 300ms var(--ease), border-color 300ms var(--ease);
-    }
-    #navbar.scrolled { background: rgba(12, 12, 11, 0.88); }
+/* ════════════════════════════════════
+  HERO
+════════════════════════════════════ */
+/* Ukryty wizualnie, widoczny dla Google i screen readerów */
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+}
+#hero {
+  position: relative; width: 100%; aspect-ratio: 21 / 9;
+  overflow: hidden;
+  display: flex; flex-direction: column; justify-content: flex-end;
+  padding: 0 40px 40px;
+}
+#hero-video-wrap { position: absolute; inset: 0; z-index: 0; }
+#hero-video-wrap iframe {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%; height: 300%; pointer-events: none;
+}
+.hero-content { position: relative; z-index: 2; }
+#unmute-btn {
+  position: absolute; bottom: 20px; right: 20px; z-index: 10;
+  background: none; border: none; cursor: pointer;
+  opacity: 0.6; line-height: 0; transition: opacity var(--trans);
+}
+#unmute-btn:hover { opacity: 1; }
 
-    [data-theme="light"] #navbar,
-    [data-theme="light"] #navbar.scrolled { background: rgba(245, 242, 236, 0.88); }
+/* ════════════════════════════════════
+  SECTIONS (shared)
+════════════════════════════════════ */
+section { padding: var(--section-gap) 40px; max-width: 1280px; margin: 0 auto; scroll-margin-top: 32px; }
+.section-header { display: flex; align-items: center; gap: 16px; margin-bottom: 32px; }
+.section-line { width: 24px; height: 1px; background: var(--accent); flex-shrink: 0; }
+.section-label { font-size: 10px; letter-spacing: 0.22em; color: var(--accent); text-transform: uppercase; }
+.section-divider { height: 1px; background: var(--border); width: 100%; margin: 0; }
+.fade-up { opacity: 0; transform: translateY(20px); transition: opacity 0.6s var(--ease), transform 0.6s var(--ease); }
+.fade-up.visible { opacity: 1; transform: translateY(0); }
 
-    .nav-logo {
-      font-family: 'DM Sans', sans-serif;
-      font-size: 12px;
-      font-weight: 400;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--text);
-      text-decoration: none;
-      opacity: 0.8;
-      transition: opacity var(--trans);
-    }
-    .nav-logo:hover { opacity: 1; }
+/* ════════════════════════════════════
+  FILM GRID
+════════════════════════════════════ */
+#films { padding-top: var(--section-gap); }.film-filters { display: flex; gap: 28px; align-self: flex-end; }
+.film-filter-btn {
+  background: none; border: none;
+  cursor: pointer; font-family: 'DM Sans', sans-serif;
+  font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--text2); padding: 0;
+  transition: color var(--trans);
+}
+.film-filter-btn.active { color: var(--accent); }
+.film-filter-btn:hover { color: var(--accent); }
+.film-filter-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 2px; }
+.film-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+.film-card { cursor: pointer; }
+.film-thumb {
+  aspect-ratio: 21 / 9; overflow: hidden; border-radius: 4px;
+  background: var(--bg3); position: relative;
+}
+.film-thumb img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+  transition: transform 0.4s var(--ease);
+}
+.film-overlay {
+  position: absolute; inset: 0; border-radius: 4px;
+  background: rgba(12, 12, 11, 0.45); opacity: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: opacity var(--trans);
+}
+.play-ring {
+  width: 44px; height: 44px; border-radius: 50%;
+  border: 1px solid rgba(201, 169, 110, 0.6);
+  display: flex; align-items: center; justify-content: center;
+  transition: border-color var(--trans);
+}
+.play-ring svg { width: 10px; height: 10px; fill: var(--accent); margin-left: 3px; }
+.film-card:hover .film-thumb img { transform: scale(1.04); }
+.film-card:hover .film-overlay { opacity: 1; }
+.film-card:hover .play-ring { border-color: var(--accent); }
+.film-card:hover .film-title { color: var(--accent); }
+.film-info { padding: 12px 0 0; }
+.film-title { font-family: 'Cormorant Garamond', serif; font-size: 15px; color: var(--text); margin-bottom: 5px; transition: color var(--trans); }
+.film-meta { font-size: 9px; letter-spacing: 0.14em; color: var(--accent); text-transform: uppercase; opacity: 0.65; }
 
-    .nav-links { display: flex; gap: 32px; align-items: center; list-style: none; }
+/* ════════════════════════════════════
+  FILM MODAL
+════════════════════════════════════ */
+#film-modal {
+  display: none; position: fixed; inset: 0; z-index: 2000;
+  background: rgba(12, 12, 11, 0.94);
+  align-items: center; justify-content: center; padding: 24px;
+}
+#film-modal.open { display: flex; }
+.film-modal-box { background: var(--bg2); width: 100%; max-width: 900px; border: 1px solid var(--border); }
+.film-modal-header {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  padding: 18px 24px 14px; border-bottom: 1px solid var(--border);
+}
+.film-modal-title { font-family: 'Cormorant Garamond', serif; font-size: 18px; color: var(--text); margin-bottom: 4px; }
+.film-modal-meta { font-size: 9px; letter-spacing: 0.16em; color: var(--accent); text-transform: uppercase; opacity: 0.7; }
+.modal-close { background: none; border: none; cursor: pointer; color: var(--text2); font-size: 20px; line-height: 1; padding: 4px; transition: color var(--trans); }
+.modal-close:hover { color: var(--text); }
+.modal-close:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 2px; }
+.film-modal-video { width: 100%; aspect-ratio: 16 / 9; background: #000; }
+.film-modal-video video { width: 100%; height: 100%; display: block; }
+.film-modal-footer { display: flex; justify-content: space-between; align-items: center; padding: 14px 24px; border-top: 1px solid var(--border); }
+.modal-nav { display: flex; gap: 20px; }
+.modal-nav-btn { background: none; border: none; cursor: pointer; font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text2); padding: 4px; transition: color var(--trans); }
+.modal-nav-btn:hover { color: var(--text); }
+.modal-nav-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 2px; }
+.modal-counter { font-size: 9px; letter-spacing: 0.12em; color: var(--text3); text-transform: uppercase; }
 
-    .nav-links a {
-      font-size: 11px;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--text);
-      text-decoration: none;
-      opacity: 0.4;
-      transition: opacity var(--trans), color var(--trans);
-    }
-    .nav-links a:hover, .nav-links a.active { opacity: 0.9; }
-    .nav-links a.active { color: var(--accent); }
+/* ════════════════════════════════════
+  PHOTOGRAPHY
+════════════════════════════════════ */
+.photo-section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 48px; }
+.photo-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-auto-rows: 8px; gap: 6px; }
+.photo-item { cursor: pointer; overflow: hidden; position: relative; background: var(--bg3); }
+.photo-item img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.45s var(--ease); }
+.photo-item-overlay {
+  position: absolute; inset: 0; background: rgba(12, 12, 11, 0.38); opacity: 0;
+  display: flex; align-items: flex-end; padding: 12px;
+  transition: opacity var(--trans);
+}
+.photo-item-overlay span { font-size: 9px; letter-spacing: 0.14em; color: rgba(232, 228, 220, 0.8); text-transform: uppercase; }
+.photo-item:hover .photo-item-overlay { opacity: 1; }
 
-    #theme-toggle {
-      background: none; border: none; cursor: pointer;
-      width: 32px; height: 20px;
-      opacity: 0.5; flex-shrink: 0;
-      transition: opacity var(--trans);
-    }
-    #theme-toggle:hover { opacity: 1; }
-    #theme-toggle svg   { width: 18px; height: 18px; fill: var(--text); }
+/* ════════════════════════════════════
+  PHOTO LIGHTBOX
+════════════════════════════════════ */
+#photo-lightbox { display: none; position: fixed; inset: 0; z-index: 2000; background: rgba(12, 12, 11, 0.96); flex-direction: column; }
+#photo-lightbox.open { display: flex; }
+.lb-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 40px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+.lb-back { background: none; border: none; cursor: pointer; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text2); font-family: 'DM Sans', sans-serif; padding: 4px; transition: color var(--trans); }
+.lb-back:hover { color: var(--text); }
+.lb-back:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 2px; }
+.lb-main { flex: 1; display: flex; align-items: center; justify-content: center; padding: 24px 40px; gap: 20px; min-height: 0; }
+.lb-arrow { background: none; border: none; cursor: pointer; color: var(--text2); font-size: 22px; padding: 8px; flex-shrink: 0; transition: color var(--trans); }
+.lb-arrow:hover { color: var(--accent); }
+.lb-arrow:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 2px; }
+#lb-img-container { flex: 1; display: flex; flex-direction: column; align-items: center; max-height: 100%; min-width: 0; }
+#lb-img-container img { max-width: 100%; max-height: calc(100vh - 240px); object-fit: contain; display: block; }
+.lb-caption { margin-top: 16px; text-align: center; }
+.lb-caption-title { font-family: 'Cormorant Garamond', serif; font-size: 15px; color: var(--text); margin-bottom: 4px; }
+.lb-caption-meta { font-size: 9px; letter-spacing: 0.14em; color: var(--accent); text-transform: uppercase; opacity: 0.6; }
+.lb-strip { flex-shrink: 0; padding: 14px 40px; border-top: 1px solid var(--border); overflow-x: auto; display: flex; gap: 6px; }
+.lb-strip::-webkit-scrollbar { height: 2px; }
+.lb-thumb { width: 52px; height: 36px; flex-shrink: 0; cursor: pointer; object-fit: cover; display: block; opacity: 0.3; background: var(--bg3); transition: opacity var(--trans); }
+.lb-thumb.active { opacity: 1; }
+.lb-thumb:hover { opacity: 0.7; }
 
-    #hamburger {
-      display: none; flex-direction: column; gap: 5px;
-      background: none; border: none; cursor: pointer; padding: 4px;
-    }
-    #hamburger span {
-      display: block; width: 22px; height: 1px; background: var(--text);
-      transition: transform var(--trans), opacity var(--trans);
-    }
-    #hamburger.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
-    #hamburger.open span:nth-child(2) { opacity: 0; }
-    #hamburger.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+/* ════════════════════════════════════
+  ABOUT
+════════════════════════════════════ */
+#about .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }.about-img { width: 100%; aspect-ratio: 3 / 4; background: var(--bg3); overflow: hidden; }
+.about-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.about-text h2 { font-family: 'Cormorant Garamond', serif; font-size: clamp(28px, 4vw, 42px); font-weight: 300; font-style: italic; line-height: 1.2; color: var(--text); margin-bottom: 28px; }
+.about-text p { font-size: 14px; color: var(--text2); line-height: 1.8; margin-bottom: 20px; max-width: 440px; }
 
-    #mobile-menu {
-      display: none; position: fixed; inset: 0;
-      background: var(--bg); z-index: 999;
-      flex-direction: column; align-items: center; justify-content: center; gap: 36px;
-    }
-    #mobile-menu.open { display: flex; }
-    #mobile-menu a {
-      font-size: 24px; letter-spacing: 0.1em; text-transform: uppercase;
-      color: var(--text); text-decoration: none; opacity: 0.6;
-      font-family: 'Cormorant Garamond', serif; font-style: italic;
-    }
-    #mobile-menu a:hover { opacity: 1; color: var(--accent); }
+/* ════════════════════════════════════
+  CONTACT
+════════════════════════════════════ */
+#contact .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+.contact-intro h2 { font-family: 'Cormorant Garamond', serif; font-size: clamp(28px, 4vw, 42px); font-weight: 300; font-style: italic; line-height: 1.2; color: var(--text); margin-bottom: 20px; }
+.contact-intro p { font-size: 14px; color: var(--text2); line-height: 1.8; max-width: 360px; }
+.contact-email { display: inline-block; margin-top: 28px; font-family: 'Cormorant Garamond', serif; font-size: 15px; color: var(--accent); text-decoration: none; letter-spacing: 0.04em; transition: opacity var(--trans); }
+.contact-email:hover { opacity: 0.7; }
+.contact-form { display: flex; flex-direction: column; gap: 0; }
+.form-field { border-bottom: 1px solid var(--border); position: relative; transition: border-color var(--trans); }
+.form-field:focus-within { border-bottom-color: var(--accent); }
+.form-field label { display: block; font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text3); margin-bottom: 4px; padding-top: 20px; }
+.form-field input,
+.form-field textarea { width: 100%; background: none; border: none; outline: none; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 300; color: var(--text); padding-bottom: 14px; resize: none; }
+.form-field textarea { min-height: 90px; }
+.form-field input::placeholder,
+.form-field textarea::placeholder { color: var(--text3); }
+.form-submit { margin-top: 32px; display: inline-flex; align-items: center; gap: 10px; background: none; border: none; cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text); padding: 0; transition: color var(--trans); }
+.form-submit:hover { color: var(--accent); }
+.form-submit:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 2px; }
+.form-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+.form-submit-line { width: 32px; height: 1px; background: currentColor; transition: width var(--trans); }
+.form-submit:hover .form-submit-line { width: 48px; }
+.form-status { margin-top: 12px; font-size: 12px; color: var(--accent); min-height: 18px; }
+.form-status.error { color: #d97070; }
+.form-gdpr { margin-top: 10px; font-size: 11px; color: var(--text3); line-height: 1.5; }
 
-    /* ════════════════════════════════════
-      HERO
-    ════════════════════════════════════ */
-    #hero {
-      position: relative;
-      width: 100%; aspect-ratio: 21 / 9;
-      overflow: hidden;
-      display: flex; flex-direction: column; justify-content: flex-end;
-      padding: 0 40px 40px;
-    }
+/* ════════════════════════════════════
+  FOOTER
+════════════════════════════════════ */
+footer { padding: 32px 40px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; max-width: 1280px; margin: 0 auto; }
+footer p { font-size: 10px; letter-spacing: 0.1em; color: var(--text3); text-transform: uppercase; }
+.footer-links { display: flex; gap: 24px; }
+.footer-links a { font-size: 10px; letter-spacing: 0.1em; color: var(--text3); text-transform: uppercase; text-decoration: none; opacity: 0.7; transition: opacity var(--trans); }
+.footer-links a:hover { opacity: 1; }
 
-    #hero-video-wrap { position: absolute; inset: 0; z-index: 0; }
+/* ════════════════════════════════════
+  RESPONSIVE
+════════════════════════════════════ */
+@media (max-width: 900px) {
+  :root { --section-gap: 72px; }
+  section { padding: var(--section-gap) 24px; }
+  .section-divider { margin: 0 24px; }
+  #hero { padding: 0 24px 48px; }
+  .film-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  #about .about-grid { grid-template-columns: 1fr; gap: 40px; }
+  #contact .contact-grid { grid-template-columns: 1fr; gap: 48px; }
+  .photo-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .photo-section-header { flex-direction: column; align-items: flex-start; gap: 20px; }
+}
+@media (max-width: 640px) {
+  :root { --section-gap: 56px; }
+  #navbar { padding: 0 24px; }
+  .nav-links { display: none; }
+  #hamburger { display: flex; }
+  .film-grid { grid-template-columns: 1fr; }
+  .photo-grid { grid-template-columns: 1fr; }
+  footer { flex-direction: column; gap: 12px; text-align: center; }
+  .footer-links { justify-content: center; }
+  .lb-header { padding: 16px 24px; }
+  .lb-main { padding: 16px 12px; gap: 8px; }
+  .lb-strip { padding: 12px 24px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: 0ms !important; animation-duration: 0ms !important; }
+}
+</style>
+</head>
+<body>
 
-    #hero-video-wrap iframe {
-      position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      width: 100%; height: 300%;
-      pointer-events: none;
-    }
+<!-- Skip link dla dostępności klawiatury -->
+<a href="#main-content" style="position:absolute;top:-100%;left:8px;background:var(--accent);color:#000;padding:8px 16px;font-size:12px;letter-spacing:0.1em;text-decoration:none;z-index:99999;border-radius:0 0 4px 4px;transition:top 0.2s;" onfocus="this.style.top='0'" onblur="this.style.top='-100%'">Skip to main content</a>
 
-    .hero-overlay {
-      position: absolute; inset: 0; z-index: 1;
-      background:
-        linear-gradient(to bottom,
-          rgba(12,12,11,0.2) 0%, rgba(12,12,11,0.1) 35%,
-          rgba(12,12,11,0.5) 70%, rgba(12,12,11,0.92) 100%),
-        linear-gradient(to right,
-          rgba(0,0,0,0.25) 0%, rgba(0,0,0,0) 35%,
-          rgba(0,0,0,0) 65%, rgba(0,0,0,0.25) 100%);
-    }
-    [data-theme="light"] .hero-overlay {
-      background: linear-gradient(to bottom,
-        rgba(245,242,236,0.1) 0%, rgba(245,242,236,0.05) 35%,
-        rgba(245,242,236,0.3) 70%, rgba(245,242,236,0.85) 100%);
-    }
+<!-- ════════════════════════════════════
+    NAVBAR
+════════════════════════════════════ -->
+<nav id="navbar" aria-label="Main navigation">
+  <a href="#hero" class="nav-logo">Mujtaba Manzoor</a>
+  <ul class="nav-links">
+    <li class="nav-item">
+      <a href="#films" data-section="films">Filmography</a>
+      <div class="nav-dropdown">
+        <a href="#films" data-section="films" data-cat="films">Films</a>
+        <a href="#films" data-section="films" data-cat="documentaries">Documentaries</a>
+        <a href="#films" data-section="films" data-cat="ngo_works">NGO Work</a>
+      </div>
+    </li>
+    <li><a href="#photography" data-section="photography">Photography</a></li>
+    <li><a href="#about" data-section="about">About</a></li>
+    <li><a href="#contact" data-section="contact">Contact</a></li>
+  </ul>
+  <div style="display:flex;align-items:center;gap:20px;">
+    <button id="theme-toggle" aria-label="Toggle theme">
+      <svg id="icon-moon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+      </svg>
+      <svg id="icon-sun" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="display:none;">
+        <circle cx="12" cy="12" r="5"/>
+        <line x1="12" y1="1" x2="12" y2="3" stroke="currentColor" stroke-width="2"/>
+        <line x1="12" y1="21" x2="12" y2="23" stroke="currentColor" stroke-width="2"/>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" stroke="currentColor" stroke-width="2"/>
+        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" stroke="currentColor" stroke-width="2"/>
+        <line x1="1" y1="12" x2="3" y2="12" stroke="currentColor" stroke-width="2"/>
+        <line x1="21" y1="12" x2="23" y2="12" stroke="currentColor" stroke-width="2"/>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" stroke="currentColor" stroke-width="2"/>
+        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" stroke="currentColor" stroke-width="2"/>
+      </svg>
+    </button>
+    <button id="hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
 
-    .hero-content { position: relative; z-index: 2; }
-
-    #unmute-btn {
-      position: absolute; bottom: 20px; right: 20px; z-index: 10;
-      background: none; border: none; cursor: pointer;
-      opacity: 0.6; line-height: 0;
-      transition: opacity var(--trans);
-    }
-    #unmute-btn:hover { opacity: 1; }
-
-    /* ════════════════════════════════════
-      SECTIONS (shared)
-    ════════════════════════════════════ */
-    section { padding: 96px 40px; max-width: 1280px; margin: 0 auto; }
-
-    .section-header { display: flex; align-items: center; gap: 16px; margin-bottom: 56px; }
-    .section-line   { width: 24px; height: 1px; background: var(--accent); flex-shrink: 0; }
-    .section-label  { font-size: 10px; letter-spacing: 0.22em; color: var(--accent); text-transform: uppercase; }
-    .section-divider { height: 1px; background: var(--border); width: 100%; margin: 0; }
-
-    .fade-up { opacity: 0; transform: translateY(20px); transition: opacity 0.6s var(--ease), transform 0.6s var(--ease); }
-    .fade-up.visible { opacity: 1; transform: translateY(0); }
-
-    /* ════════════════════════════════════
-      FILMOGRAPHY
-    ════════════════════════════════════ */
-    #films { padding-top: 25px; }
-
-    .film-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
-    .film-card { cursor: pointer; }
-
-    .film-thumb {
-      aspect-ratio: 21 / 9; overflow: hidden; border-radius: 4px;
-      background: var(--bg3); position: relative;
-    }
-    .film-thumb img {
-      width: 100%; height: 100%; object-fit: cover; display: block;
-      transition: transform 0.4s var(--ease);
-    }
-    .film-overlay {
-      position: absolute; inset: 0; border-radius: 4px;
-      background: rgba(12, 12, 11, 0.45); opacity: 0;
-      display: flex; align-items: center; justify-content: center;
-      transition: opacity var(--trans);
-    }
-    .play-ring {
-      width: 44px; height: 44px; border-radius: 50%;
-      border: 1px solid rgba(201, 169, 110, 0.6);
-      display: flex; align-items: center; justify-content: center;
-      transition: border-color var(--trans);
-    }
-    .play-ring svg { width: 10px; height: 10px; fill: var(--accent); margin-left: 3px; }
-
-    .film-card:hover .film-thumb img { transform: scale(1.04); }
-    .film-card:hover .film-overlay   { opacity: 1; }
-    .film-card:hover .play-ring      { border-color: var(--accent); }
-    .film-card:hover .film-title     { color: var(--accent); }
-
-    .film-info  { padding: 12px 0 0; }
-    .film-title { font-family: 'Cormorant Garamond', serif; font-size: 15px; color: var(--text); margin-bottom: 5px; transition: color var(--trans); }
-    .film-meta  { font-size: 9px; letter-spacing: 0.14em; color: var(--accent); text-transform: uppercase; opacity: 0.65; }
-
-    /* ════════════════════════════════════
-      FILM MODAL
-    ════════════════════════════════════ */
-    #film-modal {
-      display: none; position: fixed; inset: 0; z-index: 2000;
-      background: rgba(12, 12, 11, 0.94);
-      align-items: center; justify-content: center; padding: 24px;
-    }
-    #film-modal.open { display: flex; }
-
-    .film-modal-box { background: var(--bg2); width: 100%; max-width: 800px; border: 1px solid var(--border); }
-
-    .film-modal-header {
-      display: flex; justify-content: space-between; align-items: flex-start;
-      padding: 18px 24px 14px; border-bottom: 1px solid var(--border);
-    }
-    .film-modal-title { font-family: 'Cormorant Garamond', serif; font-size: 18px; color: var(--text); margin-bottom: 4px; }
-    .film-modal-meta  { font-size: 9px; letter-spacing: 0.16em; color: var(--accent); text-transform: uppercase; opacity: 0.7; }
-
-    .modal-close { background: none; border: none; cursor: pointer; color: var(--text2); font-size: 20px; line-height: 1; padding: 0; transition: color var(--trans); }
-    .modal-close:hover { color: var(--text); }
-
-    .film-modal-video { width: 100%; aspect-ratio: 16 / 9; background: #000; }
-    .film-modal-video iframe { width: 100%; height: 100%; border: none; display: block; }
-
-    .film-modal-footer { display: flex; justify-content: space-between; align-items: center; padding: 14px 24px; border-top: 1px solid var(--border); }
-    .modal-nav { display: flex; gap: 20px; }
-    .modal-nav-btn { background: none; border: none; cursor: pointer; font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text2); padding: 0; transition: color var(--trans); }
-    .modal-nav-btn:hover { color: var(--text); }
-    .modal-counter { font-size: 9px; letter-spacing: 0.12em; color: var(--text3); text-transform: uppercase; }
-
-    /* ════════════════════════════════════
-      PHOTOGRAPHY
-    ════════════════════════════════════ */
-    #photography { padding-top: 96px; padding-bottom: 96px; }
-
-    .photo-section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 48px; }
-    .photo-filters { display: flex; gap: 28px; }
-
-    .photo-filter-btn {
-      background: none; border: none; border-bottom: 1px solid transparent; cursor: pointer;
-      font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
-      color: var(--text2); padding: 0 0 3px;
-      font-family: 'DM Sans', sans-serif;
-      transition: color var(--trans), border-color var(--trans);
-    }
-    .photo-filter-btn.active                   { color: var(--text); border-bottom-color: rgba(232, 228, 220, 0.4); }
-    [data-theme="light"] .photo-filter-btn.active { border-bottom-color: rgba(26, 25, 22, 0.4); }
-
-    .photo-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-auto-rows: 8px; gap: 6px; }
-
-    .photo-item { cursor: pointer; overflow: hidden; position: relative; background: var(--bg3); }
-    .photo-item img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.45s var(--ease); }
-    .photo-item-overlay {
-      position: absolute; inset: 0; background: rgba(12, 12, 11, 0.38); opacity: 0;
-      display: flex; align-items: flex-end; padding: 12px;
-      transition: opacity var(--trans);
-    }
-    .photo-item-overlay span { font-size: 9px; letter-spacing: 0.14em; color: rgba(232, 228, 220, 0.8); text-transform: uppercase; }
-    .photo-item:hover .photo-item-overlay { opacity: 1; }
-
-    /* ════════════════════════════════════
-      PHOTO LIGHTBOX
-    ════════════════════════════════════ */
-    #photo-lightbox { display: none; position: fixed; inset: 0; z-index: 2000; background: rgba(12, 12, 11, 0.96); flex-direction: column; }
-    #photo-lightbox.open { display: flex; }
-
-    .lb-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 40px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
-    .lb-back { background: none; border: none; cursor: pointer; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text2); font-family: 'DM Sans', sans-serif; padding: 0; transition: color var(--trans); }
-    .lb-back:hover { color: var(--text); }
-
-    .lb-main { flex: 1; display: flex; align-items: center; justify-content: center; padding: 24px 40px; gap: 20px; min-height: 0; }
-    .lb-arrow { background: none; border: none; cursor: pointer; color: var(--text2); font-size: 22px; padding: 8px; flex-shrink: 0; transition: color var(--trans); }
-    .lb-arrow:hover { color: var(--accent); }
-
-    #lb-img-container { flex: 1; display: flex; flex-direction: column; align-items: center; max-height: 100%; min-width: 0; }
-    #lb-img-container img { max-width: 100%; max-height: calc(100vh - 240px); object-fit: contain; display: block; }
-
-    .lb-caption       { margin-top: 16px; text-align: center; }
-    .lb-caption-title { font-family: 'Cormorant Garamond', serif; font-size: 15px; color: var(--text); margin-bottom: 4px; }
-    .lb-caption-meta  { font-size: 9px; letter-spacing: 0.14em; color: var(--accent); text-transform: uppercase; opacity: 0.6; }
-
-    .lb-strip { flex-shrink: 0; padding: 14px 40px; border-top: 1px solid var(--border); overflow-x: auto; display: flex; gap: 6px; }
-    .lb-strip::-webkit-scrollbar { height: 2px; }
-    .lb-thumb { width: 52px; height: 36px; flex-shrink: 0; cursor: pointer; object-fit: cover; display: block; opacity: 0.3; background: var(--bg3); transition: opacity var(--trans); }
-    .lb-thumb.active { opacity: 1; }
-    .lb-thumb:hover  { opacity: 0.7; }
-
-    /* ════════════════════════════════════
-      ABOUT
-    ════════════════════════════════════ */
-    #about .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
-
-    .about-img { aspect-ratio: 3 / 4; background: var(--bg3); overflow: hidden; }
-    .about-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
-
-    .about-text h2 { font-family: 'Cormorant Garamond', serif; font-size: clamp(28px, 4vw, 42px); font-weight: 300; font-style: italic; line-height: 1.2; color: var(--text); margin-bottom: 28px; }
-    .about-text p  { font-size: 14px; color: var(--text2); line-height: 1.8; margin-bottom: 20px; max-width: 440px; }
-
-    .about-stats    { display: flex; gap: 40px; margin-top: 40px; padding-top: 32px; border-top: 1px solid var(--border); }
-    .about-stat-num { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 300; color: var(--text); line-height: 1; margin-bottom: 4px; }
-    .about-stat-label { font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text3); }
-
-    /* ════════════════════════════════════
-      CONTACT
-    ════════════════════════════════════ */
-    #contact .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
-
-    .contact-intro h2 { font-family: 'Cormorant Garamond', serif; font-size: clamp(28px, 4vw, 42px); font-weight: 300; font-style: italic; line-height: 1.2; color: var(--text); margin-bottom: 20px; }
-    .contact-intro p  { font-size: 14px; color: var(--text2); line-height: 1.8; max-width: 360px; }
-
-    .contact-email { display: inline-block; margin-top: 28px; font-family: 'Cormorant Garamond', serif; font-size: 15px; color: var(--accent); text-decoration: none; letter-spacing: 0.04em; transition: opacity var(--trans); }
-    .contact-email:hover { opacity: 0.7; }
-
-    .contact-socials { display: flex; gap: 24px; margin-top: 32px; }
-    .contact-socials a { font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text2); text-decoration: none; transition: color var(--trans); }
-    .contact-socials a:hover { color: var(--accent); }
-
-    .contact-form { display: flex; flex-direction: column; gap: 0; }
-
-    .form-field { border-bottom: 1px solid var(--border); position: relative; transition: border-color var(--trans); }
-    .form-field:focus-within { border-bottom-color: var(--accent); }
-
-    .form-field label { display: block; font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text3); margin-bottom: 4px; padding-top: 20px; }
-
-    .form-field input,
-    .form-field textarea { width: 100%; background: none; border: none; outline: none; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 300; color: var(--text); padding-bottom: 14px; resize: none; }
-    .form-field textarea { min-height: 90px; }
-    .form-field input::placeholder,
-    .form-field textarea::placeholder { color: var(--text3); }
-
-    .form-submit { margin-top: 32px; display: inline-flex; align-items: center; gap: 10px; background: none; border: none; cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text); padding: 0; transition: color var(--trans); }
-    .form-submit:hover { color: var(--accent); }
-    .form-submit-line { width: 32px; height: 1px; background: currentColor; transition: width var(--trans); }
-    .form-submit:hover .form-submit-line { width: 48px; }
-    .form-status { margin-top: 12px; font-size: 12px; color: var(--accent); min-height: 18px; }
-
-    /* ════════════════════════════════════
-      FOOTER
-    ════════════════════════════════════ */
-    footer { padding: 32px 40px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; max-width: 1280px; margin: 0 auto; }
-    footer p { font-size: 10px; letter-spacing: 0.1em; color: var(--text3); text-transform: uppercase; }
-
-    /* ════════════════════════════════════
-      RESPONSIVE
-    ════════════════════════════════════ */
-    @media (max-width: 900px) {
-      section                   { padding: 72px 24px; }
-      .section-divider          { margin: 0 24px; }
-      #hero                     { padding: 0 24px 48px; }
-      .film-grid                { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
-      #about .about-grid        { grid-template-columns: 1fr; gap: 40px; }
-      #contact .contact-grid    { grid-template-columns: 1fr; gap: 48px; }
-      .photo-grid               { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .photo-section-header     { flex-direction: column; align-items: flex-start; gap: 20px; }
-    }
-
-    @media (max-width: 640px) {
-      #navbar    { padding: 0 24px; }
-      .nav-links { display: none; }
-      #hamburger { display: flex; }
-      .film-grid { grid-template-columns: 1fr; }
-      .photo-grid { grid-template-columns: 1fr; }
-      footer     { flex-direction: column; gap: 12px; text-align: center; }
-      .lb-header { padding: 16px 24px; }
-      .lb-main   { padding: 16px 12px; gap: 8px; }
-      .lb-strip  { padding: 12px 24px; }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after { transition-duration: 0ms !important; animation-duration: 0ms !important; }
-    }
-
-  </style>
-  </head>
-  <body>
-<div id="loader">
-  <div class="curtain curtain-left"></div>
-  <div class="curtain curtain-right"></div>
+<!-- ════════════════════════════════════
+    MOBILE MENU
+════════════════════════════════════ -->
+<div id="mobile-menu" aria-hidden="true">
+  <a href="#films" class="mobile-link">Films</a>
+  <a href="#films" class="mobile-link">Documentaries</a>
+  <a href="#films" class="mobile-link">NGO Work</a>
+  <a href="#photography" class="mobile-link">Documentary Photography</a>
+  <a href="#about" class="mobile-link">About</a>
+  <a href="#contact" class="mobile-link">Contact</a>
 </div>
-<div class="loader-content" id="loader-content">
-  <div class="loader-name">Mujtaba Manzoor</div>
-  <div class="loader-ring-wrap">
-    <div class="loader-ring-bg"></div>
-    <svg class="loader-ring-svg" viewBox="0 0 64 64">
-      <circle class="loader-ring-progress" id="loader-ring" cx="32" cy="32" r="30"/>
+
+<!-- ════════════════════════════════════
+    MAIN CONTENT
+════════════════════════════════════ -->
+<main id="main-content">
+
+<!-- ════════════════════════════════════
+    HERO
+════════════════════════════════════ -->
+<section id="hero">
+  <!-- H1 ukryty wizualnie — widoczny dla Google i screen readerów -->
+  <h1 class="visually-hidden">Mujtaba Manzoor — Documentary Filmmaker &amp; Photographer from Kashmir</h1>
+  <button id="unmute-btn" title="Toggle sound">
+    <svg id="icon-sound" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(201,169,110,0.9)" stroke-width="1.5" style="display:none;" aria-hidden="true">
+      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+      <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+      <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
     </svg>
-    <div class="loader-count" id="loader-count">0%</div>
+    <svg id="icon-muted" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(201,169,110,0.9)" stroke-width="1.5" aria-hidden="true">
+      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+      <line x1="23" y1="9" x2="17" y2="15"/>
+      <line x1="17" y1="9" x2="23" y2="15"/>
+    </svg>
+  </button>
+  <div id="hero-video-wrap">
+    <iframe src="https://player.vimeo.com/video/1175220860?background=1&autoplay=1&loop=1&muted=1&fit=contain"
+      frameborder="0" allow="autoplay; fullscreen" title="Background reel">
+    </iframe>
+  </div>
+  <div class="hero-content"></div>
+</section>
+
+<!-- ════════════════════════════════════
+    FILMOGRAPHY
+════════════════════════════════════ -->
+<section id="films">
+<div class="section-header fade-up">
+  <div class="section-line" aria-hidden="true"></div>
+    <div class="film-filters" role="group" aria-label="Filter by category">
+      <button class="film-filter-btn active" data-cat="films" aria-pressed="true">Films</button>
+      <button class="film-filter-btn" data-cat="documentaries" aria-pressed="false">Documentaries</button>
+      <button class="film-filter-btn" data-cat="ngo_works" aria-pressed="false">NGO Work</button>
+    </div>
+  </div>
+  <div class="film-grid" id="film-grid"></div>
+</section>
+
+<!-- ════════════════════════════════════
+    DOCUMENTARY PHOTOGRAPHY
+════════════════════════════════════ -->
+<div class="section-divider" role="separator"></div>
+<section id="photography">
+  <div class="photo-section-header fade-up">
+    <div style="display:flex;align-items:center;gap:16px;">
+      <div class="section-line" aria-hidden="true"></div>
+      <span class="section-label">Documentary Photography</span>
+    </div>
+  </div>
+  <div class="photo-grid" id="photo-grid"></div>
+</section>
+
+<!-- ════════════════════════════════════
+    ABOUT
+════════════════════════════════════ -->
+<div class="section-divider" role="separator"></div>
+<section id="about">
+  <div class="section-header fade-up">
+    <div class="section-line" aria-hidden="true"></div>
+    <span class="section-label">About</span>
+  </div>
+  <div class="about-grid">
+    <div class="about-img fade-up">
+      <img id="about-img" src="" alt="Portrait of Mujtaba Manzoor" loading="lazy" width="480" height="640">
+    </div>
+    <div class="about-text fade-up" style="transition-delay:100ms;">
+      <h2>Mujtaba Manzoor</h2>
+      <p>I am a documentary filmmaker and photojournalist from Kashmir, currently pursuing the Erasmus Mundus Master's in Documentary Filmmaking (DocNomadsPlus). My work explores the intersections of culture, identity, and representation of reality through poetic visuals.</p>
+      <p>Growing up in Kashmir, surrounded by both conflict and breathtaking beauty, I witnessed how narratives are politicized by those in power. That awareness became the foundation of my voice as a documentary filmmaker.</p>
+      <p>In parallel, I continue developing a photojournalistic series capturing children's games, urban resilience, and the subtle rhythms of cultural identity.</p>
+      <p>I see film and photography as tools of empathy — ways to observe life without judgement and translate the unseen emotions that connect us all.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════
+    CONTACT
+════════════════════════════════════ -->
+<div class="section-divider" role="separator"></div>
+<section id="contact">
+  <div class="contact-grid">
+    <div class="contact-intro fade-up">
+      <div class="section-header">
+        <div class="section-line" aria-hidden="true"></div>
+        <span class="section-label">Contact</span>
+      </div>
+      <h2>Let's make<br>something together</h2>
+      <p>Open to documentary, commercial, and editorial projects. Based in Kashmir — available internationally.</p>
+      <a href="mailto:mujtabamanzoor7866@gmail.com" class="contact-email">mujtabamanzoor7866@gmail.com</a>
+    </div>
+    <form class="contact-form fade-up" id="contact-form" style="transition-delay:100ms;" novalidate>
+      <div class="form-field">
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" placeholder="Your name" required autocomplete="name" minlength="2">
+      </div>
+      <div class="form-field">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" placeholder="your@email.com" required autocomplete="email">
+      </div>
+      <div class="form-field">
+        <label for="message">Message</label>
+        <textarea id="message" name="message" placeholder="Tell me about your project…" required rows="4" minlength="10"></textarea>
+      </div>
+      <button type="submit" class="form-submit" id="form-btn">
+        <span class="form-submit-line"></span>
+        Send message
+      </button>
+      <p class="form-gdpr">By submitting you agree your data will be used solely to reply to your message.</p>
+      <p class="form-status" id="form-status" aria-live="polite" aria-atomic="true"></p>
+    </form>
+  </div>
+</section>
+
+</main>
+
+<!-- ════════════════════════════════════
+    FOOTER
+════════════════════════════════════ -->
+<footer>
+  <p>Mujtaba Manzoor &copy; 2026</p>
+  <nav class="footer-links" aria-label="Legal">
+    <a href="mailto:mujtabamanzoor7866@gmail.com">Contact</a>
+    <a href="#privacy-notice" id="privacy-notice">Privacy Notice</a>
+  </nav>
+</footer>
+
+<!-- ════════════════════════════════════
+    FILM MODAL
+════════════════════════════════════ -->
+<div id="film-modal" role="dialog" aria-modal="true" aria-labelledby="fm-title">
+  <div class="film-modal-box">
+    <div class="film-modal-header">
+      <div>
+        <div class="film-modal-title" id="fm-title"></div>
+        <div class="film-modal-meta" id="fm-meta"></div>
+      </div>
+      <button class="modal-close" id="film-modal-close" aria-label="Close">✕</button>
+    </div>
+    <div class="film-modal-video">
+      <video id="fm-video" controls>
+        <source id="fm-source" src="" type="video/mp4">
+      </video>
+    </div>
+    <div class="film-modal-footer">
+      <div class="modal-nav">
+        <button class="modal-nav-btn" id="prev-film-btn" aria-label="Previous film">← Prev</button>
+        <button class="modal-nav-btn" id="next-film-btn" aria-label="Next film">Next →</button>
+      </div>
+      <span class="modal-counter" id="fm-counter" aria-live="polite"></span>
+    </div>
   </div>
 </div>
-    <!-- ════════════════════════════════════
-        NAVBAR
-    ════════════════════════════════════ -->
-    <nav id="navbar">
-      <a href="#hero" class="nav-logo">Mujtaba Manzoor</a>
-      <ul class="nav-links">
-        <li><a href="#films"       data-section="films">Films</a></li>
-        <li><a href="#photography" data-section="photography">Photography</a></li>
-        <li><a href="#about"       data-section="about">About</a></li>
-        <li><a href="#contact"     data-section="contact">Contact</a></li>
-      </ul>
-      <div style="display:flex;align-items:center;gap:20px;">
-        <button id="theme-toggle" aria-label="Toggle theme">
-          <svg id="icon-moon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-          </svg>
-          <svg id="icon-sun" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="display:none;">
-            <circle cx="12" cy="12" r="5"/>
-            <line x1="12" y1="1"  x2="12" y2="3"  stroke="currentColor" stroke-width="2"/>
-            <line x1="12" y1="21" x2="12" y2="23" stroke="currentColor" stroke-width="2"/>
-            <line x1="4.22"  y1="4.22"  x2="5.64"  y2="5.64"  stroke="currentColor" stroke-width="2"/>
-            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" stroke="currentColor" stroke-width="2"/>
-            <line x1="1"  y1="12" x2="3"  y2="12" stroke="currentColor" stroke-width="2"/>
-            <line x1="21" y1="12" x2="23" y2="12" stroke="currentColor" stroke-width="2"/>
-            <line x1="4.22"  y1="19.78" x2="5.64"  y2="18.36" stroke="currentColor" stroke-width="2"/>
-            <line x1="18.36" y1="5.64"  x2="19.78" y2="4.22"  stroke="currentColor" stroke-width="2"/>
-          </svg>
-        </button>
-        <button id="hamburger" aria-label="Menu">
-          <span></span><span></span><span></span>
-        </button>
-      </div>
-    </nav>
 
-    <!-- ════════════════════════════════════
-        MOBILE MENU
-    ════════════════════════════════════ -->
-    <div id="mobile-menu">
-      <a href="#films"       class="mobile-link">Films</a>
-      <a href="#photography" class="mobile-link">Photography</a>
-      <a href="#about"       class="mobile-link">About</a>
-      <a href="#contact"     class="mobile-link">Contact</a>
+<!-- ════════════════════════════════════
+    PHOTO LIGHTBOX
+════════════════════════════════════ -->
+<div id="photo-lightbox" role="dialog" aria-modal="true" aria-labelledby="lb-title">
+  <div class="lb-header">
+    <button class="lb-back" id="lb-close-btn">← Gallery</button>
+    <div style="display:flex;align-items:center;gap:24px;">
+      <span class="modal-counter" id="lb-counter" aria-live="polite"></span>
+      <a id="lb-save" href="#" download style="font-size:9px;letter-spacing:0.16em;text-transform:uppercase;color:rgba(201,169,110,0.5);text-decoration:none;transition:color 250ms;">↓ Save</a>
     </div>
-
-    <!-- ════════════════════════════════════
-        HERO
-    ════════════════════════════════════ -->
-    <section id="hero">
-
-      <!-- Sound toggle button -->
-      <button id="unmute-btn" title="Toggle sound">
-        <svg id="icon-sound" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(201,169,110,0.9)" stroke-width="1.5" style="display:none;">
-          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
-          <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
-          <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
-        </svg>
-        <svg id="icon-muted" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(201,169,110,0.9)" stroke-width="1.5">
-          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
-          <line x1="23" y1="9"  x2="17" y2="15"/>
-          <line x1="17" y1="9"  x2="23" y2="15"/>
-        </svg>
-      </button>
-
-      <!-- Video background — replace 1175220860 with your Vimeo hero ID -->
-      <div id="hero-video-wrap">
-        <iframe
-          src="https://player.vimeo.com/video/1175220860?background=1&autoplay=1&loop=1&muted=1&fit=contain"
-          frameborder="0" allow="autoplay; fullscreen" title="Background reel" loading="lazy">
-        </iframe>
-      </div>
-
-      <!--<div class="hero-overlay"></div>-->?
-      <div class="hero-content"></div>
-
-    </section>
-
-    <!-- ════════════════════════════════════
-        FILMOGRAPHY
-    ════════════════════════════════════ -->
-    <section id="films">
-      <div class="section-header fade-up">
-        <div class="section-line"></div>
-        <span class="section-label">Filmography</span>
-      </div>
-      <div class="film-grid" id="film-grid">
-        <!-- Cards injected by JS -->
-      </div>
-    </section>
-
-    <!-- ════════════════════════════════════
-        PHOTOGRAPHY
-    ════════════════════════════════════ -->
-    <div class="section-divider"></div>
-    <section id="photography">
-      <div class="photo-section-header fade-up">
-        <div style="display:flex;align-items:center;gap:16px;">
-          <div class="section-line"></div>
-          <span class="section-label">Photography</span>
-        </div>
-      </div>
-      <div class="photo-grid" id="photo-grid"></div>
-    </section>
-
-    <!-- ════════════════════════════════════
-        ABOUT
-    ════════════════════════════════════ -->
-    <div class="section-divider"></div>
-    <section id="about">
-      <div class="section-header fade-up">
-        <div class="section-line"></div>
-        <span class="section-label">About</span>
-      </div>
-      <div class="about-grid">
-        <div class="about-img fade-up">
-          <!-- Replace with your portrait URL -->
-          <img src="WhatsApp Image 2026-03-13 at 20.33.59.webp" alt="Mujtaba Manzoor" loading="lazy" onerror="this.style.display='none'">
-        </div>
-        <div class="about-text fade-up" style="transition-delay:100ms;">
-          <h2>Mujtaba Manzoor</h2>
-          <p>I am a documentary filmmaker and photojournalist from Kashmir, currently pursuing the Erasmus Mundus Master's in Documentary Filmmaking (DocNomadsPlus). My work explores the intersections of culture, identity, and representation of reality through poetic visuals.</p>
-          <p>Growing up in Kashmir, surrounded by both conflict and breathtaking beauty, I witnessed how narratives are politicized by those in power. That awareness became the foundation of my voice as a documentary filmmaker.</p>
-          <p>In parallel, I continue developing a photojournalistic series capturing children's games, urban resilience, and the subtle rhythms of cultural identity.</p>
-          <p>I see film and photography as tools of empathy — ways to observe life without judgement and translate the unseen emotions that connect us all.</p>
-
-        </div>
-      </div>
-    </section>
-
-    <!-- ════════════════════════════════════
-        CONTACT
-    ════════════════════════════════════ -->
-    <div class="section-divider"></div>
-    <section id="contact">
-      <div class="contact-grid">
-        <div class="contact-intro fade-up">
-          <div class="section-header" style="margin-bottom:32px;">
-            <div class="section-line"></div>
-            <span class="section-label">Contact</span>
-          </div>
-          <h2>Let's make<br>something together</h2>
-          <p>Open to documentary, commercial, and editorial projects. Based in Kashmir — available internationally.</p>
-          <a href="mailto:mujtabamanzoor7866@gmail.com" class="contact-email">mujtabamanzoor7866@gmail.com</a>
-        </div>
-        <form class="contact-form fade-up" id="contact-form" style="transition-delay:100ms;" onsubmit="handleSubmit(event)">
-          <div class="form-field">
-            <label for="name">Name</label>
-            <input type="text" id="name" name="name" placeholder="Your name" required autocomplete="name">
-          </div>
-          <div class="form-field">
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email" placeholder="your@email.com" required autocomplete="email">
-          </div>
-          <div class="form-field">
-            <label for="message">Message</label>
-            <textarea id="message" name="message" placeholder="Tell me about your project…" required rows="4"></textarea>
-          </div>
-          <button type="submit" class="form-submit">
-            <span class="form-submit-line"></span>
-            Send message
-          </button>
-          <p class="form-status" id="form-status" aria-live="polite"></p>
-        </form>
-      </div>
-    </section>
-
-    <!-- ════════════════════════════════════
-        FOOTER
-    ════════════════════════════════════ -->
-    <footer>
-      <div class="contact-socials">
-        <p>Mujtaba Manzoor © 2026</p>
-        <a href="https://vimeo.com/mujtabamanzoor"     target="_blank" rel="noopener">Vimeo</a>
-        <a href="https://instagram.com/mujtabamanzoor"  target="_blank" rel="noopener">Instagram</a>
-        <a href="https://linkedin.com/in/mujtabamanzoor" target="_blank" rel="noopener">LinkedIn</a>
-      </div>
-    </footer>
-
-    <!-- ════════════════════════════════════
-        FILM MODAL
-    ════════════════════════════════════ -->
-    <div id="film-modal" role="dialog" aria-modal="true" aria-label="Film player">
-      <div class="film-modal-box">
-        <div class="film-modal-header">
-          <div>
-            <div class="film-modal-title" id="fm-title"></div>
-            <div class="film-modal-meta"  id="fm-meta"></div>
-          </div>
-          <button class="modal-close" onclick="closeFilmModal()" aria-label="Close">✕</button>
-        </div>
-        <div class="film-modal-video">
-          <iframe id="fm-iframe" src="" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="Film"></iframe>
-        </div>
-        <div class="film-modal-footer">
-          <div class="modal-nav">
-            <button class="modal-nav-btn" onclick="prevFilm()">← Prev</button>
-            <button class="modal-nav-btn" onclick="nextFilm()">Next →</button>
-          </div>
-          <span class="modal-counter" id="fm-counter"></span>
-        </div>
+  </div>
+  <div class="lb-main">
+    <button class="lb-arrow" id="prev-photo-btn" aria-label="Previous">←</button>
+    <div id="lb-img-container">
+      <img id="lb-img" src="" alt="" loading="eager">
+      <div class="lb-caption">
+        <div class="lb-caption-title" id="lb-title"></div>
+        <div class="lb-caption-meta" id="lb-meta"></div>
       </div>
     </div>
+    <button class="lb-arrow" id="next-photo-btn" aria-label="Next">→</button>
+  </div>
+  <div class="lb-strip" id="lb-strip"></div>
+</div>
 
-    <!-- ════════════════════════════════════
-        PHOTO LIGHTBOX
-    ════════════════════════════════════ -->
-    <div id="photo-lightbox" role="dialog" aria-modal="true" aria-label="Photo viewer">
-      <div class="lb-header">
-        <button class="lb-back" onclick="closeLightbox()">← Gallery</button>
-        <div style="display:flex;align-items:center;gap:24px;">
-          <span class="modal-counter" id="lb-counter"></span>
-          <a id="lb-save" href="#" download style="font-size:9px;letter-spacing:0.16em;text-transform:uppercase;color:rgba(201,169,110,0.5);text-decoration:none;transition:color 250ms;">↓ Save</a>
-        </div>
-      </div>
-      <div class="lb-main">
-        <button class="lb-arrow" onclick="prevPhoto()" aria-label="Previous">←</button>
-        <div id="lb-img-container">
-          <img id="lb-img" src="" alt="" loading="eager">
-          <div class="lb-caption">
-            <div class="lb-caption-title" id="lb-title"></div>
-            <div class="lb-caption-meta"  id="lb-meta"></div>
-          </div>
-        </div>
-        <button class="lb-arrow" onclick="nextPhoto()" aria-label="Next">→</button>
-      </div>
-      <div class="lb-strip" id="lb-strip"></div>
-    </div>
-
-
-  <script>
-    history.scrollRestoration = 'manual';
-window.scrollTo(0, 0);
-/* ════ LOADING SCREEN ════ */
+<script>
 (function() {
-  const loader        = document.getElementById('loader');
-  const count         = document.getElementById('loader-count');
-  const loaderContent = document.getElementById('loader-content');
+'use strict';
 
-  let progress  = 0;
-  let pageReady = false;
-  let countDone = false;
+history.scrollRestoration = 'manual';
 
-  window.addEventListener('load', () => { pageReady = true; tryOpen(); });
+/* ════ MANIFEST ════ */
+let FILMS = [];
+let PHOTOS = [];
+let currentCat = 'films';
+let MANIFEST = {};
 
-  const steps = 3500 / 40;
-  const inc   = 100 / steps;
+function titleFromFile(filename) {
+  return filename
+    .replace(/\.[^.]+$/, '')
+    .replace(/[_-]/g, ' ')
+    .replace(/\b\w/g, c => c.toUpperCase());
+}
+function thumbFromSrc(src) { return src.replace(/\.[^.]+$/, '.jpg'); }
 
-  const ticker = setInterval(() => {
-    progress = Math.min(progress + inc + (Math.random() * inc * 0.5), 99);
-    const p  = Math.floor(progress);
-    const circumference = 188.5;
-    document.getElementById('loader-ring').style.strokeDashoffset =
-      circumference - (p / 100) * circumference;
-    count.textContent = p + '%';
-    if (progress >= 99) { clearInterval(ticker); countDone = true; tryOpen(); }
-  }, 40);
+fetch('manifest.json')
+  .then(r => { if (!r.ok) throw new Error('not found'); return r.json(); })
+  .then(manifest => {
+    MANIFEST = manifest;
+    if (manifest.about_img && manifest.about_img.length > 0) {
+      document.getElementById('about-img').src = 'pictures/about_me_pic/' + manifest.about_img[0];
+    }
+    PHOTOS = manifest.photos.map(file => ({
+      title: titleFromFile(file),
+      meta: 'Documentary Photography',
+      src: 'pictures/documentary_photography/compressed/' + file.replace(/\.[^.]+$/, '.jpg'),
+      span: 22,
+    }));
+    buildPhotoGrid();
+    loadFilmCategory('films', MANIFEST);
+  })
+  .catch(() => {});
 
-  function tryOpen() {
-    if (!pageReady || !countDone) return;
-    document.getElementById('loader-ring').style.strokeDashoffset = '0';
-    count.textContent = '100%';
-    setTimeout(() => {
-      loaderContent.style.transition = 'opacity 0.3s ease';
-      loaderContent.style.opacity    = '0';
-      setTimeout(() => {
-        loaderContent.style.display = 'none';
-        loader.classList.add('open');
-        requestAnimationFrame(() => {
-          document.querySelector('.curtain-left').style.transition =
-            'transform 2.6s cubic-bezier(0.22, 1, 0.36, 1)';
-          document.querySelector('.curtain-right').style.transition =
-            'transform 2.6s cubic-bezier(0.22, 1, 0.36, 1) 0.06s';
-        });
-        setTimeout(() => { loader.classList.add('gone'); }, 2800);
-      }, 300);
-    }, 400);
-  }
-})();
-  /* ════════════════════════════════════
-    DATA
-    Replace placeholders with real titles, meta, and Hetzner photo URLs
-  ════════════════════════════════════ */
-  const FILMS = [
-    { title: 'Film 0', meta: '2024', vimeoId: '1175220860', thumb: 'https://vumbnail.com/1175220860.jpg' },
-    { title: 'Film 1', meta: '2024', vimeoId: '1175224372', thumb: 'https://vumbnail.com/1175224372.jpg' },
-    { title: 'Film 2', meta: '2024', vimeoId: '1175929669', thumb: 'https://vumbnail.com/1175929669.jpg' },
-    { title: 'Film 3', meta: '2024', vimeoId: '1177730026', thumb: 'https://vumbnail.com/1177730026.jpg' },
-    { title: 'Film 4', meta: '2024', vimeoId: '1175331313', thumb: 'https://vumbnail.com/1175331313.jpg' },
-    { title: 'Film 5', meta: '2024', vimeoId: '1175481930', thumb: 'https://vumbnail.com/1175481930.jpg' },
-    { title: 'Film 6', meta: '2024', vimeoId: '1177867386', thumb: 'https://vumbnail.com/1177867386.jpg' },
-    { title: 'Film 7', meta: '2024', vimeoId: '1177866656', thumb: 'https://vumbnail.com/1177866656.jpg' },
-    { title: 'Film 8', meta: '2024', vimeoId: '1185301461', thumb: 'https://vumbnail.com/1185301461.jpg' },
-  ];
-
-  const PHOTOS = [
-    { title: 'Morning Fog, Gulmarg',  meta: 'Landscape · Kashmir · 2024',  cat: 'landscape', span: 26, src: 'https://your-hetzner-url.com/photo-fog.jpg' },
-    { title: 'The Weaver',            meta: 'Portrait · Srinagar · 2024',   cat: 'portrait',  span: 18, src: 'https://your-hetzner-url.com/photo-weaver.jpg' },
-    { title: 'Dal Lake at Dusk',      meta: 'Landscape · Kashmir · 2023',   cat: 'landscape', span: 22, src: 'https://your-hetzner-url.com/photo-dal.jpg' },
-    { title: 'Street Prayer',         meta: 'Street · Lahore · 2023',       cat: 'street',    span: 20, src: 'https://your-hetzner-url.com/photo-prayer.jpg' },
-    { title: 'Snow Leopard Country',  meta: 'Landscape · Gilgit · 2023',    cat: 'landscape', span: 28, src: 'https://your-hetzner-url.com/photo-snow.jpg' },
-    { title: 'Old City Alley',        meta: 'Street · Peshawar · 2022',     cat: 'street',    span: 18, src: 'https://your-hetzner-url.com/photo-alley.jpg' },
-    { title: 'The Boatman',           meta: 'Portrait · Dal Lake · 2022',   cat: 'portrait',  span: 22, src: 'https://your-hetzner-url.com/photo-boat.jpg' },
-    { title: 'High Passes',           meta: 'Landscape · Karakoram · 2022', cat: 'landscape', span: 24, src: 'https://your-hetzner-url.com/photo-passes.jpg' },
-    { title: 'Chai Stall',            meta: 'Street · Rawalpindi · 2021',   cat: 'street',    span: 20, src: 'https://your-hetzner-url.com/photo-chai.jpg' },
-  ];
-
-
-  /* ════════════════════════════════════
-    THEME
-  ════════════════════════════════════ */
-  const html = document.documentElement;
-  const themePref = localStorage.getItem('theme') || 'dark';
-  html.setAttribute('data-theme', themePref);
-  updateThemeIcons(themePref);
-
-  document.getElementById('theme-toggle').addEventListener('click', () => {
-    const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-    html.setAttribute('data-theme', next);
-    localStorage.setItem('theme', next);
-    updateThemeIcons(next);
+function setActiveFilter(cat) {
+  document.querySelectorAll('.film-filter-btn').forEach(b => {
+    const active = b.dataset.cat === cat;
+    b.classList.toggle('active', active);
+    b.setAttribute('aria-pressed', active ? 'true' : 'false');
   });
-
-  function updateThemeIcons(theme) {
-    document.getElementById('icon-moon').style.display = theme === 'dark'  ? 'block' : 'none';
-    document.getElementById('icon-sun').style.display  = theme === 'light' ? 'block' : 'none';
-  }
-
-
-  /* ════════════════════════════════════
-    NAVBAR — scroll + scroll spy
-  ════════════════════════════════════ */
-  const navbar = document.getElementById('navbar');
-
-  window.addEventListener('scroll', () => {
-    navbar.classList.toggle('scrolled', window.scrollY > 40);
-    updateScrollSpy();
-  }, { passive: true });
-
-  function updateScrollSpy() {
-    const ids = ['films', 'photography', 'about', 'contact'];
-    let active = '';
-    ids.forEach(id => {
-      const el = document.getElementById(id);
-      if (el && window.scrollY >= el.offsetTop - 120) active = id;
-    });
-    document.querySelectorAll('.nav-links a').forEach(a => {
-      a.classList.toggle('active', a.dataset.section === active);
-    });
-  }
-
-
-  /* ════════════════════════════════════
-    HAMBURGER / MOBILE MENU
-  ════════════════════════════════════ */
-  const hamburger  = document.getElementById('hamburger');
-  const mobileMenu = document.getElementById('mobile-menu');
-
-  hamburger.addEventListener('click', () => {
-    const open = mobileMenu.classList.toggle('open');
-    hamburger.classList.toggle('open', open);
-    document.body.style.overflow = open ? 'hidden' : '';
+  document.querySelectorAll('.nav-dropdown a[data-cat]').forEach(a => {
+    a.classList.toggle('active', a.dataset.cat === cat);
   });
+}
 
-  document.querySelectorAll('.mobile-link').forEach(a => {
-    a.addEventListener('click', () => {
-      mobileMenu.classList.remove('open');
-      hamburger.classList.remove('open');
-      document.body.style.overflow = '';
-    });
+document.querySelectorAll('.film-filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    loadFilmCategory(btn.dataset.cat, MANIFEST);
+    setActiveFilter(btn.dataset.cat);
   });
+});
 
+document.querySelectorAll('.nav-dropdown a[data-cat]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    loadFilmCategory(a.dataset.cat, MANIFEST);
+    setActiveFilter(a.dataset.cat);
+    document.getElementById('films').scrollIntoView({ behavior: 'smooth' });
+  });
+});
 
-  /* ════════════════════════════════════
-    FADE-UP ON SCROLL
-  ════════════════════════════════════ */
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
-    });
-  }, { threshold: 0.12 });
+function loadFilmCategory(cat, manifest) {
+  currentCat = cat;
+  const files = manifest[cat] || [];
+  FILMS = files.map(file => ({
+    title: titleFromFile(file),
+    meta: cat.replace('_', ' ').replace(/\b\w/g, c => c.toUpperCase()),
+    src: `videos/${cat}/` + file,
+    thumb: `videos/${cat}/` + thumbFromSrc(file),
+  }));
+  buildFilmGrid();
+}
 
-  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
-
-
-  /* ════════════════════════════════════
-    FILM GRID
-  ════════════════════════════════════ */
-  const filmGrid = document.getElementById('film-grid');
-
+/* ════ FILM GRID ════ */
+function buildFilmGrid() {
+  const grid = document.getElementById('film-grid');
+  grid.innerHTML = '';
   FILMS.forEach((f, i) => {
     const card = document.createElement('div');
     card.className = 'film-card fade-up';
     card.style.transitionDelay = (i % 3 * 80) + 'ms';
+    card.setAttribute('tabindex', '0');
+    card.setAttribute('role', 'button');
+    card.setAttribute('aria-label', f.title);
     card.innerHTML = `
       <div class="film-thumb">
-        <img src="${f.thumb}" alt="${f.title}" loading="lazy"
-            onerror="this.closest('.film-thumb').classList.add('film-thumb-placeholder')">
-        <div class="film-overlay">
+        <img src="${f.thumb}" alt="${f.title}" loading="lazy" decoding="async" onerror="this.style.display='none'">
+        <div class="film-overlay" aria-hidden="true">
           <div class="play-ring">
-            <svg viewBox="0 0 10 10"><polygon points="2,1 9,5 2,9"/></svg>
+            <svg viewBox="0 0 10 10" aria-hidden="true"><polygon points="2,1 9,5 2,9"/></svg>
           </div>
         </div>
       </div>
@@ -941,224 +809,315 @@ window.scrollTo(0, 0);
         <div class="film-meta">${f.meta}</div>
       </div>`;
     card.addEventListener('click', () => openFilmModal(i));
-    filmGrid.appendChild(card);
+    card.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openFilmModal(i); }
+    });
+    grid.appendChild(card);
     observer.observe(card);
   });
+}
 
+/* ════ FILM MODAL ════ */
+let currentFilm = 0;
+const filmModal = document.getElementById('film-modal');
+let filmPrevFocus = null;
 
-  /* ════════════════════════════════════
-    FILM MODAL
-  ════════════════════════════════════ */
-  let currentFilm = 0;
-  const filmModal = document.getElementById('film-modal');
+function openFilmModal(i) {
+  currentFilm = i;
+  filmPrevFocus = document.activeElement;
+  updateFilmModal();
+  filmModal.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  requestAnimationFrame(() => document.getElementById('film-modal-close').focus());
+}
+function closeFilmModal() {
+  filmModal.classList.remove('open');
+  const video = document.getElementById('fm-video');
+  video.pause();
+  document.getElementById('fm-source').src = '';
+  video.load();
+  document.body.style.overflow = '';
+  if (filmPrevFocus) filmPrevFocus.focus();
+}
+function updateFilmModal() {
+  const f = FILMS[currentFilm];
+  document.getElementById('fm-title').textContent = f.title;
+  document.getElementById('fm-meta').textContent = f.meta;
+  document.getElementById('fm-counter').textContent = (currentFilm + 1) + ' / ' + FILMS.length;
+  const video = document.getElementById('fm-video');
+  document.getElementById('fm-source').src = f.src;
+  video.load();
+  video.play().catch(() => {});
+}
+function prevFilm() { currentFilm = (currentFilm - 1 + FILMS.length) % FILMS.length; updateFilmModal(); }
+function nextFilm() { currentFilm = (currentFilm + 1) % FILMS.length; updateFilmModal(); }
 
-  function openFilmModal(i) {
-    currentFilm = i;
-    updateFilmModal();
-    filmModal.classList.add('open');
-    document.body.style.overflow = 'hidden';
-  }
+document.getElementById('film-modal-close').addEventListener('click', closeFilmModal);
+document.getElementById('prev-film-btn').addEventListener('click', prevFilm);
+document.getElementById('next-film-btn').addEventListener('click', nextFilm);
+filmModal.addEventListener('click', e => { if (e.target === filmModal) closeFilmModal(); });
 
-  function closeFilmModal() {
-    filmModal.classList.remove('open');
-    document.getElementById('fm-iframe').src = '';
-    document.body.style.overflow = '';
-  }
+/* ════ PHOTO GRID ════ */
+let currentPhoto = 0;
 
-  function updateFilmModal() {
-    const f = FILMS[currentFilm];
-    document.getElementById('fm-title').textContent   = f.title;
-    document.getElementById('fm-meta').textContent    = f.meta;
-    document.getElementById('fm-counter').textContent = (currentFilm + 1) + ' / ' + FILMS.length;
-    document.getElementById('fm-iframe').src = `https://player.vimeo.com/video/${f.vimeoId}?autoplay=1&color=C9A96E`;
-  }
-
-  function prevFilm() { currentFilm = (currentFilm - 1 + FILMS.length) % FILMS.length; updateFilmModal(); }
-  function nextFilm() { currentFilm = (currentFilm + 1) % FILMS.length; updateFilmModal(); }
-
-  filmModal.addEventListener('click', e => { if (e.target === filmModal) closeFilmModal(); });
-
-
-  /* ════════════════════════════════════
-    PHOTO GRID
-  ════════════════════════════════════ */
-  let filteredPhotos = PHOTOS.map((_, i) => i);
-  let currentPhoto  = 0;
-
-  function buildPhotoGrid(cat) {
-    filteredPhotos = cat === 'all'
-      ? PHOTOS.map((_, i) => i)
-      : PHOTOS.map((_, i) => i).filter(i => PHOTOS[i].cat === cat);
-
-    const grid = document.getElementById('photo-grid');
-    grid.innerHTML = '';
-
-    filteredPhotos.forEach((pi, fi) => {
-      const p    = PHOTOS[pi];
-      const item = document.createElement('div');
-      item.className        = 'photo-item';
-      item.style.gridRowEnd = 'span ' + p.span;
-      item.innerHTML = `
-        <img src="${p.src}" alt="${p.title}" loading="lazy"
-            style="width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.45s cubic-bezier(0.25,0,0,1);"
-            onerror="this.style.display='none'">
-        <div class="photo-item-overlay"><span>${p.title}</span></div>`;
-      item.addEventListener('mouseenter', () => { item.querySelector('img').style.transform = 'scale(1.04)'; });
-      item.addEventListener('mouseleave',  () => { item.querySelector('img').style.transform = 'scale(1)'; });
-      item.addEventListener('click', () => openLightbox(fi));
-      grid.appendChild(item);
+function buildPhotoGrid() {
+  const grid = document.getElementById('photo-grid');
+  grid.innerHTML = '';
+  PHOTOS.forEach((p, fi) => {
+    const item = document.createElement('div');
+    item.className = 'photo-item';
+    item.style.gridRowEnd = 'span ' + p.span;
+    item.setAttribute('tabindex', '0');
+    item.setAttribute('role', 'button');
+    item.setAttribute('aria-label', p.title);
+    item.innerHTML = `
+      <img src="${p.src}" alt="${p.title}" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.45s cubic-bezier(0.25,0,0,1);" onerror="this.style.display='none'">
+      <div class="photo-item-overlay" aria-hidden="true"><span>${p.title}</span></div>`;
+    item.addEventListener('mouseenter', () => { item.querySelector('img').style.transform = 'scale(1.04)'; });
+    item.addEventListener('mouseleave', () => { item.querySelector('img').style.transform = 'scale(1)'; });
+    item.addEventListener('click', () => openLightbox(fi));
+    item.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openLightbox(fi); }
     });
-  }
-
-  document.querySelectorAll('.photo-filter-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.photo-filter-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      buildPhotoGrid(btn.dataset.cat);
-    });
+    grid.appendChild(item);
   });
+}
 
-  buildPhotoGrid('all');
+/* ════ PHOTO LIGHTBOX ════ */
+const lightbox = document.getElementById('photo-lightbox');
+let lightboxPrevFocus = null;
 
-
-  /* ════════════════════════════════════
-    PHOTO LIGHTBOX
-  ════════════════════════════════════ */
-  const lightbox = document.getElementById('photo-lightbox');
-
-  function openLightbox(fi) {
-    currentPhoto = fi;
-    updateLightbox();
-    buildStrip();
-    lightbox.classList.add('open');
-    document.body.style.overflow = 'hidden';
-  }
-
-  function closeLightbox() {
-    lightbox.classList.remove('open');
-    document.body.style.overflow = '';
-  }
-
-  function updateLightbox() {
-    const p   = PHOTOS[filteredPhotos[currentPhoto]];
-    const img = document.getElementById('lb-img');
-    img.src   = p.src;
-    img.alt   = p.title;
-    document.getElementById('lb-title').textContent   = p.title;
-    document.getElementById('lb-meta').textContent    = p.meta;
-    document.getElementById('lb-counter').textContent = (currentPhoto + 1) + ' / ' + filteredPhotos.length;
-    document.getElementById('lb-save').href           = p.src;
-    highlightStrip();
-  }
-
-  function buildStrip() {
-    const strip = document.getElementById('lb-strip');
-    strip.innerHTML = '';
-    filteredPhotos.forEach((pi, fi) => {
-      const img     = document.createElement('img');
-      img.src       = PHOTOS[pi].src;
-      img.alt       = PHOTOS[pi].title;
-      img.className = 'lb-thumb' + (fi === currentPhoto ? ' active' : '');
-      img.id        = 'strip-' + fi;
-      img.addEventListener('click', () => { currentPhoto = fi; updateLightbox(); });
-      strip.appendChild(img);
-    });
-  }
-
-  function highlightStrip() {
-    document.querySelectorAll('.lb-thumb').forEach((t, fi) => t.classList.toggle('active', fi === currentPhoto));
-    const active = document.getElementById('strip-' + currentPhoto);
-    if (active) active.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-  }
-
-  function prevPhoto() { currentPhoto = (currentPhoto - 1 + filteredPhotos.length) % filteredPhotos.length; updateLightbox(); }
-  function nextPhoto() { currentPhoto = (currentPhoto + 1) % filteredPhotos.length; updateLightbox(); }
-
-
-  /* ════════════════════════════════════
-    KEYBOARD NAVIGATION
-  ════════════════════════════════════ */
-  document.addEventListener('keydown', e => {
-    if (filmModal.classList.contains('open')) {
-      if (e.key === 'Escape')     closeFilmModal();
-      if (e.key === 'ArrowLeft')  prevFilm();
-      if (e.key === 'ArrowRight') nextFilm();
-    }
-    if (lightbox.classList.contains('open')) {
-      if (e.key === 'Escape')     closeLightbox();
-      if (e.key === 'ArrowLeft')  prevPhoto();
-      if (e.key === 'ArrowRight') nextPhoto();
-    }
+function openLightbox(fi) {
+  currentPhoto = fi;
+  lightboxPrevFocus = document.activeElement;
+  updateLightbox();
+  buildStrip();
+  lightbox.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  requestAnimationFrame(() => document.getElementById('lb-close-btn').focus());
+}
+function closeLightbox() {
+  lightbox.classList.remove('open');
+  document.body.style.overflow = '';
+  if (lightboxPrevFocus) lightboxPrevFocus.focus();
+}
+function updateLightbox() {
+  const p = PHOTOS[currentPhoto];
+  const img = document.getElementById('lb-img');
+  img.src = p.src;
+  img.alt = p.title;
+  document.getElementById('lb-title').textContent = p.title;
+  document.getElementById('lb-meta').textContent = p.meta;
+  document.getElementById('lb-counter').textContent = (currentPhoto + 1) + ' / ' + PHOTOS.length;
+  document.getElementById('lb-save').href = p.src;
+  highlightStrip();
+}
+function buildStrip() {
+  const strip = document.getElementById('lb-strip');
+  strip.innerHTML = '';
+  PHOTOS.forEach((p, fi) => {
+    const img = document.createElement('img');
+    img.src = p.src;
+    img.alt = p.title;
+    img.className = 'lb-thumb' + (fi === currentPhoto ? ' active' : '');
+    img.id = 'strip-' + fi;
+    img.addEventListener('click', () => { currentPhoto = fi; updateLightbox(); });
+    strip.appendChild(img);
   });
+}
+function highlightStrip() {
+  document.querySelectorAll('.lb-thumb').forEach((t, fi) => t.classList.toggle('active', fi === currentPhoto));
+  const active = document.getElementById('strip-' + currentPhoto);
+  if (active) active.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+}
+function prevPhoto() { currentPhoto = (currentPhoto - 1 + PHOTOS.length) % PHOTOS.length; updateLightbox(); }
+function nextPhoto() { currentPhoto = (currentPhoto + 1) % PHOTOS.length; updateLightbox(); }
 
+document.getElementById('lb-close-btn').addEventListener('click', closeLightbox);
+document.getElementById('prev-photo-btn').addEventListener('click', prevPhoto);
+document.getElementById('next-photo-btn').addEventListener('click', nextPhoto);
 
-  /* ════════════════════════════════════
-    CONTACT FORM
-    Replace setTimeout with real endpoint e.g.:
-    fetch('https://formspree.io/f/YOUR_ID', { method:'POST', body: new FormData(e.target) })
-  ════════════════════════════════════ */
-  function handleSubmit(e) {
-    e.preventDefault();
-    const status = document.getElementById('form-status');
-    const btn    = e.target.querySelector('.form-submit');
-    btn.disabled       = true;
-    status.textContent = 'Sending…';
+/* ════ KEYBOARD NAVIGATION ════ */
+document.addEventListener('keydown', e => {
+  if (filmModal.classList.contains('open')) {
+    if (e.key === 'Escape') closeFilmModal();
+    if (e.key === 'ArrowLeft') prevFilm();
+    if (e.key === 'ArrowRight') nextFilm();
+  }
+  if (lightbox.classList.contains('open')) {
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowLeft') prevPhoto();
+    if (e.key === 'ArrowRight') nextPhoto();
+  }
+});
+
+/* ════ CONTACT FORM ════
+   Aby formularz wysyłał wiadomości:
+   1. Załóż konto na formspree.io (bezpłatne)
+   2. Utwórz nowy formularz, skopiuj ID
+   3. Zastąp 'YOUR_FORMSPREE_ID' swoim ID
+*/
+var FORMSPREE_ID = 'YOUR_FORMSPREE_ID';
+
+document.getElementById('contact-form').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const status = document.getElementById('form-status');
+  const btn = document.getElementById('form-btn');
+  const name = this.name.value.trim();
+  const email = this.email.value.trim();
+  const message = this.message.value.trim();
+  status.className = 'form-status';
+
+  if (!name || name.length < 2) {
+    status.textContent = 'Please enter your name.';
+    status.className = 'form-status error';
+    this.name.focus(); return;
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    status.textContent = 'Please enter a valid email address.';
+    status.className = 'form-status error';
+    this.email.focus(); return;
+  }
+  if (!message || message.length < 10) {
+    status.textContent = 'Please write a message (at least 10 characters).';
+    status.className = 'form-status error';
+    this.message.focus(); return;
+  }
+
+  btn.disabled = true;
+  status.textContent = 'Sending\u2026';
+
+  if (FORMSPREE_ID === 'YOUR_FORMSPREE_ID') {
     setTimeout(() => {
-      status.textContent = "Message sent. I'll be in touch soon.";
-      e.target.reset();
+      status.textContent = 'Form not configured yet. Please email: mujtabamanzoor7866@gmail.com';
+      status.className = 'form-status error';
       btn.disabled = false;
-    }, 1200);
+    }, 600);
+    return;
   }
 
-
-  /* ════════════════════════════════════
-    HERO VIDEO — random start, credit cut, unmute
-  ════════════════════════════════════ */
-  const vimeoScript = document.createElement('script');
-  vimeoScript.src   = 'https://player.vimeo.com/api/player.js';
-
-  vimeoScript.onload = () => {
-    const iframe  = document.querySelector('#hero-video-wrap iframe');
-    const MAX_SEC = 210; // cut before credits at 3:30
-
-    // Hide until playing to avoid pixelated load
-    iframe.style.opacity    = '0';
-    iframe.style.transition = 'opacity 1.2s ease';
-
-    const player = new Vimeo.Player(iframe);
-
-    // Random start within allowed range
-    player.getDuration().then(() => {
-      player.setCurrentTime(Math.random() * (MAX_SEC - 5));
+  try {
+    const res = await fetch('https://formspree.io/f/' + FORMSPREE_ID, {
+      method: 'POST',
+      headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, message }),
     });
+    if (res.ok) {
+      status.textContent = "Message sent. I'll be in touch soon.";
+      this.reset();
+    } else { throw new Error('server'); }
+  } catch {
+    status.textContent = 'Something went wrong. Please email: mujtabamanzoor7866@gmail.com';
+    status.className = 'form-status error';
+  } finally {
+    btn.disabled = false;
+  }
+});
 
-    // Fade in after buffer settles
-    player.on('playing', () => {
-      setTimeout(() => { iframe.style.opacity = '1'; }, 600);
-    });
+/* ════ THEME ════ */
+const html = document.documentElement;
+const themePref = localStorage.getItem('theme') || 'dark';
+html.setAttribute('data-theme', themePref);
+updateThemeIcons(themePref);
 
-    // Loop before credits
-    player.on('timeupdate', ({ seconds }) => {
-      if (seconds >= MAX_SEC) player.setCurrentTime(0);
-    });
+document.getElementById('theme-toggle').addEventListener('click', () => {
+  const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  localStorage.setItem('theme', next);
+  updateThemeIcons(next);
+});
+function updateThemeIcons(theme) {
+  document.getElementById('icon-moon').style.display = theme === 'dark' ? 'block' : 'none';
+  document.getElementById('icon-sun').style.display = theme === 'light' ? 'block' : 'none';
+}
 
-    // Audio — muted by default (browser policy), unlocks on first click
-    let muted = true;
+/* ════ NAVBAR ════ */
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  navbar.classList.toggle('scrolled', window.scrollY > 40);
+  updateScrollSpy();
+}, { passive: true });
 
+function updateScrollSpy() {
+  const ids = ['films', 'photography', 'about', 'contact'];
+  let active = '';
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && window.scrollY >= el.offsetTop - 120) active = id;
+  });
+  document.querySelectorAll('.nav-links a[data-section]').forEach(a => {
+    a.classList.toggle('active', a.dataset.section === active);
+  });
+}
 
+/* ════ HAMBURGER / MOBILE MENU ════ */
+const hamburger = document.getElementById('hamburger');
+const mobileMenu = document.getElementById('mobile-menu');
 
-    // Manual toggle — stopPropagation so it doesn't fire unlockAudio on same click
-    document.getElementById('unmute-btn').addEventListener('click', e => {
-      e.stopPropagation();
-      muted = !muted;
-      player.setMuted(muted);
-      document.getElementById('icon-sound').style.display = muted ? 'none'  : 'block';
-      document.getElementById('icon-muted').style.display = muted ? 'block' : 'none';
-    });
-  };
+hamburger.addEventListener('click', () => {
+  const open = mobileMenu.classList.toggle('open');
+  hamburger.classList.toggle('open', open);
+  hamburger.setAttribute('aria-expanded', open ? 'true' : 'false');
+  hamburger.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+  mobileMenu.setAttribute('aria-hidden', open ? 'false' : 'true');
+  document.body.style.overflow = open ? 'hidden' : '';
+});
 
-  document.head.appendChild(vimeoScript);
-  </script>
+document.querySelectorAll('.mobile-link').forEach(a => {
+  a.addEventListener('click', () => {
+    mobileMenu.classList.remove('open');
+    hamburger.classList.remove('open');
+    hamburger.setAttribute('aria-expanded', 'false');
+    hamburger.setAttribute('aria-label', 'Open menu');
+    mobileMenu.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  });
+});
 
-  </body>
-  </html>
+/* ════ FADE-UP ON SCROLL ════ */
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+  });
+}, { threshold: 0.12 });
+
+document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+/* ════ HERO VIDEO ════ */
+const vimeoScript = document.createElement('script');
+vimeoScript.src = 'https://player.vimeo.com/api/player.js';
+vimeoScript.async = true;
+
+vimeoScript.onload = () => {
+  const iframe = document.querySelector('#hero-video-wrap iframe');
+  if (!iframe) return;
+  const MAX_SEC = 210;
+  iframe.style.opacity = '0';
+  iframe.style.transition = 'opacity 1.2s ease';
+  const player = new Vimeo.Player(iframe);
+  player.getDuration().then(() => {
+    player.setCurrentTime(Math.random() * (MAX_SEC - 5));
+  });
+  player.on('playing', () => {
+    setTimeout(() => { iframe.style.opacity = '1'; }, 600);
+  });
+  player.on('timeupdate', ({ seconds }) => {
+    if (seconds >= MAX_SEC) player.setCurrentTime(0);
+  });
+  let muted = true;
+  document.getElementById('unmute-btn').addEventListener('click', e => {
+    e.stopPropagation();
+    muted = !muted;
+    player.setMuted(muted);
+    document.getElementById('icon-sound').style.display = muted ? 'none' : 'block';
+    document.getElementById('icon-muted').style.display = muted ? 'block' : 'none';
+  });
+};
+
+document.head.appendChild(vimeoScript);
+
+})();
+</script>
+
+</body>
+</html>

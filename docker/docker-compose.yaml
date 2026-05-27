@@ -1,0 +1,10 @@
+services:
+  caddy:
+    image: caddy:2
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ../:/srv
+      - ./Caddyfile:/etc/caddy/Caddyfile
+    container_name: mujtaba-caddy-server

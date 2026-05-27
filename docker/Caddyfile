@@ -1,0 +1,10 @@
+{
+	# Optional: keep admin off the public port when running locally.
+	admin off
+}
+
+https://mujtabamanzoor.com {
+	root * /srv
+	encode zstd gzip
+	file_server
+}

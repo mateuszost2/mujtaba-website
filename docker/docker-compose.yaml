@@ -8,3 +8,4 @@ services:
       - ../:/srv
       - ./Caddyfile:/etc/caddy/Caddyfile
     container_name: mujtaba-caddy-server
+    restart: unless-stopped

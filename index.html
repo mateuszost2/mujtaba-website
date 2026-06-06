@@ -221,6 +221,10 @@ section { padding: calc(var(--section-gap) / 2) 40px; max-width: 1280px; margin:
 .film-modal-detail-row { display: flex; flex-direction: column; gap: 4px; flex: 1; }
 .film-modal-detail-label { font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); opacity: 0.6; }
 .film-modal-detail-value { font-size: 13px; color: var(--text2); line-height: 1.6; }
+.film-modal-nav { display: flex; justify-content: space-between; align-items: center; padding-top: 14px; margin-top: 4px; border-top: 1px solid var(--border); }
+.modal-nav-btn { background: none; border: none; cursor: pointer; font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text2); padding: 4px; font-family: 'DM Sans', sans-serif; transition: color var(--trans); }
+.modal-nav-btn:hover { color: var(--text); }
+.modal-counter { font-size: 9px; letter-spacing: 0.12em; color: var(--text3); text-transform: uppercase; }
 
 /* ════ PHOTOGRAPHY ════ */
 .photo-section-header { display: flex; align-items: center; gap: 16px; margin-bottom: var(--section-gap); }
@@ -506,6 +510,11 @@ footer p { font-size: 10px; letter-spacing: 0.1em; color: var(--text3); text-tra
         <span class="film-modal-detail-value" id="fm-description"></span>
       </div>
     </div>
+    <div class="film-modal-nav">
+      <button class="modal-nav-btn" id="prev-film-btn" aria-label="Previous film">← Prev</button>
+      <span class="modal-counter" id="fm-counter" aria-live="polite"></span>
+      <button class="modal-nav-btn" id="next-film-btn" aria-label="Next film">Next →</button>
+    </div>
   </div>
 </div>
 
@@ -696,13 +705,19 @@ function updateFilmModal() {
   roleRow.style.display = f.role ? 'flex' : 'none';
   descRow.style.display = f.description ? 'flex' : 'none';
   document.getElementById('fm-details').style.display = (f.role || f.description) ? 'flex' : 'none';
+  document.getElementById('fm-counter').textContent = (currentFilm + 1) + ' / ' + currentFilmList.length;
   const video = document.getElementById('fm-video');
   document.getElementById('fm-source').src = f.src;
   video.load();
   video.play().catch(() => {});
 }
 
+function prevFilm() { currentFilm = (currentFilm - 1 + currentFilmList.length) % currentFilmList.length; updateFilmModal(); }
+function nextFilm() { currentFilm = (currentFilm + 1) % currentFilmList.length; updateFilmModal(); }
+
 document.getElementById('film-modal-close').addEventListener('click', closeFilmModal);
+document.getElementById('prev-film-btn').addEventListener('click', prevFilm);
+document.getElementById('next-film-btn').addEventListener('click', nextFilm);
 filmModal.addEventListener('click', e => { if (e.target === filmModal) closeFilmModal(); });
 
 /* ════ PHOTO GRID ════ */
@@ -790,6 +805,8 @@ document.getElementById('next-photo-btn').addEventListener('click', nextPhoto);
 document.addEventListener('keydown', e => {
   if (filmModal.classList.contains('open')) {
     if (e.key === 'Escape') closeFilmModal();
+    if (e.key === 'ArrowLeft') prevFilm();
+    if (e.key === 'ArrowRight') nextFilm();
   }
   if (lightbox.classList.contains('open')) {
     if (e.key === 'Escape') closeLightbox();

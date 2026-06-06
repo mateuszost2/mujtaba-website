@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="robots" content="noindex, nofollow">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — Mujtaba Manzoor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0C0C0B; --bg2: #141412; --bg3: #1C1C19;
+  --text: #E8E4DC; --text2: #8C8880; --text3: #4A4845;
+  --accent: #C9A96E; --border: rgba(255,255,255,0.07);
+  --error: #d97070;
+  --ease: cubic-bezier(0.25, 0.0, 0.0, 1.0);
+  --trans: 250ms var(--ease);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-weight: 300; min-height: 100vh; line-height: 1.6; }
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--text3); border-radius: 2px; }
+
+/* ── NAV ── */
+#admin-nav {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(12,12,11,0.92);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(16px);
+  padding: 0 40px; height: 64px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.admin-nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 14px; font-weight: 300; font-style: italic; letter-spacing: 0.1em; color: var(--text); }
+.admin-nav-logo span { color: var(--accent); }
+.admin-nav-right { display: flex; align-items: center; gap: 32px; }
+.save-all-btn {
+  display: flex; align-items: center; gap: 10px;
+  background: none; border: none; cursor: pointer;
+  font-family: 'DM Sans', sans-serif; font-size: 10px; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--accent); padding: 0; transition: opacity var(--trans);
+}
+.save-all-btn:hover { opacity: 0.7; }
+.save-all-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+.save-all-btn-line { width: 24px; height: 1px; background: var(--accent); }
+
+/* ── STATUS ── */
+.status-bar {
+  padding: 0 40px; height: 36px; display: flex; align-items: center;
+  font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+  border-bottom: 1px solid transparent; transition: all var(--trans);
+}
+.status-bar.success { color: var(--accent); border-bottom-color: rgba(201,169,110,0.15); background: rgba(201,169,110,0.04); }
+.status-bar.error { color: var(--error); border-bottom-color: rgba(217,112,112,0.15); background: rgba(217,112,112,0.04); }
+
+/* ── TABS ── */
+.tabs-wrap { padding: 0 40px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.tabs { display: flex; }
+.tab-btn {
+  background: none; border: none; border-bottom: 1px solid transparent;
+  color: var(--text3); padding: 18px 20px 17px;
+  font-family: 'DM Sans', sans-serif; font-size: 10px; letter-spacing: 0.18em;
+  text-transform: uppercase; cursor: pointer; transition: color var(--trans), border-color var(--trans);
+  margin-bottom: -1px;
+}
+.tab-btn:hover { color: var(--text2); }
+.tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+.tab-count { font-size: 9px; color: var(--text3); letter-spacing: 0.1em; padding: 16px 0; }
+
+/* ── UPLOAD ZONE ── */
+.upload-zone {
+  margin: 24px 40px;
+  border: 1px dashed rgba(201,169,110,0.3);
+  padding: 32px; display: flex; flex-direction: column;
+  align-items: center; gap: 12px; cursor: pointer;
+  transition: border-color var(--trans), background var(--trans);
+}
+.upload-zone:hover, .upload-zone.dragover {
+  border-color: var(--accent);
+  background: rgba(201,169,110,0.04);
+}
+.upload-zone input[type="file"] { display: none; }
+.upload-zone-text { font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text3); }
+.upload-zone-text span { color: var(--accent); }
+.upload-progress { width: 100%; max-width: 320px; height: 1px; background: var(--border); display: none; }
+.upload-progress-bar { height: 100%; background: var(--accent); width: 0%; transition: width 0.3s ease; }
+
+/* ── GRID ── */
+.items-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1px; background: var(--border); }
+.item-card { background: var(--bg); padding: 24px; transition: background var(--trans); position: relative; }
+.item-card:hover { background: var(--bg2); }
+
+.item-thumb { width: 100%; background: var(--bg3); overflow: hidden; margin-bottom: 20px; position: relative; border-radius: 2px; }
+.item-thumb.video-thumb { aspect-ratio: 16/9; }
+.item-thumb.photo-thumb { aspect-ratio: 3/2; }
+.item-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s var(--ease); }
+.item-card:hover .item-thumb img { transform: scale(1.02); }
+.item-thumb .no-thumb { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 9px; letter-spacing: 0.2em; color: var(--text3); text-transform: uppercase; }
+
+/* ── DELETE BTN ── */
+.delete-btn {
+  position: absolute; top: 12px; right: 12px;
+  background: rgba(12,12,11,0.8); border: 1px solid var(--border);
+  color: var(--text3); width: 28px; height: 28px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 14px; transition: all var(--trans);
+  border-radius: 2px;
+}
+.delete-btn:hover { background: var(--error); border-color: var(--error); color: #fff; }
+
+.item-filename { font-size: 9px; letter-spacing: 0.12em; color: var(--text3); text-transform: uppercase; margin-bottom: 20px; word-break: break-all; line-height: 1.6; }
+
+.field { margin-bottom: 0; border-bottom: 1px solid var(--border); position: relative; transition: border-color var(--trans); }
+.field:last-of-type { margin-bottom: 20px; }
+.field:focus-within { border-bottom-color: var(--accent); }
+.field label { display: block; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text3); padding-top: 16px; margin-bottom: 4px; }
+.field input, .field textarea { width: 100%; background: none; border: none; outline: none; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 300; color: var(--text); padding-bottom: 12px; resize: none; }
+.field input::placeholder, .field textarea::placeholder { color: var(--text3); }
+.field textarea { min-height: 64px; }
+
+.card-save-btn {
+  display: flex; align-items: center; gap: 10px;
+  background: none; border: none; cursor: pointer;
+  font-family: 'DM Sans', sans-serif; font-size: 9px; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--text3); padding: 0; transition: color var(--trans);
+}
+.card-save-btn:hover { color: var(--accent); }
+.card-save-btn.saved { color: var(--accent); }
+.card-save-line { width: 20px; height: 1px; background: currentColor; }
+
+.empty-state { grid-column: 1 / -1; padding: 96px 40px; text-align: center; color: var(--text3); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; }
+
+/* ── CONFIRM MODAL ── */
+#confirm-modal {
+  display: none; position: fixed; inset: 0; z-index: 2000;
+  background: rgba(12,12,11,0.9);
+  align-items: center; justify-content: center;
+}
+#confirm-modal.open { display: flex; }
+.confirm-box {
+  background: var(--bg2); border: 1px solid var(--border);
+  padding: 40px; max-width: 400px; width: 100%; margin: 24px;
+}
+.confirm-title { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 300; color: var(--text); margin-bottom: 12px; }
+.confirm-text { font-size: 13px; color: var(--text2); margin-bottom: 32px; line-height: 1.6; }
+.confirm-btns { display: flex; gap: 16px; }
+.confirm-cancel { background: none; border: 1px solid var(--border); color: var(--text2); padding: 10px 24px; font-family: 'DM Sans', sans-serif; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; cursor: pointer; transition: all var(--trans); }
+.confirm-cancel:hover { border-color: var(--text2); color: var(--text); }
+.confirm-delete { background: var(--error); border: 1px solid var(--error); color: #fff; padding: 10px 24px; font-family: 'DM Sans', sans-serif; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; cursor: pointer; transition: opacity var(--trans); }
+.confirm-delete:hover { opacity: 0.85; }
+
+@media (max-width: 640px) {
+  #admin-nav { padding: 0 20px; }
+  .tabs-wrap { padding: 0 20px; }
+  .status-bar { padding: 0 20px; }
+  .upload-zone { margin: 16px 20px; }
+  .items-grid { grid-template-columns: 1fr; }
+  .item-card { padding: 20px; }
+}
+</style>
+</head>
+<body>
+
+<nav id="admin-nav">
+  <div class="admin-nav-logo">Mujtaba Manzoor <span>— Admin</span></div>
+  <div class="admin-nav-right">
+    <button class="save-all-btn" id="save-all-btn">
+      <span class="save-all-btn-line"></span>
+      Save All
+    </button>
+  </div>
+</nav>
+
+<div class="status-bar" id="status-bar"></div>
+
+<div class="tabs-wrap">
+  <div class="tabs">
+    <button class="tab-btn active" data-cat="documentaries">Documentaries</button>
+    <button class="tab-btn" data-cat="ngo_works">NGO Work</button>
+    <button class="tab-btn" data-cat="photos">Photography</button>
+  </div>
+  <span class="tab-count" id="tab-count"></span>
+</div>
+
+<!-- Upload zone -->
+<div class="upload-zone" id="upload-zone" onclick="document.getElementById('file-input').click()">
+  <input type="file" id="file-input" multiple accept="video/mp4,video/mov,video/webm,image/jpeg,image/png,image/webp">
+  <div class="upload-zone-text">Drop files here or <span>click to upload</span></div>
+  <div class="upload-zone-text" id="upload-hint" style="opacity:0.5;">Videos: mp4, mov, webm — Photos: jpg, png, webp</div>
+  <div class="upload-progress" id="upload-progress">
+    <div class="upload-progress-bar" id="upload-progress-bar"></div>
+  </div>
+</div>
+
+<div class="items-grid" id="items-grid"></div>
+
+<!-- Confirm delete modal -->
+<div id="confirm-modal">
+  <div class="confirm-box">
+    <div class="confirm-title">Delete file?</div>
+    <div class="confirm-text" id="confirm-text"></div>
+    <div class="confirm-btns">
+      <button class="confirm-cancel" onclick="closeConfirm()">Cancel</button>
+      <button class="confirm-delete" id="confirm-delete-btn">Delete</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let manifest = {};
+let metadata = {};
+let currentCat = 'documentaries';
+
+/* ── LOAD ── */
+async function loadData() {
+  try {
+    const [mRes, mdRes] = await Promise.all([
+      fetch('manifest.json?' + Date.now()),
+      fetch('http://localhost:8001/api/get-metadata')
+    ]);
+    manifest = await mRes.json();
+    metadata = await mdRes.json();
+    renderGrid(currentCat);
+  } catch(e) {
+    setStatus('Error loading data. Make sure admin_server.py is running.', 'error');
+  }
+}
+
+/* ── TABS ── */
+function switchTab(cat) {
+  currentCat = cat;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.cat === cat));
+  renderGrid(cat);
+}
+
+/* ── RENDER ── */
+function renderGrid(cat) {
+  const grid = document.getElementById('items-grid');
+  const isPhotos = cat === 'photos';
+  const items = manifest[cat] || [];
+
+  document.getElementById('tab-count').textContent = items.length + ' item' + (items.length !== 1 ? 's' : '');
+
+  if (items.length === 0) {
+    grid.innerHTML = '<div class="empty-state">No files in this category</div>';
+    return;
+  }
+
+  grid.innerHTML = '';
+  items.forEach(item => {
+    const file = typeof item === 'object' ? (item.filename || item) : item;
+    const fileStr = String(file);
+    const meta = metadata[fileStr] || {};
+
+    let thumbSrc;
+    if (isPhotos) {
+      thumbSrc = 'pictures/documentary_photography/compressed/' + fileStr.replace(/\.[^.]+$/, '.jpg');
+    } else {
+      thumbSrc = (typeof item === 'object' && item.thumb) ? item.thumb : `videos/${cat}/` + fileStr.replace(/\.[^.]+$/, '.jpg');
+    }
+
+    const card = document.createElement('div');
+    card.className = 'item-card';
+    card.dataset.file = fileStr;
+
+    card.innerHTML = `
+      <button class="delete-btn" title="Delete file" data-action="delete">✕</button>
+      <div class="item-thumb ${isPhotos ? 'photo-thumb' : 'video-thumb'}">
+        <img src="${thumbSrc}" alt="" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="no-thumb" style="display:none;">No thumbnail</div>
+      </div>
+      <div class="item-filename">${escHtml(fileStr)}</div>
+      <div class="field">
+        <label>Title</label>
+        <input type="text" class="field-title" placeholder="Enter title…" value="${escHtml(meta.title || '')}">
+      </div>
+      ${!isPhotos ? `
+      <div class="field">
+        <label>Year</label>
+        <input type="number" class="field-year" placeholder="2024" value="${escHtml(String(meta.year || ''))}">
+      </div>
+      <div class="field">
+        <label>My Role</label>
+        <input type="text" class="field-role" placeholder="e.g. Director, Cinematographer…" value="${escHtml(meta.role || '')}">
+      </div>` : ''}
+      <div class="field">
+        <label>Description</label>
+        <textarea class="field-desc" placeholder="Short description…">${escHtml(meta.description || '')}</textarea>
+      </div>
+      <button class="card-save-btn" data-action="save">
+        <span class="card-save-line"></span>
+        Save
+      </button>
+    `;
+    card.querySelector('[data-action="delete"]').addEventListener('click', () => confirmDelete(fileStr, cat));
+    card.querySelector('[data-action="save"]').addEventListener('click', function() { saveCard(fileStr, this); });
+    grid.appendChild(card);
+  });
+}
+
+/* ── UPLOAD ── */
+const uploadZone = document.getElementById('upload-zone');
+const fileInput = document.getElementById('file-input');
+
+uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('dragover'); });
+uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('dragover'));
+uploadZone.addEventListener('drop', e => {
+  e.preventDefault();
+  uploadZone.classList.remove('dragover');
+  uploadFiles(e.dataTransfer.files);
+});
+fileInput.addEventListener('change', () => uploadFiles(fileInput.files));
+
+async function uploadFiles(files) {
+  if (!files || files.length === 0) return;
+  const progress = document.getElementById('upload-progress');
+  const bar = document.getElementById('upload-progress-bar');
+  progress.style.display = 'block';
+
+  let done = 0;
+  for (const file of files) {
+    const fd = new FormData();
+    fd.append('cat', currentCat);
+    fd.append('file', file);
+
+    try {
+      setStatus(`Uploading: ${file.name}…`, '');
+      const res = await fetch('http://localhost:8001/api/upload', { method: 'POST', body: fd });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Upload failed');
+      done++;
+      bar.style.width = (done / files.length * 100) + '%';
+    } catch(e) {
+      setStatus(`Error uploading ${file.name}: ${e.message}`, 'error');
+    }
+  }
+
+  progress.style.display = 'none';
+  bar.style.width = '0%';
+  fileInput.value = '';
+
+  if (done > 0) {
+    setStatus(`Uploaded ${done} file${done > 1 ? 's' : ''}. Manifest will refresh shortly.`, 'success');
+    setTimeout(() => loadData(), 2000);
+  }
+}
+
+/* ── DELETE ── */
+let pendingDelete = null;
+
+function confirmDelete(filename, cat) {
+  pendingDelete = { filename, cat };
+  document.getElementById('confirm-text').textContent = `Are you sure you want to permanently delete "${filename}"? This cannot be undone.`;
+  document.getElementById('confirm-modal').classList.add('open');
+  document.getElementById('confirm-delete-btn').onclick = executeDelete;
+}
+
+function closeConfirm() {
+  document.getElementById('confirm-modal').classList.remove('open');
+  pendingDelete = null;
+}
+
+async function executeDelete() {
+  if (!pendingDelete) return;
+  const { filename, cat } = pendingDelete;
+  closeConfirm();
+
+  try {
+    const res = await fetch('http://localhost:8001/api/delete', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ filename, cat })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Delete failed');
+    setStatus(`Deleted: ${filename}`, 'success');
+    setTimeout(() => loadData(), 1500);
+  } catch(e) {
+    setStatus(`Error: ${e.message}`, 'error');
+  }
+}
+
+/* ── SAVE SINGLE ── */
+async function saveCard(filename, btn) {
+  const card = btn.closest('.item-card');
+  const title = card.querySelector('.field-title').value.trim();
+  const yearEl = card.querySelector('.field-year');
+  const year = yearEl ? yearEl.value.trim() : '';
+  const roleEl = card.querySelector('.field-role');
+  const role = roleEl ? roleEl.value.trim() : '';
+  const description = card.querySelector('.field-desc').value.trim();
+
+  try {
+    const res = await fetch('http://localhost:8001/api/save-metadata', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ filename, title, year, role, description })
+    });
+    if (res.ok) {
+      metadata[filename] = { title, year, role, description };
+      btn.classList.add('saved');
+      btn.lastChild.textContent = ' Saved ✓';
+      setTimeout(() => { btn.classList.remove('saved'); btn.lastChild.textContent = ' Save'; }, 2000);
+      setStatus(`Saved: ${filename}`, 'success');
+    } else {
+      setStatus('Error saving.', 'error');
+    }
+  } catch {
+    setStatus('Cannot connect to admin server.', 'error');
+  }
+}
+
+/* ── SAVE ALL ── */
+async function saveAll() {
+  const btn = document.querySelector('.save-all-btn');
+  btn.disabled = true;
+  const cards = document.querySelectorAll('.item-card');
+  let saved = 0;
+  for (const card of cards) {
+    const filename = card.dataset.file;
+    const title = card.querySelector('.field-title').value.trim();
+    const yearEl = card.querySelector('.field-year');
+    const year = yearEl ? yearEl.value.trim() : '';
+    const roleEl = card.querySelector('.field-role');
+    const role = roleEl ? roleEl.value.trim() : '';
+    const description = card.querySelector('.field-desc').value.trim();
+    try {
+      const res = await fetch('http://localhost:8001/api/save-metadata', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ filename, title, year, role, description })
+      });
+      if (res.ok) { metadata[filename] = { title, year, role, description }; saved++; }
+    } catch {}
+  }
+  btn.disabled = false;
+  setStatus(`Saved ${saved} / ${cards.length} items.`, 'success');
+}
+
+/* ── HELPERS ── */
+function setStatus(msg, type) {
+  const bar = document.getElementById('status-bar');
+  bar.textContent = msg;
+  bar.className = 'status-bar ' + (type || '');
+  if (type === 'success') setTimeout(() => { bar.textContent = ''; bar.className = 'status-bar'; }, 3000);
+}
+
+function escHtml(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+document.getElementById('confirm-modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('confirm-modal')) closeConfirm();
+});
+
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => switchTab(btn.dataset.cat));
+});
+
+document.getElementById('save-all-btn').addEventListener('click', saveAll);
+
+loadData();
+</script>
+</body>
+</html>

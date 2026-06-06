@@ -3,18 +3,23 @@ import json
 import subprocess
 from PIL import Image
 
-# Extensions
 VIDEO_EXT = {'.mp4', '.mov', '.webm'}
 IMAGE_EXT = {'.jpg', '.jpeg', '.png', '.webp'}
+
+# ── Load metadata ──
+def load_metadata():
+    if os.path.exists('metadata.json'):
+        with open('metadata.json', 'r', encoding='utf-8') as f:
+            return json.load(f)
+    return {}
 
 def scan_folder(path, extensions):
     if not os.path.exists(path):
         return []
-    files = sorted([
+    return sorted([
         f for f in os.listdir(path)
         if os.path.splitext(f)[1].lower() in extensions
     ])
-    return files
 
 def get_video_duration(video_path):
     try:
@@ -92,21 +97,45 @@ def process_photo_folder(folder_path):
         compress_photo(src, dest)
     return files
 
-# ── Generate thumbnails & scan folders ──
+# ── Build manifest ──
+metadata = load_metadata()
+
+def enrich(files, folder):
+    result = []
+    for f in files:
+        meta = metadata.get(f, {})
+        result.append({
+            'filename': f,
+            'title': meta.get('title', ''),
+            'year': meta.get('year', ''),
+            'role': meta.get('role', ''),
+            'description': meta.get('description', ''),
+            'thumb': folder + '/' + os.path.splitext(f)[0] + '.jpg',
+            'src': folder + '/' + f,
+        })
+    return result
+
+films_files        = process_video_folder('videos/films')
+docs_files         = process_video_folder('videos/documentaries')
+ngo_files          = process_video_folder('videos/ngo_works')
+main_files         = process_video_folder('videos/main_video')
+photos_files       = process_photo_folder('pictures/documentary_photography')
+about_files        = scan_folder('pictures/about_me_pic', IMAGE_EXT)
+
 manifest = {
-    "films":         process_video_folder("videos/films"),
-    "documentaries": process_video_folder("videos/documentaries"),
-    "ngo_works":     process_video_folder("videos/ngo_works"),
-    "main_video":    process_video_folder("videos/main_video"),
-    "photos":        process_photo_folder("pictures/documentary_photography"),
-    "about_img":     scan_folder("pictures/about_me_pic", IMAGE_EXT),
+    'films':         enrich(films_files,  'videos/films'),
+    'documentaries': enrich(docs_files,   'videos/documentaries'),
+    'ngo_works':     enrich(ngo_files,    'videos/ngo_works'),
+    'main_video':    enrich(main_files,   'videos/main_video'),
+    'photos':        enrich(photos_files, 'pictures/documentary_photography/compressed'),
+    'about_img':     about_files,
 }
 
-with open("manifest.json", "w", encoding="utf-8") as f:
+with open('manifest.json', 'w', encoding='utf-8') as f:
     json.dump(manifest, f, indent=2, ensure_ascii=False)
 
 print('\n================================')
 print('manifest.json updated:')
-for key, files in manifest.items():
-    print(f'  {key}: {len(files)} file(s)')
+for key, val in manifest.items():
+    print(f'  {key}: {len(val)} file(s)')
 print('================================')

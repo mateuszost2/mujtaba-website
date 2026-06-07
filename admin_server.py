@@ -7,9 +7,15 @@ Open: http://localhost:8001/admin.html
 
 import json
 import os
+import re
 import subprocess
 import sys
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 from http.server import HTTPServer, SimpleHTTPRequestHandler
+from dotenv import load_dotenv
+
 
 METADATA_FILE = 'metadata.json'
 
@@ -17,7 +23,14 @@ FOLDER_MAP = {
     'documentaries': 'videos/documentaries',
     'ngo_works':     'videos/ngo_works',
     'photos':        'pictures/documentary_photography',
+    'main_video':    'videos/main_video',
+    'about_photo':   'pictures/about_me_pic',
 }
+load_dotenv()
+
+SMTP_EMAIL    = os.getenv('SMTP_EMAIL')
+SMTP_PASSWORD = os.getenv('SMTP_PASSWORD')
+CONTACT_EMAIL = os.getenv('CONTACT_EMAIL')
 
 def load_metadata():
     if os.path.exists(METADATA_FILE):
@@ -45,6 +58,7 @@ class AdminHandler(SimpleHTTPRequestHandler):
         self.send_header('Access-Control-Allow-Origin', '*')
         self.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
         self.send_header('Access-Control-Allow-Headers', 'Content-Type')
+        self.send_header('Accept-Ranges', 'bytes')
         super().end_headers()
 
     def do_OPTIONS(self):
@@ -58,8 +72,55 @@ class AdminHandler(SimpleHTTPRequestHandler):
             self.send_header('Content-Type', 'application/json')
             self.end_headers()
             self.wfile.write(json.dumps(metadata).encode())
+        elif self.headers.get('Range'):
+            self.serve_range_request()
         else:
             super().do_GET()
+
+    def serve_range_request(self):
+        """Serve a partial response for Range requests (needed for video seeking)."""
+        path = self.translate_path(self.path)
+        if not os.path.isfile(path):
+            super().do_GET()
+            return
+
+        file_size = os.path.getsize(path)
+        match = re.match(r'bytes=(\d*)-(\d*)', self.headers['Range'])
+        if not match or (not match.group(1) and not match.group(2)):
+            super().do_GET()
+            return
+
+        start_str, end_str = match.groups()
+        if start_str == '':
+            length = min(int(end_str), file_size)
+            start, end = file_size - length, file_size - 1
+        else:
+            start = int(start_str)
+            end = int(end_str) if end_str else file_size - 1
+
+        end = min(end, file_size - 1)
+        if start > end or start >= file_size:
+            self.send_response(416)
+            self.send_header('Content-Range', f'bytes */{file_size}')
+            self.end_headers()
+            return
+
+        length = end - start + 1
+        self.send_response(206)
+        self.send_header('Content-Type', self.guess_type(path))
+        self.send_header('Content-Range', f'bytes {start}-{end}/{file_size}')
+        self.send_header('Content-Length', str(length))
+        self.end_headers()
+
+        with open(path, 'rb') as f:
+            f.seek(start)
+            remaining = length
+            while remaining > 0:
+                chunk = f.read(min(64 * 1024, remaining))
+                if not chunk:
+                    break
+                self.wfile.write(chunk)
+                remaining -= len(chunk)
 
     def do_POST(self):
 
@@ -198,12 +259,48 @@ class AdminHandler(SimpleHTTPRequestHandler):
                     if os.path.exists(compressed):
                         os.remove(compressed)
 
+                
+
                 metadata = load_metadata()
                 if filename in metadata:
                     del metadata[filename]
                     save_metadata(metadata)
 
                 regenerate_manifest()
+
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json')
+                self.end_headers()
+                self.wfile.write(b'{"ok": true}')
+
+            except Exception as e:
+                self.send_response(500)
+                self.send_header('Content-Type', 'application/json')
+                self.end_headers()
+                self.wfile.write(json.dumps({'error': str(e)}).encode())
+
+        # ── Contact form ──
+        elif self.path == '/api/contact':
+            length = int(self.headers.get('Content-Length', 0))
+            body = self.rfile.read(length)
+            try:
+                data = json.loads(body)
+                name = data.get('name', '')
+                email = data.get('email', '')
+                message = data.get('message', '')
+
+                msg = MIMEMultipart()
+                msg['From'] = SMTP_EMAIL
+                msg['To'] = CONTACT_EMAIL
+                msg['Subject'] = f'Portfolio contact: {name}'
+                msg.attach(MIMEText(
+                    f'From: {name}\nEmail: {email}\n\n{message}',
+                    'plain', 'utf-8'
+                ))
+
+                with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+                    smtp.login(SMTP_EMAIL, SMTP_PASSWORD)
+                    smtp.send_message(msg)
 
                 self.send_response(200)
                 self.send_header('Content-Type', 'application/json')

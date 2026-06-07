@@ -14,135 +14,114 @@
   --text: #E8E4DC; --text2: #8C8880; --text3: #4A4845;
   --accent: #C9A96E; --border: rgba(255,255,255,0.07);
   --error: #d97070;
-  --ease: cubic-bezier(0.25, 0.0, 0.0, 1.0);
+  --ease: cubic-bezier(0.25,0.0,0.0,1.0);
   --trans: 250ms var(--ease);
+}
+[data-theme="light"] {
+  --bg: #EDE8DF; --bg2: #E5DFD4; --bg3: #DAD3C7;
+  --text: #1A1916; --text2: #6B6760; --text3: #B0ADA8;
+  --accent: #9E7A3F; --border: rgba(0,0,0,0.08);
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { font-size: 16px; scroll-behavior: smooth; }
-body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-weight: 300; min-height: 100vh; line-height: 1.6; }
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-weight: 300; min-height: 100vh; line-height: 1.6; transition: background var(--trans), color var(--trans); }
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--text3); border-radius: 2px; }
 
-/* ── NAV ── */
 #admin-nav {
   position: sticky; top: 0; z-index: 100;
-  background: rgba(12,12,11,0.92);
-  border-bottom: 1px solid var(--border);
-  backdrop-filter: blur(16px);
-  padding: 0 40px; height: 64px;
+  background: rgba(12,12,11,0.92); border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(16px); padding: 0 40px; height: 64px;
   display: flex; align-items: center; justify-content: space-between;
 }
+[data-theme="light"] #admin-nav { background: rgba(237,232,223,0.92); }
 .admin-nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 14px; font-weight: 300; font-style: italic; letter-spacing: 0.1em; color: var(--text); }
 .admin-nav-logo span { color: var(--accent); }
 .admin-nav-right { display: flex; align-items: center; gap: 32px; }
-.save-all-btn {
-  display: flex; align-items: center; gap: 10px;
-  background: none; border: none; cursor: pointer;
-  font-family: 'DM Sans', sans-serif; font-size: 10px; letter-spacing: 0.18em;
-  text-transform: uppercase; color: var(--accent); padding: 0; transition: opacity var(--trans);
-}
-.save-all-btn:hover { opacity: 0.7; }
-.save-all-btn:disabled { opacity: 0.3; cursor: not-allowed; }
-.save-all-btn-line { width: 24px; height: 1px; background: var(--accent); }
+#theme-toggle { background: none; border: none; cursor: pointer; width: 32px; height: 20px; opacity: 0.5; flex-shrink: 0; transition: opacity var(--trans); }
+#theme-toggle:hover { opacity: 1; }
+#theme-toggle svg { width: 18px; height: 18px; fill: var(--text); }
 
-/* ── STATUS ── */
-.status-bar {
-  padding: 0 40px; height: 36px; display: flex; align-items: center;
-  font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
-  border-bottom: 1px solid transparent; transition: all var(--trans);
-}
+.status-bar { padding: 0 40px; height: 36px; display: flex; align-items: center; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; border-bottom: 1px solid transparent; transition: all var(--trans); }
 .status-bar.success { color: var(--accent); border-bottom-color: rgba(201,169,110,0.15); background: rgba(201,169,110,0.04); }
 .status-bar.error { color: var(--error); border-bottom-color: rgba(217,112,112,0.15); background: rgba(217,112,112,0.04); }
 
-/* ── TABS ── */
-.tabs-wrap { padding: 0 40px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
-.tabs { display: flex; }
-.tab-btn {
-  background: none; border: none; border-bottom: 1px solid transparent;
-  color: var(--text3); padding: 18px 20px 17px;
-  font-family: 'DM Sans', sans-serif; font-size: 10px; letter-spacing: 0.18em;
-  text-transform: uppercase; cursor: pointer; transition: color var(--trans), border-color var(--trans);
-  margin-bottom: -1px;
-}
+.tabs-wrap { padding: 0 40px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; overflow-x: auto; }
+.tabs { display: flex; flex-shrink: 0; }
+.tab-btn { background: none; border: none; border-bottom: 1px solid transparent; color: var(--text3); padding: 18px 20px 17px; font-family: 'DM Sans', sans-serif; font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; cursor: pointer; transition: color var(--trans), border-color var(--trans); margin-bottom: -1px; white-space: nowrap; }
 .tab-btn:hover { color: var(--text2); }
 .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
-.tab-count { font-size: 9px; color: var(--text3); letter-spacing: 0.1em; padding: 16px 0; }
+.tab-count { font-size: 9px; color: var(--text3); letter-spacing: 0.1em; padding: 16px 0 16px 20px; flex-shrink: 0; }
 
 /* ── UPLOAD ZONE ── */
-.upload-zone {
-  margin: 24px 40px;
-  border: 1px dashed rgba(201,169,110,0.3);
-  padding: 32px; display: flex; flex-direction: column;
-  align-items: center; gap: 12px; cursor: pointer;
-  transition: border-color var(--trans), background var(--trans);
-}
-.upload-zone:hover, .upload-zone.dragover {
-  border-color: var(--accent);
-  background: rgba(201,169,110,0.04);
-}
+.upload-zone { margin: 24px 40px; border: 1px dashed rgba(201,169,110,0.3); padding: 28px; display: flex; flex-direction: column; align-items: center; gap: 10px; cursor: pointer; transition: border-color var(--trans), background var(--trans); }
+.upload-zone:hover, .upload-zone.dragover { border-color: var(--accent); background: rgba(201,169,110,0.04); }
 .upload-zone input[type="file"] { display: none; }
 .upload-zone-text { font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text3); }
 .upload-zone-text span { color: var(--accent); }
 .upload-progress { width: 100%; max-width: 320px; height: 1px; background: var(--border); display: none; }
 .upload-progress-bar { height: 100%; background: var(--accent); width: 0%; transition: width 0.3s ease; }
 
-/* ── GRID ── */
-.items-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1px; background: var(--border); }
-.item-card { background: var(--bg); padding: 24px; transition: background var(--trans); position: relative; }
-.item-card:hover { background: var(--bg2); }
+/* ── LIST ── */
+.items-list { display: flex; flex-direction: column; gap: 1px; background: var(--border); margin: 0 40px 40px; }
+.list-item { background: var(--bg); transition: background var(--trans); }
+.list-item-row { display: flex; align-items: center; gap: 16px; padding: 14px 20px; cursor: default; }
+.list-item-row:hover { background: var(--bg2); }
+.list-item-thumb { flex-shrink: 0; background: var(--bg3); overflow: hidden; border-radius: 2px; }
+.list-item-thumb.video { width: 80px; height: 45px; }
+.list-item-thumb.photo { width: 60px; height: 40px; }
+.list-item-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.list-item-name { flex: 1; font-size: 9px; letter-spacing: 0.12em; color: var(--text2); text-transform: uppercase; word-break: break-all; line-height: 1.5; }
+.list-item-meta { font-size: 9px; letter-spacing: 0.1em; color: var(--accent); text-transform: uppercase; opacity: 0.6; flex-shrink: 0; }
+.list-item-actions { display: flex; gap: 16px; flex-shrink: 0; }
+.list-btn { background: none; border: none; cursor: pointer; font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; font-family: 'DM Sans', sans-serif; padding: 4px 0; transition: color var(--trans); }
+.list-btn.edit { color: var(--text3); }
+.list-btn.edit:hover, .list-btn.edit.active { color: var(--accent); }
+.list-btn.remove { color: var(--text3); }
+.list-btn.remove:hover { color: var(--error); }
 
-.item-thumb { width: 100%; background: var(--bg3); overflow: hidden; margin-bottom: 20px; position: relative; border-radius: 2px; }
-.item-thumb.video-thumb { aspect-ratio: 16/9; }
-.item-thumb.photo-thumb { aspect-ratio: 3/2; }
-.item-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s var(--ease); }
-.item-card:hover .item-thumb img { transform: scale(1.02); }
-.item-thumb .no-thumb { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 9px; letter-spacing: 0.2em; color: var(--text3); text-transform: uppercase; }
-
-/* ── DELETE BTN ── */
-.delete-btn {
-  position: absolute; top: 12px; right: 12px;
-  background: rgba(12,12,11,0.8); border: 1px solid var(--border);
-  color: var(--text3); width: 28px; height: 28px;
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer; font-size: 14px; transition: all var(--trans);
-  border-radius: 2px;
-}
-.delete-btn:hover { background: var(--error); border-color: var(--error); color: #fff; }
-
-.item-filename { font-size: 9px; letter-spacing: 0.12em; color: var(--text3); text-transform: uppercase; margin-bottom: 20px; word-break: break-all; line-height: 1.6; }
-
+/* ── EDIT PANEL ── */
+.edit-panel { display: none; padding: 20px 24px 24px; border-top: 1px solid var(--border); background: var(--bg2); }
+.edit-panel.open { display: block; }
+.edit-panel-inner { max-width: 600px; }
 .field { margin-bottom: 0; border-bottom: 1px solid var(--border); position: relative; transition: border-color var(--trans); }
 .field:last-of-type { margin-bottom: 20px; }
 .field:focus-within { border-bottom-color: var(--accent); }
-.field label { display: block; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text3); padding-top: 16px; margin-bottom: 4px; }
+.field label { display: block; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text3); padding-top: 14px; margin-bottom: 4px; }
 .field input, .field textarea { width: 100%; background: none; border: none; outline: none; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 300; color: var(--text); padding-bottom: 12px; resize: none; }
 .field input::placeholder, .field textarea::placeholder { color: var(--text3); }
-.field textarea { min-height: 64px; }
-
-.card-save-btn {
-  display: flex; align-items: center; gap: 10px;
-  background: none; border: none; cursor: pointer;
-  font-family: 'DM Sans', sans-serif; font-size: 9px; letter-spacing: 0.18em;
-  text-transform: uppercase; color: var(--text3); padding: 0; transition: color var(--trans);
-}
+.field textarea { min-height: 60px; }
+.card-save-btn { display: flex; align-items: center; gap: 10px; background: none; border: none; cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text3); padding: 0; transition: color var(--trans); }
 .card-save-btn:hover { color: var(--accent); }
 .card-save-btn.saved { color: var(--accent); }
 .card-save-line { width: 20px; height: 1px; background: currentColor; }
 
-.empty-state { grid-column: 1 / -1; padding: 96px 40px; text-align: center; color: var(--text3); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; }
+.empty-state { padding: 80px 40px; text-align: center; color: var(--text3); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; }
 
-/* ── CONFIRM MODAL ── */
-#confirm-modal {
-  display: none; position: fixed; inset: 0; z-index: 2000;
-  background: rgba(12,12,11,0.9);
-  align-items: center; justify-content: center;
-}
+/* ── SINGLE SECTION ── */
+.single-section { padding: 40px; }
+.single-section-title { font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent); margin-bottom: 32px; }
+.single-items { display: flex; flex-direction: column; gap: 1px; background: var(--border); margin-bottom: 32px; }
+.single-item { background: var(--bg); padding: 16px 20px; display: flex; align-items: center; gap: 16px; transition: background var(--trans); }
+.single-item:hover { background: var(--bg2); }
+.single-item-thumb { flex-shrink: 0; background: var(--bg3); overflow: hidden; border-radius: 2px; }
+.single-item-thumb.portrait { width: 60px; height: 80px; }
+.single-item-thumb.video { width: 100px; height: 56px; }
+.single-item-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.single-item-name { flex: 1; font-size: 9px; letter-spacing: 0.12em; color: var(--text2); text-transform: uppercase; word-break: break-all; }
+.single-item-delete { background: none; border: none; cursor: pointer; font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text3); font-family: 'DM Sans', sans-serif; padding: 4px 0; flex-shrink: 0; transition: color var(--trans); }
+.single-item-delete:hover { color: var(--error); }
+.single-upload-zone { border: 1px dashed rgba(201,169,110,0.3); padding: 24px; display: flex; flex-direction: column; align-items: center; gap: 10px; cursor: pointer; transition: border-color var(--trans), background var(--trans); }
+.single-upload-zone:hover { border-color: var(--accent); background: rgba(201,169,110,0.04); }
+.single-upload-zone input { display: none; }
+.single-upload-zone-text { font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text3); }
+.single-upload-zone-text span { color: var(--accent); }
+
+/* ── CONFIRM ── */
+#confirm-modal { display: none; position: fixed; inset: 0; z-index: 2000; background: rgba(12,12,11,0.9); align-items: center; justify-content: center; }
 #confirm-modal.open { display: flex; }
-.confirm-box {
-  background: var(--bg2); border: 1px solid var(--border);
-  padding: 40px; max-width: 400px; width: 100%; margin: 24px;
-}
+.confirm-box { background: var(--bg2); border: 1px solid var(--border); padding: 40px; max-width: 400px; width: 100%; margin: 24px; }
 .confirm-title { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 300; color: var(--text); margin-bottom: 12px; }
 .confirm-text { font-size: 13px; color: var(--text2); margin-bottom: 32px; line-height: 1.6; }
 .confirm-btns { display: flex; gap: 16px; }
@@ -156,8 +135,9 @@ body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-s
   .tabs-wrap { padding: 0 20px; }
   .status-bar { padding: 0 20px; }
   .upload-zone { margin: 16px 20px; }
-  .items-grid { grid-template-columns: 1fr; }
-  .item-card { padding: 20px; }
+  .items-list { margin: 0 20px 32px; }
+  .single-section { padding: 24px 20px; }
+  .list-item-meta { display: none; }
 }
 </style>
 </head>
@@ -166,9 +146,19 @@ body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-s
 <nav id="admin-nav">
   <div class="admin-nav-logo">Mujtaba Manzoor <span>— Admin</span></div>
   <div class="admin-nav-right">
-    <button class="save-all-btn" id="save-all-btn">
-      <span class="save-all-btn-line"></span>
-      Save All
+    <button id="theme-toggle" aria-label="Toggle theme">
+      <svg id="icon-moon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg id="icon-sun" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="display:none;">
+        <circle cx="12" cy="12" r="5"/>
+        <line x1="12" y1="1" x2="12" y2="3" stroke="currentColor" stroke-width="2"/>
+        <line x1="12" y1="21" x2="12" y2="23" stroke="currentColor" stroke-width="2"/>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" stroke="currentColor" stroke-width="2"/>
+        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" stroke="currentColor" stroke-width="2"/>
+        <line x1="1" y1="12" x2="3" y2="12" stroke="currentColor" stroke-width="2"/>
+        <line x1="21" y1="12" x2="23" y2="12" stroke="currentColor" stroke-width="2"/>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" stroke="currentColor" stroke-width="2"/>
+        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" stroke="currentColor" stroke-width="2"/>
+      </svg>
     </button>
   </div>
 </nav>
@@ -180,23 +170,24 @@ body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-s
     <button class="tab-btn active" data-cat="documentaries">Documentaries</button>
     <button class="tab-btn" data-cat="ngo_works">NGO Work</button>
     <button class="tab-btn" data-cat="photos">Photography</button>
+    <button class="tab-btn" data-cat="hero_video">Hero Video</button>
+    <button class="tab-btn" data-cat="about_photo">About Photo</button>
   </div>
   <span class="tab-count" id="tab-count"></span>
 </div>
 
-<!-- Upload zone -->
 <div class="upload-zone" id="upload-zone" onclick="document.getElementById('file-input').click()">
   <input type="file" id="file-input" multiple accept="video/mp4,video/mov,video/webm,image/jpeg,image/png,image/webp">
   <div class="upload-zone-text">Drop files here or <span>click to upload</span></div>
-  <div class="upload-zone-text" id="upload-hint" style="opacity:0.5;">Videos: mp4, mov, webm — Photos: jpg, png, webp</div>
+  <div class="upload-zone-text" style="opacity:0.5;">Videos: mp4, mov, webm — Photos: jpg, png, webp</div>
   <div class="upload-progress" id="upload-progress">
     <div class="upload-progress-bar" id="upload-progress-bar"></div>
   </div>
 </div>
 
-<div class="items-grid" id="items-grid"></div>
+<div class="items-list" id="items-list"></div>
+<div id="single-section" style="display:none;"></div>
 
-<!-- Confirm delete modal -->
 <div id="confirm-modal">
   <div class="confirm-box">
     <div class="confirm-title">Delete file?</div>
@@ -209,50 +200,77 @@ body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-s
 </div>
 
 <script>
+const API_BASE = `${location.protocol}//${location.hostname}:8001`;
+
 let manifest = {};
 let metadata = {};
 let currentCat = 'documentaries';
 
-/* ── LOAD ── */
+const html = document.documentElement;
+const themePref = localStorage.getItem('theme') || 'dark';
+html.setAttribute('data-theme', themePref);
+updateThemeIcons(themePref);
+
+document.getElementById('theme-toggle').addEventListener('click', () => {
+  const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  localStorage.setItem('theme', next);
+  updateThemeIcons(next);
+});
+function updateThemeIcons(theme) {
+  document.getElementById('icon-moon').style.display = theme === 'dark' ? 'block' : 'none';
+  document.getElementById('icon-sun').style.display = theme === 'light' ? 'block' : 'none';
+}
+
 async function loadData() {
   try {
     const [mRes, mdRes] = await Promise.all([
       fetch('manifest.json?' + Date.now()),
-      fetch('http://localhost:8001/api/get-metadata')
+      fetch(`${API_BASE}/api/get-metadata`)
     ]);
     manifest = await mRes.json();
     metadata = await mdRes.json();
-    renderGrid(currentCat);
+    renderCurrentTab();
   } catch(e) {
     setStatus('Error loading data. Make sure admin_server.py is running.', 'error');
   }
 }
 
-/* ── TABS ── */
+function renderCurrentTab() {
+  const isSingle = currentCat === 'hero_video' || currentCat === 'about_photo';
+  document.getElementById('upload-zone').style.display = isSingle ? 'none' : '';
+  document.getElementById('items-list').style.display = isSingle ? 'none' : '';
+  document.getElementById('single-section').style.display = isSingle ? 'block' : 'none';
+  if (isSingle) renderSingleSection(currentCat);
+  else renderList(currentCat);
+}
+
 function switchTab(cat) {
   currentCat = cat;
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.cat === cat));
-  renderGrid(cat);
+  renderCurrentTab();
 }
 
-/* ── RENDER ── */
-function renderGrid(cat) {
-  const grid = document.getElementById('items-grid');
+/* ── LIST ── */
+function renderList(cat) {
+  const list = document.getElementById('items-list');
   const isPhotos = cat === 'photos';
   const items = manifest[cat] || [];
 
   document.getElementById('tab-count').textContent = items.length + ' item' + (items.length !== 1 ? 's' : '');
 
   if (items.length === 0) {
-    grid.innerHTML = '<div class="empty-state">No files in this category</div>';
+    list.innerHTML = '<div class="empty-state">No files in this category</div>';
     return;
   }
 
-  grid.innerHTML = '';
+  list.innerHTML = '';
   items.forEach(item => {
     const file = typeof item === 'object' ? (item.filename || item) : item;
     const fileStr = String(file);
     const meta = metadata[fileStr] || {};
+    const title = meta.title || '';
+    const year = meta.year || '';
 
     let thumbSrc;
     if (isPhotos) {
@@ -261,56 +279,166 @@ function renderGrid(cat) {
       thumbSrc = (typeof item === 'object' && item.thumb) ? item.thumb : `videos/${cat}/` + fileStr.replace(/\.[^.]+$/, '.jpg');
     }
 
-    const card = document.createElement('div');
-    card.className = 'item-card';
-    card.dataset.file = fileStr;
+    const el = document.createElement('div');
+    el.className = 'list-item';
+    el.dataset.file = fileStr;
 
-    card.innerHTML = `
-      <button class="delete-btn" title="Delete file" data-action="delete">✕</button>
-      <div class="item-thumb ${isPhotos ? 'photo-thumb' : 'video-thumb'}">
-        <img src="${thumbSrc}" alt="" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-        <div class="no-thumb" style="display:none;">No thumbnail</div>
+    const metaText = [title, year].filter(Boolean).join(' · ');
+
+    el.innerHTML = `
+      <div class="list-item-row">
+        <div class="list-item-thumb ${isPhotos ? 'photo' : 'video'}">
+          <img src="${thumbSrc}" alt="" loading="lazy" onerror="this.style.opacity=0">
+        </div>
+        <div class="list-item-name">${escHtml(title || fileStr)}</div>
+        ${year ? `<div class="list-item-meta">${escHtml(year)}</div>` : ''}
+        <div class="list-item-actions">
+          <button class="list-btn edit">Edit</button>
+          <button class="list-btn remove">Remove</button>
+        </div>
       </div>
-      <div class="item-filename">${escHtml(fileStr)}</div>
-      <div class="field">
-        <label>Title</label>
-        <input type="text" class="field-title" placeholder="Enter title…" value="${escHtml(meta.title || '')}">
-      </div>
-      ${!isPhotos ? `
-      <div class="field">
-        <label>Year</label>
-        <input type="number" class="field-year" placeholder="2024" value="${escHtml(String(meta.year || ''))}">
-      </div>
-      <div class="field">
-        <label>My Role</label>
-        <input type="text" class="field-role" placeholder="e.g. Director, Cinematographer…" value="${escHtml(meta.role || '')}">
-      </div>` : ''}
-      <div class="field">
-        <label>Description</label>
-        <textarea class="field-desc" placeholder="Short description…">${escHtml(meta.description || '')}</textarea>
-      </div>
-      <button class="card-save-btn" data-action="save">
-        <span class="card-save-line"></span>
-        Save
-      </button>
-    `;
-    card.querySelector('[data-action="delete"]').addEventListener('click', () => confirmDelete(fileStr, cat));
-    card.querySelector('[data-action="save"]').addEventListener('click', function() { saveCard(fileStr, this); });
-    grid.appendChild(card);
+      <div class="edit-panel">
+        <div class="edit-panel-inner">
+          <div class="field">
+            <label>Title</label>
+            <input type="text" class="field-title" placeholder="Enter title…" value="${escHtml(title)}">
+          </div>
+          ${!isPhotos ? `
+          <div class="field">
+            <label>Year</label>
+            <input type="number" class="field-year" placeholder="2024" value="${escHtml(String(year))}">
+          </div>
+          <div class="field">
+            <label>My Role</label>
+            <input type="text" class="field-role" placeholder="e.g. Director, Cinematographer…" value="${escHtml(meta.role || '')}">
+          </div>` : ''}
+          <div class="field">
+            <label>Description</label>
+            <textarea class="field-desc" placeholder="Short description…">${escHtml(meta.description || '')}</textarea>
+          </div>
+          <button class="card-save-btn">
+            <span class="card-save-line"></span>
+            Save
+          </button>
+        </div>
+      </div>`;
+
+    const editBtn = el.querySelector('.list-btn.edit');
+    const panel = el.querySelector('.edit-panel');
+    editBtn.addEventListener('click', () => {
+      const isOpen = panel.classList.toggle('open');
+      editBtn.classList.toggle('active', isOpen);
+      editBtn.textContent = isOpen ? 'Close' : 'Edit';
+    });
+
+    el.querySelector('.list-btn.remove').addEventListener('click', () => confirmDelete(fileStr, cat));
+    el.querySelector('.card-save-btn').addEventListener('click', function() { saveCard(fileStr, this, el); });
+
+    list.appendChild(el);
   });
 }
 
-/* ── UPLOAD ── */
+/* ── SINGLE SECTIONS ── */
+function renderSingleSection(cat) {
+  const section = document.getElementById('single-section');
+  section.innerHTML = '';
+  const wrap = document.createElement('div');
+  wrap.className = 'single-section';
+
+  if (cat === 'hero_video') {
+    const videos = manifest.main_video || [];
+    document.getElementById('tab-count').textContent = videos.length + ' file' + (videos.length !== 1 ? 's' : '');
+    const itemsHtml = videos.length === 0
+      ? '<div style="padding:32px 0;font-size:9px;letter-spacing:0.14em;color:var(--text3);text-transform:uppercase;margin-bottom:32px;">No hero videos</div>'
+      : `<div class="single-items">${videos.map(v => `
+          <div class="single-item">
+            <div class="single-item-thumb video">
+              <img src="${v.thumb}?t=${Date.now()}" alt="" onerror="this.style.opacity=0">
+            </div>
+            <div class="single-item-name">${escHtml(v.filename)}</div>
+            <button class="single-item-delete" data-filename="${escHtml(v.filename)}" data-cat="main_video">Remove</button>
+          </div>`).join('')}</div>`;
+
+    wrap.innerHTML = `
+      <div class="single-section-title">Hero Video</div>
+      ${itemsHtml}
+      <div class="single-upload-zone" id="hero-upload-zone" onclick="document.getElementById('hero-file-input').click()">
+        <input type="file" id="hero-file-input" accept="video/mp4,video/mov,video/webm">
+        <div class="single-upload-zone-text">Upload hero video — <span>click to browse</span></div>
+        <div class="single-upload-zone-text" style="opacity:0.5;">mp4, mov, webm</div>
+      </div>`;
+    section.appendChild(wrap);
+    wrap.querySelectorAll('.single-item-delete').forEach(btn => {
+      btn.addEventListener('click', () => confirmDelete(btn.dataset.filename, btn.dataset.cat));
+    });
+    document.getElementById('hero-file-input').addEventListener('change', async function() {
+      if (!this.files[0]) return;
+      await uploadSingleFile(this.files[0], 'main_video');
+    });
+    const hz = document.getElementById('hero-upload-zone');
+    hz.addEventListener('dragover', e => { e.preventDefault(); hz.style.borderColor = 'var(--accent)'; });
+    hz.addEventListener('dragleave', () => { hz.style.borderColor = ''; });
+    hz.addEventListener('drop', async e => { e.preventDefault(); hz.style.borderColor = ''; if (e.dataTransfer.files[0]) await uploadSingleFile(e.dataTransfer.files[0], 'main_video'); });
+
+  } else if (cat === 'about_photo') {
+    const photos = manifest.about_img || [];
+    document.getElementById('tab-count').textContent = photos.length + ' file' + (photos.length !== 1 ? 's' : '');
+    const itemsHtml = photos.length === 0
+      ? '<div style="padding:32px 0;font-size:9px;letter-spacing:0.14em;color:var(--text3);text-transform:uppercase;margin-bottom:32px;">No about photo</div>'
+      : `<div class="single-items">${photos.map(f => `
+          <div class="single-item">
+            <div class="single-item-thumb portrait">
+              <img src="pictures/about_me_pic/${encodeURIComponent(f)}?t=${Date.now()}" alt="" onerror="this.style.opacity=0">
+            </div>
+            <div class="single-item-name">${escHtml(f)}</div>
+            <button class="single-item-delete" data-filename="${escHtml(f)}" data-cat="about_photo">Remove</button>
+          </div>`).join('')}</div>`;
+
+    wrap.innerHTML = `
+      <div class="single-section-title">About Photo</div>
+      ${itemsHtml}
+      <div class="single-upload-zone" id="about-upload-zone" onclick="document.getElementById('about-file-input').click()">
+        <input type="file" id="about-file-input" accept="image/jpeg,image/png,image/webp">
+        <div class="single-upload-zone-text">Upload about photo — <span>click to browse</span></div>
+        <div class="single-upload-zone-text" style="opacity:0.5;">jpg, png, webp</div>
+      </div>`;
+    section.appendChild(wrap);
+    wrap.querySelectorAll('.single-item-delete').forEach(btn => {
+      btn.addEventListener('click', () => confirmDelete(btn.dataset.filename, btn.dataset.cat));
+    });
+    document.getElementById('about-file-input').addEventListener('change', async function() {
+      if (!this.files[0]) return;
+      await uploadSingleFile(this.files[0], 'about_photo');
+    });
+    const az = document.getElementById('about-upload-zone');
+    az.addEventListener('dragover', e => { e.preventDefault(); az.style.borderColor = 'var(--accent)'; });
+    az.addEventListener('dragleave', () => { az.style.borderColor = ''; });
+    az.addEventListener('drop', async e => { e.preventDefault(); az.style.borderColor = ''; if (e.dataTransfer.files[0]) await uploadSingleFile(e.dataTransfer.files[0], 'about_photo'); });
+  }
+}
+
+async function uploadSingleFile(file, cat) {
+  const fd = new FormData();
+  fd.append('cat', cat);
+  fd.append('file', file);
+  setStatus(`Uploading: ${file.name}…`, '');
+  try {
+    const res = await fetch(`${API_BASE}/api/upload`, { method: 'POST', body: fd });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Upload failed');
+    setStatus(`Uploaded: ${file.name}`, 'success');
+    setTimeout(() => loadData(), 1500);
+  } catch(e) {
+    setStatus(`Error: ${e.message}`, 'error');
+  }
+}
+
+/* ── UPLOAD MULTI ── */
 const uploadZone = document.getElementById('upload-zone');
 const fileInput = document.getElementById('file-input');
-
 uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('dragover'); });
 uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('dragover'));
-uploadZone.addEventListener('drop', e => {
-  e.preventDefault();
-  uploadZone.classList.remove('dragover');
-  uploadFiles(e.dataTransfer.files);
-});
+uploadZone.addEventListener('drop', e => { e.preventDefault(); uploadZone.classList.remove('dragover'); uploadFiles(e.dataTransfer.files); });
 fileInput.addEventListener('change', () => uploadFiles(fileInput.files));
 
 async function uploadFiles(files) {
@@ -318,16 +446,14 @@ async function uploadFiles(files) {
   const progress = document.getElementById('upload-progress');
   const bar = document.getElementById('upload-progress-bar');
   progress.style.display = 'block';
-
   let done = 0;
   for (const file of files) {
     const fd = new FormData();
     fd.append('cat', currentCat);
     fd.append('file', file);
-
     try {
       setStatus(`Uploading: ${file.name}…`, '');
-      const res = await fetch('http://localhost:8001/api/upload', { method: 'POST', body: fd });
+      const res = await fetch(`${API_BASE}/api/upload`, { method: 'POST', body: fd });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Upload failed');
       done++;
@@ -336,39 +462,33 @@ async function uploadFiles(files) {
       setStatus(`Error uploading ${file.name}: ${e.message}`, 'error');
     }
   }
-
   progress.style.display = 'none';
   bar.style.width = '0%';
   fileInput.value = '';
-
   if (done > 0) {
-    setStatus(`Uploaded ${done} file${done > 1 ? 's' : ''}. Manifest will refresh shortly.`, 'success');
-    setTimeout(() => loadData(), 2000);
+    setStatus(`Uploaded ${done} file${done > 1 ? 's' : ''}.`, 'success');
+    setTimeout(() => loadData(), 1500);
   }
 }
 
 /* ── DELETE ── */
 let pendingDelete = null;
-
 function confirmDelete(filename, cat) {
   pendingDelete = { filename, cat };
   document.getElementById('confirm-text').textContent = `Are you sure you want to permanently delete "${filename}"? This cannot be undone.`;
   document.getElementById('confirm-modal').classList.add('open');
   document.getElementById('confirm-delete-btn').onclick = executeDelete;
 }
-
 function closeConfirm() {
   document.getElementById('confirm-modal').classList.remove('open');
   pendingDelete = null;
 }
-
 async function executeDelete() {
   if (!pendingDelete) return;
   const { filename, cat } = pendingDelete;
   closeConfirm();
-
   try {
-    const res = await fetch('http://localhost:8001/api/delete', {
+    const res = await fetch(`${API_BASE}/api/delete`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ filename, cat })
@@ -376,30 +496,41 @@ async function executeDelete() {
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || 'Delete failed');
     setStatus(`Deleted: ${filename}`, 'success');
-    setTimeout(() => loadData(), 1500);
+    setTimeout(() => loadData(), 1000);
   } catch(e) {
     setStatus(`Error: ${e.message}`, 'error');
   }
 }
 
-/* ── SAVE SINGLE ── */
-async function saveCard(filename, btn) {
-  const card = btn.closest('.item-card');
-  const title = card.querySelector('.field-title').value.trim();
-  const yearEl = card.querySelector('.field-year');
+/* ── SAVE ── */
+async function saveCard(filename, btn, el) {
+  const title = el.querySelector('.field-title').value.trim();
+  const yearEl = el.querySelector('.field-year');
   const year = yearEl ? yearEl.value.trim() : '';
-  const roleEl = card.querySelector('.field-role');
+  const roleEl = el.querySelector('.field-role');
   const role = roleEl ? roleEl.value.trim() : '';
-  const description = card.querySelector('.field-desc').value.trim();
-
+  const description = el.querySelector('.field-desc').value.trim();
   try {
-    const res = await fetch('http://localhost:8001/api/save-metadata', {
+    const res = await fetch(`${API_BASE}/api/save-metadata`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ filename, title, year, role, description })
     });
     if (res.ok) {
       metadata[filename] = { title, year, role, description };
+      const nameEl = el.querySelector('.list-item-name');
+      nameEl.textContent = title || filename;
+      const metaEl = el.querySelector('.list-item-meta');
+      if (year) {
+        if (metaEl) { metaEl.textContent = year; }
+        else {
+          const newMeta = document.createElement('div');
+          newMeta.className = 'list-item-meta';
+          newMeta.textContent = year;
+          nameEl.after(newMeta);
+        }
+      } else if (metaEl) { metaEl.remove(); }
+      
       btn.classList.add('saved');
       btn.lastChild.textContent = ' Saved ✓';
       setTimeout(() => { btn.classList.remove('saved'); btn.lastChild.textContent = ' Save'; }, 2000);
@@ -412,41 +543,12 @@ async function saveCard(filename, btn) {
   }
 }
 
-/* ── SAVE ALL ── */
-async function saveAll() {
-  const btn = document.querySelector('.save-all-btn');
-  btn.disabled = true;
-  const cards = document.querySelectorAll('.item-card');
-  let saved = 0;
-  for (const card of cards) {
-    const filename = card.dataset.file;
-    const title = card.querySelector('.field-title').value.trim();
-    const yearEl = card.querySelector('.field-year');
-    const year = yearEl ? yearEl.value.trim() : '';
-    const roleEl = card.querySelector('.field-role');
-    const role = roleEl ? roleEl.value.trim() : '';
-    const description = card.querySelector('.field-desc').value.trim();
-    try {
-      const res = await fetch('http://localhost:8001/api/save-metadata', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ filename, title, year, role, description })
-      });
-      if (res.ok) { metadata[filename] = { title, year, role, description }; saved++; }
-    } catch {}
-  }
-  btn.disabled = false;
-  setStatus(`Saved ${saved} / ${cards.length} items.`, 'success');
-}
-
-/* ── HELPERS ── */
 function setStatus(msg, type) {
   const bar = document.getElementById('status-bar');
   bar.textContent = msg;
   bar.className = 'status-bar ' + (type || '');
   if (type === 'success') setTimeout(() => { bar.textContent = ''; bar.className = 'status-bar'; }, 3000);
 }
-
 function escHtml(str) {
   return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
@@ -454,12 +556,9 @@ function escHtml(str) {
 document.getElementById('confirm-modal').addEventListener('click', e => {
   if (e.target === document.getElementById('confirm-modal')) closeConfirm();
 });
-
 document.querySelectorAll('.tab-btn').forEach(btn => {
   btn.addEventListener('click', () => switchTab(btn.dataset.cat));
 });
-
-document.getElementById('save-all-btn').addEventListener('click', saveAll);
 
 loadData();
 </script>

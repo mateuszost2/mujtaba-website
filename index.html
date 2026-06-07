@@ -519,6 +519,8 @@ footer p { font-size: 10px; letter-spacing: 0.1em; color: var(--text3); text-tra
 
 history.scrollRestoration = 'manual';
 
+const API_BASE = `${location.protocol}//${location.hostname}:8001`;
+
 let PHOTOS = [];
 let MANIFEST = {};
 let sortDocs = 'desc';
@@ -890,7 +892,7 @@ document.getElementById('contact-form').addEventListener('submit', async functio
   status.textContent = 'Sending\u2026';
 
   try {
-    const res = await fetch('http://localhost:8001/api/contact', {
+    const res = await fetch(`${API_BASE}/api/contact`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, email, message }),

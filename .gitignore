@@ -2,5 +2,6 @@
 *.png
 *.mp4
 manifest.json
+metadata.json
 .env
 admin_server_old.py

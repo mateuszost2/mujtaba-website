@@ -52,6 +52,25 @@ def generate_thumbnail(video_path, thumb_path):
     except Exception as e:
         print(f'  error: {os.path.basename(video_path)} — {e}')
 
+def sanitize(filename):
+    name, ext = os.path.splitext(filename)
+    name = name.lower()
+    name = name.replace('–', '_').replace('—', '_').replace('-', '_')
+    name = ''.join(c if c.isalnum() or c == '_' else '_' for c in name)
+    name = '_'.join(filter(None, name.split('_')))
+    return name + ext.lower()
+
+def rename_if_needed(folder_path, filename):
+    new_name = sanitize(filename)
+    if new_name != filename:
+        src = os.path.join(folder_path, filename)
+        dst = os.path.join(folder_path, new_name)
+        if not os.path.exists(dst):
+            os.rename(src, dst)
+            print(f'  renamed: {filename} → {new_name}')
+        return new_name
+    return filename
+
 def process_video_folder(folder_path):
     if not os.path.exists(folder_path):
         return []
@@ -61,10 +80,11 @@ def process_video_folder(folder_path):
     ])
     print(f'\n{folder_path}:')
     for f in files:
+        f = rename_if_needed(folder_path, f)
         video_path = os.path.join(folder_path, f)
         thumb_path = os.path.join(folder_path, os.path.splitext(f)[0] + '.jpg')
         generate_thumbnail(video_path, thumb_path)
-    return files
+    return [rename_if_needed(folder_path, f) for f in os.listdir(folder_path) if os.path.splitext(f)[1].lower() in VIDEO_EXT]
 
 def compress_photo(src_path, dest_path, max_width=1200):
     if os.path.exists(dest_path):
@@ -92,10 +112,11 @@ def process_photo_folder(folder_path):
     ])
     print(f'\n{folder_path}:')
     for f in files:
+        f = rename_if_needed(folder_path, f)
         src = os.path.join(folder_path, f)
         dest = os.path.join(compressed_dir, os.path.splitext(f)[0] + '.jpg')
         compress_photo(src, dest)
-    return files
+    return sorted([rename_if_needed(folder_path, f) for f in os.listdir(folder_path) if os.path.splitext(f)[1].lower() in IMAGE_EXT])
 
 # ── Build manifest ──
 metadata = load_metadata()
@@ -104,14 +125,15 @@ def enrich(files, folder):
     result = []
     for f in files:
         meta = metadata.get(f, {})
+        sanitized = sanitize(f)
         result.append({
-            'filename': f,
+            'filename': sanitized,
             'title': meta.get('title', ''),
             'year': meta.get('year', ''),
             'role': meta.get('role', ''),
             'description': meta.get('description', ''),
-            'thumb': folder + '/' + os.path.splitext(f)[0] + '.jpg',
-            'src': folder + '/' + f,
+            'thumb': folder + '/' + os.path.splitext(sanitized)[0] + '.jpg',
+            'src': folder + '/' + sanitized,
         })
     return result
 

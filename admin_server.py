@@ -323,7 +323,7 @@ class AdminHandler(SimpleHTTPRequestHandler):
 if __name__ == '__main__':
     port = 8001
     server = HTTPServer(('', port), AdminHandler)
-    print(f'Admin server running at http://localhost:{port}/admin.html')
+    print(f'Admin server is running.')
     print('Press Ctrl+C to stop.')
     try:
         server.serve_forever()

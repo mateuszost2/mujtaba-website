@@ -52,6 +52,18 @@ def generate_thumbnail(video_path, thumb_path):
     except Exception as e:
         print(f'  error: {os.path.basename(video_path)} — {e}')
 
+def compress_thumbnail(thumb_path, max_width=640):
+    try:
+        img = Image.open(thumb_path)
+        if img.width > max_width:
+            ratio = max_width / img.width
+            new_size = (max_width, int(img.height * ratio))
+            img = img.resize(new_size, Image.LANCZOS)
+        img.convert('RGB').save(thumb_path, 'JPEG', quality=75, optimize=True)
+        print(f'  compressed thumb: {os.path.basename(thumb_path)}')
+    except Exception as e:
+        print(f'  error compressing thumb: {e}')
+
 def sanitize(filename):
     name, ext = os.path.splitext(filename)
     name = name.lower()
@@ -84,6 +96,8 @@ def process_video_folder(folder_path):
         video_path = os.path.join(folder_path, f)
         thumb_path = os.path.join(folder_path, os.path.splitext(f)[0] + '.jpg')
         generate_thumbnail(video_path, thumb_path)
+        compress_thumbnail(thumb_path)
+
     return [rename_if_needed(folder_path, f) for f in os.listdir(folder_path) if os.path.splitext(f)[1].lower() in VIDEO_EXT]
 
 def compress_photo(src_path, dest_path, max_width=1200):

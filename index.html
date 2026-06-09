@@ -150,8 +150,8 @@ body { width: 100%; padding-top: 64px; background: var(--bg); color: var(--text)
 
 section { padding: calc(var(--section-gap) / 2) 40px; max-width: 1280px; margin: 0 auto; scroll-margin-top: 64px; }
 .section-header { display: flex; align-items: center; gap: 16px; margin-bottom: var(--section-gap); }
-.section-line { width: 24px; height: 1px; background: var(--accent); flex-shrink: 0; opacity: 0.25; }
-.section-line-ext { flex: 1; height: 1px; background: var(--accent); opacity: 0.25; }
+.section-line { width: 24px; height: 1.25px; background: var(--accent); flex-shrink: 0; opacity: 0.25; }
+.section-line-ext { flex: 1; height: 1.25px; background: var(--accent); opacity: 0.25; }
 .section-label { font-size: 10px; letter-spacing: 0.22em; color: var(--accent); text-transform: uppercase; }
 .fade-up { opacity: 0; transform: translateY(20px); transition: opacity 0.6s var(--ease), transform 0.6s var(--ease); }
 .fade-up.visible { opacity: 1; transform: translateY(0); }
@@ -227,7 +227,7 @@ section { padding: calc(var(--section-gap) / 2) 40px; max-width: 1280px; margin:
 .lb-counter-txt { font-size: 9px; letter-spacing: 0.12em; color: var(--text3); text-transform: uppercase; }
 
 #about .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
-.about-img { width: 100%; aspect-ratio: 3/4; background: var(--bg3); overflow: hidden; }
+.about-img { width: 80%; aspect-ratio: 3/4; background: var(--bg3); overflow: hidden; }
 .about-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .about-text h2 { font-family: 'Cormorant Garamond', serif; font-size: clamp(28px,4vw,42px); font-weight: 300; font-style: italic; line-height: 1.2; color: var(--text); margin-bottom: 28px; }
 .about-text p { font-size: 14px; color: var(--text2); line-height: 1.8; margin-bottom: 20px; max-width: 440px; }
@@ -238,7 +238,7 @@ section { padding: calc(var(--section-gap) / 2) 40px; max-width: 1280px; margin:
 .contact-email { display: inline-block; margin-top: 28px; font-family: 'Cormorant Garamond', serif; font-size: 15px; color: var(--accent); text-decoration: none; letter-spacing: 0.04em; transition: opacity var(--trans); }
 .contact-email:hover { opacity: 0.7; }
 .contact-form { display: flex; flex-direction: column; gap: 0; }
-.form-field { border-bottom: 1px solid var(--border); position: relative; transition: border-color var(--trans); }
+.form-field { border-bottom: 1.5px solid rgba(201,169,110,0.25); position: relative; transition: border-color var(--trans); }
 .form-field:focus-within { border-bottom-color: var(--accent); }
 .form-field label { display: block; font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text3); margin-bottom: 4px; padding-top: 20px; }
 .form-field input, .form-field textarea { width: 100%; background: none; border: none; outline: none; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 300; color: var(--text); padding-bottom: 14px; resize: none; }
@@ -258,6 +258,10 @@ section { padding: calc(var(--section-gap) / 2) 40px; max-width: 1280px; margin:
 .site-footer {
   display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px;
   padding: 32px 40px; max-width: 1280px; margin: 0 auto;
+  border-top: 1.25px solid var(--border);
+}
+.site-footer .footer-links {
+  position: absolute; left: 50%; transform: translateX(-50%);
 }
 .site-footer .footer-divider { flex: 1 1 100%; order: -1; margin-bottom: 16px; }
 .site-footer .copyright { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text3); }
@@ -475,7 +479,6 @@ section { padding: calc(var(--section-gap) / 2) 40px; max-width: 1280px; margin:
 </main>
 
 <footer class="site-footer">
-  <div class="section-line-ext footer-divider" aria-hidden="true"></div>
   <p class="copyright">Mujtaba Manzoor &copy; 2026</p>
   <nav class="footer-links" aria-label="Footer links">
     <a href="https://www.instagram.com/mujtabamanzoor" target="_blank" rel="noopener" aria-label="Instagram">

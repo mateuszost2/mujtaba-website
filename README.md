@@ -11,8 +11,9 @@ mujtaba-website/
 ├── index.html                        # Single-page portfolio
 ├── manifest.json                     # Auto-generated media index (gitignored)
 ├── metadata.json                     # Titles, years, roles, descriptions per file (gitignored)
-├── generate_manifest.py              # Script that builds manifest.json
-├── requirements.txt                  # Python deps for the script
+├── scripts/
+│   ├── generate_manifest.py          # Script that builds manifest.json
+│   └── requirements.txt             # Python deps for the script
 ├── .env                              # SMTP credentials for the contact form (gitignored)
 ├── pictures/
 │   ├── about_me_pic/                 # Profile photo
@@ -39,8 +40,8 @@ The site reads `manifest.json` at runtime to populate all galleries and video se
 **3. Run the manifest generator:**
 
 ```bash
-pip install -r requirements.txt   # first time only
-python generate_manifest.py
+pip install -r scripts/requirements.txt   # first time only
+python scripts/generate_manifest.py
 ```
 
 The script will:

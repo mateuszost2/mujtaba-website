@@ -86,6 +86,8 @@ def rename_if_needed(folder_path, filename):
 def process_video_folder(folder_path):
     if not os.path.exists(folder_path):
         return []
+    thumb_dir = os.path.join(folder_path, 'thumbnails')
+    os.makedirs(thumb_dir, exist_ok=True)
     files = sorted([
         f for f in os.listdir(folder_path)
         if os.path.splitext(f)[1].lower() in VIDEO_EXT
@@ -94,7 +96,7 @@ def process_video_folder(folder_path):
     for f in files:
         f = rename_if_needed(folder_path, f)
         video_path = os.path.join(folder_path, f)
-        thumb_path = os.path.join(folder_path, os.path.splitext(f)[0] + '.jpg')
+        thumb_path = os.path.join(thumb_dir, os.path.splitext(f)[0] + '.jpg')
         generate_thumbnail(video_path, thumb_path)
         compress_thumbnail(thumb_path)
 
@@ -135,7 +137,7 @@ def process_photo_folder(folder_path):
 # ── Build manifest ──
 metadata = load_metadata()
 
-def enrich(files, folder):
+def enrich(files, folder, thumb_folder=None):
     result = []
     for f in files:
         meta = metadata.get(f, {})
@@ -146,7 +148,7 @@ def enrich(files, folder):
             'year': meta.get('year', ''),
             'role': meta.get('role', ''),
             'description': meta.get('description', ''),
-            'thumb': folder + '/' + os.path.splitext(sanitized)[0] + '.jpg',
+            'thumb': (thumb_folder or folder) + '/' + os.path.splitext(sanitized)[0] + '.jpg',
             'src': folder + '/' + sanitized,
         })
     return result
@@ -154,14 +156,14 @@ def enrich(files, folder):
 films_files        = process_video_folder('videos/films')
 docs_files         = process_video_folder('videos/documentaries')
 ngo_files          = process_video_folder('videos/ngo_works')
-main_files         = process_video_folder('videos/main_video')
+main_files         = scan_folder('videos/main_video', VIDEO_EXT)
 photos_files       = process_photo_folder('pictures/documentary_photography')
 about_files        = scan_folder('pictures/about_me_pic', IMAGE_EXT)
 
 manifest = {
-    'films':         enrich(films_files,  'videos/films'),
-    'documentaries': enrich(docs_files,   'videos/documentaries'),
-    'ngo_works':     enrich(ngo_files,    'videos/ngo_works'),
+    'films':         enrich(films_files,  'videos/films',         'videos/films/thumbnails'),
+    'documentaries': enrich(docs_files,   'videos/documentaries', 'videos/documentaries/thumbnails'),
+    'ngo_works':     enrich(ngo_files,    'videos/ngo_works',     'videos/ngo_works/thumbnails'),
     'main_video':    enrich(main_files,   'videos/main_video'),
     'photos':        enrich(photos_files, 'pictures/documentary_photography/compressed'),
     'about_img':     about_files,

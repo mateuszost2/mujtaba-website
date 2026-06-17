@@ -156,6 +156,7 @@ def enrich(files, folder, thumb_folder=None):
 films_files        = process_video_folder('videos/films')
 docs_files         = process_video_folder('videos/documentaries')
 ngo_files          = process_video_folder('videos/ngo_works')
+travel_files       = process_video_folder('videos/travel_films')
 main_files         = scan_folder('videos/main_video', VIDEO_EXT)
 photos_files       = process_photo_folder('pictures/documentary_photography')
 about_files        = scan_folder('pictures/about_me_pic', IMAGE_EXT)
@@ -164,6 +165,7 @@ manifest = {
     'films':         enrich(films_files,  'videos/films',         'videos/films/thumbnails'),
     'documentaries': enrich(docs_files,   'videos/documentaries', 'videos/documentaries/thumbnails'),
     'ngo_works':     enrich(ngo_files,    'videos/ngo_works',     'videos/ngo_works/thumbnails'),
+    'travel_films':  enrich(travel_files, 'videos/travel_films',  'videos/travel_films/thumbnails'),
     'main_video':    enrich(main_files,   'videos/main_video'),
     'photos':        enrich(photos_files, 'pictures/documentary_photography/compressed'),
     'about_img':     about_files,

@@ -157,13 +157,16 @@ function buildSectionGrid(cat, rawItems, gridId, sortBtnId) {
   const grid = document.getElementById(gridId);
   grid.innerHTML = '';
 
-  sorted.forEach((f, i) => {
+  const cards = sorted.map((f, i) => {
     const card = document.createElement('div');
     card.className = 'film-card fade-up';
     card.style.transitionDelay = (i % 3 * 80) + 'ms';
     card.setAttribute('tabindex', '0');
     card.setAttribute('role', 'button');
     card.setAttribute('aria-label', f.title);
+
+    if (i >= 6) card.style.display = 'none';
+
     card.innerHTML = `
       <div class="film-thumb">
         <img src="${f.thumb}" alt="${f.title}" loading="lazy" decoding="async" onerror="this.style.display='none'">
@@ -183,7 +186,12 @@ function buildSectionGrid(cat, rawItems, gridId, sortBtnId) {
     });
     grid.appendChild(card);
     observer.observe(card);
+    return card;
   });
+
+  if (sorted.length > 6) {
+    addSeeMoreToggle(grid, cards.slice(6));
+  }
 
   const btn = document.getElementById(sortBtnId);
   const newBtn = btn.cloneNode(true);
@@ -244,13 +252,47 @@ document.getElementById('prev-film-btn').addEventListener('click', prevFilm);
 document.getElementById('next-film-btn').addEventListener('click', nextFilm);
 filmModal.addEventListener('click', e => { if (e.target === filmModal) closeFilmModal(); });
 
+/* ════ SEE MORE / SEE LESS TOGGLE ════ */
+function addSeeMoreToggle(grid, hiddenItems) {
+  let expanded = false;
+  const btn = document.createElement('div');
+  btn.className = 'see-more-btn';
+  btn.style.cssText = 'grid-column:1/-1;display:flex;flex-direction:column;align-items:center;gap:10px;padding:24px 0;cursor:pointer;';
+  const label = document.createElement('span');
+  label.style.cssText = 'font-size:9px;letter-spacing:0.22em;text-transform:uppercase;color:var(--accent);opacity:0.7;font-family:\'DM Sans\',sans-serif;';
+  label.textContent = 'See more';
+  btn.appendChild(label);
+
+  btn.addEventListener('click', () => {
+    expanded = !expanded;
+    if (expanded) {
+      hiddenItems.forEach((item, i) => {
+        item.style.display = '';
+        item.style.opacity = '0';
+        item.style.transform = 'translateY(16px)';
+        item.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+        setTimeout(() => {
+          item.style.opacity = '1';
+          item.style.transform = 'translateY(0)';
+        }, i * 60);
+      });
+      label.textContent = 'See less';
+      grid.appendChild(btn);
+    } else {
+      hiddenItems.forEach(item => { item.style.display = 'none'; });
+      label.textContent = 'See more';
+      grid.appendChild(btn);
+    }
+  });
+  grid.appendChild(btn);
+}
+
 /* ════ PHOTO GRID ════ */
 let currentPhoto = 0;
 
 function buildPhotoGrid() {
   const grid = document.getElementById('photo-grid');
   grid.innerHTML = '';
-  let expanded = false;
 
   const items = PHOTOS.map((p, fi) => {
     const item = document.createElement('div');
@@ -274,37 +316,7 @@ function buildPhotoGrid() {
   });
 
   if (PHOTOS.length > 6) {
-    const hiddenItems = items.slice(6);
-    const btn = document.createElement('div');
-    btn.id = 'photo-see-more';
-    btn.style.cssText = 'grid-column:1/-1;display:flex;flex-direction:column;align-items:center;gap:10px;padding:24px 0;cursor:pointer;';
-    const label = document.createElement('span');
-    label.style.cssText = 'font-size:9px;letter-spacing:0.22em;text-transform:uppercase;color:var(--accent);opacity:0.7;font-family:\'DM Sans\',sans-serif;';
-    label.textContent = 'See all photos';
-    btn.appendChild(label);
-
-    btn.addEventListener('click', () => {
-      expanded = !expanded;
-      if (expanded) {
-        hiddenItems.forEach((item, i) => {
-          item.style.display = '';
-          item.style.opacity = '0';
-          item.style.transform = 'translateY(16px)';
-          item.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-          setTimeout(() => {
-            item.style.opacity = '1';
-            item.style.transform = 'translateY(0)';
-          }, i * 60);
-        });
-        label.textContent = 'Hide all photos';
-        grid.appendChild(btn);
-      } else {
-        hiddenItems.forEach(item => { item.style.display = 'none'; });
-        label.textContent = 'See all photos';
-        grid.appendChild(btn);
-      }
-    });
-    grid.appendChild(btn);
+    addSeeMoreToggle(grid, items.slice(6));
   }
 }
 

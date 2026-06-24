@@ -45,30 +45,63 @@ function hideLoader() {
   setTimeout(() => loader.classList.add('gone'), 1200);
 }
 
-function updateLoaderProgress(pct) {
+let loaderPct = 0;
+let loaderRAF = null;
+
+function setLoaderDisplay(pct) {
   const count = document.getElementById('loader-count');
   const circle = document.querySelector('.loader-ring-progress');
   if (count) count.textContent = Math.round(pct) + '%';
   if (circle) circle.style.strokeDashoffset = 188.5 - (188.5 * pct / 100);
 }
 
-setTimeout(hideLoader, 8000);
+function animateLoaderTo(target, duration) {
+  target = Math.max(target, loaderPct); // progress never moves backward
+  if (loaderRAF) cancelAnimationFrame(loaderRAF);
+  const start = loaderPct;
+  const startTime = performance.now();
+  function step(now) {
+    const t = duration > 0 ? Math.min((now - startTime) / duration, 1) : 1;
+    loaderPct = start + (target - start) * t;
+    setLoaderDisplay(loaderPct);
+    if (t < 1) loaderRAF = requestAnimationFrame(step);
+  }
+  loaderRAF = requestAnimationFrame(step);
+}
+
+// Minimum time the loader stays on screen — even if the video is ready
+// instantly, the ring still takes this long to visibly sweep 0% → 100%.
+const LOADER_MIN_DURATION = 1200;
+const loaderStartTime = performance.now();
+let loaderDone = false;
+
+function completeLoader() {
+  if (loaderDone) return;
+  loaderDone = true;
+  animateLoaderTo(100, 400);
+  setTimeout(hideLoader, 600);
+}
+
+function finishLoader() {
+  const elapsed = performance.now() - loaderStartTime;
+  const remaining = Math.max(LOADER_MIN_DURATION - elapsed, 0);
+  animateLoaderTo(99, remaining);
+  setTimeout(completeLoader, remaining);
+}
+
+// Creep toward 90% while the page actually loads, so the ring always visibly
+// sweeps up instead of jumping in sparse buffered-progress increments.
+animateLoaderTo(90, LOADER_MIN_DURATION * 0.85);
+
+setTimeout(completeLoader, 6000);
 
 if (heroVideo) {
   heroVideo.style.opacity = '0';
   heroVideo.style.transition = 'opacity 1.2s ease';
 
-  heroVideo.addEventListener('progress', () => {
-    if (heroVideo.buffered.length > 0 && heroVideo.duration) {
-      const pct = (heroVideo.buffered.end(0) / heroVideo.duration) * 100;
-      updateLoaderProgress(Math.min(pct, 99));
-    }
-  });
-
   heroVideo.addEventListener('playing', () => {
-    updateLoaderProgress(100);
+    finishLoader();
     heroVideo.style.opacity = '1';
-    setTimeout(hideLoader, 600);
   }, { once: true });
 
   let muted = true;

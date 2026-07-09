@@ -261,13 +261,13 @@
       <button class="modal-close" id="film-modal-close" aria-label="Close">✕</button>
     </div>
     <div class="film-modal-video">
-      <video id="fm-video" controls>
+      <video id="fm-video" controls controlsList="nodownload" oncontextmenu="return false;">
         <source id="fm-source" src="" type="video/mp4">
       </video>
     </div>
     <div class="film-modal-details" id="fm-details" style="display:none;">
       <div class="film-modal-detail-row" id="fm-role-row" style="display:none;">
-        <span class="film-modal-detail-label">My Role</span>
+        <span class="film-modal-detail-label">NGO</span>
         <span class="film-modal-detail-value" id="fm-role"></span>
       </div>
       <div class="film-modal-detail-row" id="fm-desc-row" style="display:none;">

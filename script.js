@@ -315,6 +315,8 @@ function addSeeMoreToggle(grid, hiddenItems) {
       hiddenItems.forEach(item => { item.style.display = 'none'; });
       label.textContent = 'See more';
       grid.appendChild(btn);
+      const section = grid.closest('section') || grid;
+      section.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   });
   grid.appendChild(btn);

@@ -149,7 +149,7 @@ section { padding: calc(var(--section-gap) / 2) 40px; max-width: 1280px; margin:
 .film-modal-detail-row { display: flex; flex-direction: column; gap: 4px; }
 .film-modal-detail-label { font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); opacity: 0.6; }
 .film-modal-detail-value { font-size: 13px; color: var(--text2); line-height: 1.6; }
-.film-modal-nav { display: flex; justify-content: space-between; align-items: center; padding-top: 14px; margin-top: 4px; border-top: 1px solid var(--border); }
+.film-modal-nav { display: flex; justify-content: space-between; align-items: center; padding-top: 14px; margin-top: 4px; }
 .modal-nav-btn { background: none; border: none; cursor: pointer; font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text2); padding: 4px; font-family: 'DM Sans', sans-serif; transition: color var(--trans); }
 .modal-nav-btn:hover { color: var(--text); }
 .modal-counter { font-size: 9px; letter-spacing: 0.12em; color: var(--text3); text-transform: uppercase; }

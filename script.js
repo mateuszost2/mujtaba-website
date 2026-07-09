@@ -266,6 +266,7 @@ function updateFilmModal() {
   const roleRow = document.getElementById('fm-role-row');
   const descEl = document.getElementById('fm-description');
   const descRow = document.getElementById('fm-desc-row');
+  document.querySelector('#fm-role-row .film-modal-detail-label').textContent = f.catLabel === 'NGO Work' ? 'NGO' : 'My Role';
   roleEl.textContent = f.role || '';
   descEl.textContent = f.description || '';
   roleRow.style.display = f.role ? 'flex' : 'none';

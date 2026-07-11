@@ -7,9 +7,9 @@ const API_BASE = `${location.protocol}//${location.hostname}:8001`;
 
 let PHOTOS = [];
 let MANIFEST = {};
-let sortDocs = 'desc';
-let sortNgo = 'desc';
-let sortTravel = 'desc';
+let sortDocs = 'custom';
+let sortNgo = 'custom';
+let sortTravel = 'custom';
 let currentFilmList = [];
 let currentFilm = 0;
 let filmPrevFocus = null;
@@ -181,7 +181,7 @@ function buildSectionGrid(cat, rawItems, gridId, sortBtnId) {
     thumb: item.thumb,
   }));
 
-  const sorted = [...items].sort((a, b) => {
+  const sorted = sortOrder === 'custom' ? [...items] : [...items].sort((a, b) => {
     const ya = parseInt(a.year) || 0;
     const yb = parseInt(b.year) || 0;
     return sortOrder === 'desc' ? yb - ya : ya - yb;
@@ -229,10 +229,13 @@ function buildSectionGrid(cat, rawItems, gridId, sortBtnId) {
   const btn = document.getElementById(sortBtnId);
   const newBtn = btn.cloneNode(true);
   btn.parentNode.replaceChild(newBtn, btn);
+  const sortLabel = { custom: '⠿ Custom', desc: '↓ Newest', asc: '↑ Oldest' };
+  newBtn.textContent = sortLabel[config.getSort()] || '⠿ Custom';
   newBtn.addEventListener('click', () => {
-    const newOrder = config.getSort() === 'desc' ? 'asc' : 'desc';
+    const cycle = { custom: 'desc', desc: 'asc', asc: 'custom' };
+    const newOrder = cycle[config.getSort()] || 'desc';
     config.setSort(newOrder);
-    newBtn.textContent = newOrder === 'desc' ? '↓ Newest' : '↑ Oldest';
+    newBtn.textContent = sortLabel[newOrder];
     buildSectionGrid(cat, MANIFEST[cat] || [], gridId, sortBtnId);
   });
 }

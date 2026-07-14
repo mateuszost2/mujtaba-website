@@ -6,5 +6,8 @@
 https://mujtabamanzoor.com {
 	root * /srv
 	encode zstd gzip
+
+	reverse_proxy /api/* api:8001
+
 	file_server
 }

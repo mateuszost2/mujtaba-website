@@ -3,7 +3,7 @@
 
 history.scrollRestoration = 'manual';
 
-const API_BASE = `${location.protocol}//${location.hostname}:8001`;
+const API_BASE = '';
 
 let PHOTOS = [];
 let MANIFEST = {};

@@ -9,3 +9,14 @@ services:
       - ./Caddyfile:/etc/caddy/Caddyfile
     container_name: mujtaba-caddy-server
     restart: unless-stopped
+    depends_on:
+      - api
+
+  api:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.api
+    container_name: mujtaba-api
+    restart: unless-stopped
+    env_file:
+      - ../.env

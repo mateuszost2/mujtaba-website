@@ -163,7 +163,7 @@ fetch('manifest.json')
   .catch(() => { hideLoader(); });
 
 /* ════ SECTION GRID ════ */
-const SECTION_LABEL = { documentaries: 'Documentary', ngo_works: 'NGO Work', travel_films: 'Travel Film' };
+const SECTION_LABEL = { documentaries: 'Documentary', ngo_works: 'NGO Work', travel_films: 'Travel Vlog' };
 
 function buildSectionGrid(cat, rawItems, gridId) {
   const catLabel = SECTION_LABEL[cat];

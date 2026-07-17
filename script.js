@@ -7,9 +7,6 @@ const API_BASE = (location.hostname === 'localhost' || location.hostname === '12
 
 let PHOTOS = [];
 let MANIFEST = {};
-let sortDocs = 'custom';
-let sortNgo = 'custom';
-let sortTravel = 'custom';
 let currentFilmList = [];
 let currentFilm = 0;
 let filmPrevFocus = null;
@@ -138,9 +135,9 @@ fetch('manifest.json')
     });
     buildPhotoGrid();
 
-    buildSectionGrid('documentaries', manifest.documentaries || [], 'docs-grid', 'sort-btn-docs');
-    buildSectionGrid('ngo_works', manifest.ngo_works || [], 'ngo-grid', 'sort-btn-ngo');
-    buildSectionGrid('travel_films', manifest.travel_films || [], 'travel-grid', 'sort-btn-travel');
+    buildSectionGrid('documentaries', manifest.documentaries || [], 'docs-grid');
+    buildSectionGrid('ngo_works', manifest.ngo_works || [], 'ngo-grid');
+    buildSectionGrid('travel_films', manifest.travel_films || [], 'travel-grid');
 
     if (heroVideo && manifest.main_video && manifest.main_video.length > 0) {
       const pick = manifest.main_video[Math.floor(Math.random() * manifest.main_video.length)];
@@ -161,18 +158,12 @@ fetch('manifest.json')
   .catch(() => { hideLoader(); });
 
 /* ════ SECTION GRID ════ */
-const SECTION_CONFIG = {
-  documentaries: { getSort: () => sortDocs, setSort: v => { sortDocs = v; }, label: 'Documentary' },
-  ngo_works:     { getSort: () => sortNgo, setSort: v => { sortNgo = v; }, label: 'NGO Work' },
-  travel_films:  { getSort: () => sortTravel, setSort: v => { sortTravel = v; }, label: 'Travel Film' },
-};
+const SECTION_LABEL = { documentaries: 'Documentary', ngo_works: 'NGO Work', travel_films: 'Travel Film' };
 
-function buildSectionGrid(cat, rawItems, gridId, sortBtnId) {
-  const config = SECTION_CONFIG[cat];
-  const sortOrder = config.getSort();
-  const catLabel = config.label;
+function buildSectionGrid(cat, rawItems, gridId) {
+  const catLabel = SECTION_LABEL[cat];
 
-  const items = rawItems.map(item => ({
+  const sorted = rawItems.map(item => ({
     title: item.title || titleFromFile(item.filename),
     year: item.year || '',
     role: item.role || '',
@@ -181,12 +172,6 @@ function buildSectionGrid(cat, rawItems, gridId, sortBtnId) {
     src: item.src,
     thumb: item.thumb,
   }));
-
-  const sorted = sortOrder === 'custom' ? [...items] : [...items].sort((a, b) => {
-    const ya = parseInt(a.year) || 0;
-    const yb = parseInt(b.year) || 0;
-    return sortOrder === 'desc' ? yb - ya : ya - yb;
-  });
 
   const grid = document.getElementById(gridId);
   grid.innerHTML = '';
@@ -226,19 +211,6 @@ function buildSectionGrid(cat, rawItems, gridId, sortBtnId) {
   if (sorted.length > 6) {
     addSeeMoreToggle(grid, cards.slice(6));
   }
-
-  const btn = document.getElementById(sortBtnId);
-  const newBtn = btn.cloneNode(true);
-  btn.parentNode.replaceChild(newBtn, btn);
-  const sortLabel = { custom: '⠿ Custom', desc: '↓ Newest', asc: '↑ Oldest' };
-  newBtn.textContent = sortLabel[config.getSort()] || '⠿ Custom';
-  newBtn.addEventListener('click', () => {
-    const cycle = { custom: 'desc', desc: 'asc', asc: 'custom' };
-    const newOrder = cycle[config.getSort()] || 'desc';
-    config.setSort(newOrder);
-    newBtn.textContent = sortLabel[newOrder];
-    buildSectionGrid(cat, MANIFEST[cat] || [], gridId, sortBtnId);
-  });
 }
 
 /* ════ FILM MODAL ════ */

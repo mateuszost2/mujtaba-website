@@ -1,7 +1,8 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { max-width: 100%; overflow-x: hidden; }
 html { scroll-behavior: smooth; font-size: 16px; }
-body { width: 100%; padding-top: 64px; background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-weight: 300; line-height: 1.7; transition: background var(--trans), color var(--trans); overflow-x: hidden; }
+body { width: 100%; padding-top: 64px; background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-weight: 300; line-height: 1.7; transition: background var(--trans), color var(--trans); overflow-x: hidden; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+[data-theme="light"] body, [data-theme="light"] { -webkit-font-smoothing: auto; -moz-osx-font-smoothing: auto; }
 
 :root {
   --bg: #0C0C0B; --bg2: #141412; --bg3: #1C1C19;
@@ -43,11 +44,12 @@ body { width: 100%; padding-top: 64px; background: var(--bg); color: var(--text)
 }
 .loader-name {
   font-family: 'DM Sans', sans-serif;
-  font-size: clamp(22px, 3vw, 36px);
+  font-size: 15px;
   font-weight: 300;
-  letter-spacing: 0.12em; color: var(--text);
+  letter-spacing: 0.18em;
+  color: var(--text);
   text-transform: uppercase;
-  opacity: 0; animation: loaderFadeIn 0.6s ease forwards 0.2s;
+  opacity: 0; animation: loaderNameFadeIn 0.6s ease forwards 0.2s;
 }
 .loader-ring-wrap {
   position: relative; width: 64px; height: 64px;
@@ -73,6 +75,10 @@ body { width: 100%; padding-top: 64px; background: var(--bg); color: var(--text)
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
 }
+@keyframes loaderNameFadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 0.8; transform: translateY(0); }
+}
 
 #navbar {
   position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); z-index: 1000;
@@ -82,14 +88,14 @@ body { width: 100%; padding-top: 64px; background: var(--bg); color: var(--text)
   transition: background 300ms var(--ease);
 }
 [data-theme="light"] #navbar { background: rgba(237,232,223,0.88); }
-.nav-logo { font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 300; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text); text-decoration: none; line-height: 1; display: flex; align-items: center; }
+.nav-logo { font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 300; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text); text-decoration: none; line-height: 1; display: flex; align-items: center; }
 .nav-links { display: flex; gap: 32px; align-items: center; list-style: none; }
 .nav-links li { display: flex; align-items: center; }
-.nav-links a { font-size: 11px; font-weight: 300; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text); text-decoration: none; line-height: 1; opacity: 0.8; transition: color var(--trans), opacity var(--trans); }
+.nav-links a { font-size: 12px; font-weight: 300; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text); text-decoration: none; line-height: 1; opacity: 0.8; transition: color var(--trans), opacity var(--trans); }
 .nav-links a:hover, .nav-links a.active { color: var(--accent); opacity: 1; }
 #theme-toggle { background: none; border: none; cursor: pointer; width: 32px; height: 20px; flex-shrink: 0; }
-#theme-toggle svg { width: 18px; height: 18px; fill: var(--text); transition: fill var(--trans); }
-#theme-toggle:hover svg { fill: var(--accent); }
+#theme-toggle svg { width: 18px; height: 18px; fill: var(--text); opacity: 0.8; transition: fill var(--trans), opacity var(--trans); }
+#theme-toggle:hover svg { fill: var(--accent); opacity: 1; }
 #hamburger { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 4px; }
 #hamburger span { display: block; width: 22px; height: 1px; background: var(--text); transition: transform var(--trans), opacity var(--trans); }
 #hamburger.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }

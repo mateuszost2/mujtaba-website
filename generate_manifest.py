@@ -134,8 +134,19 @@ def process_photo_folder(folder_path):
         compress_photo(src, dest)
     return sorted([rename_if_needed(folder_path, f) for f in os.listdir(folder_path) if os.path.splitext(f)[1].lower() in IMAGE_EXT])
 
+# ── Load existing manifest (to preserve custom fields) ──
+def load_existing_manifest():
+    if os.path.exists('manifest.json'):
+        with open('manifest.json', 'r', encoding='utf-8') as f:
+            try:
+                return json.load(f)
+            except:
+                return {}
+    return {}
+
 # ── Build manifest ──
 metadata = load_metadata()
+existing_manifest = load_existing_manifest()
 
 def enrich(files, folder, thumb_folder=None):
     result = []
@@ -168,6 +179,11 @@ manifest = {
     'photos':        enrich(photos_files, 'pictures/documentary_photography/compressed'),
     'about_img':     about_files,
 }
+
+# Preserve custom fields not managed by this script
+for key in ('about_text',):
+    if key in existing_manifest:
+        manifest[key] = existing_manifest[key]
 
 with open('manifest.json', 'w', encoding='utf-8') as f:
     json.dump(manifest, f, indent=2, ensure_ascii=False)

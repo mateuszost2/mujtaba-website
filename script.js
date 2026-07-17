@@ -124,6 +124,11 @@ fetch('manifest.json')
       img.style.display = '';
     }
 
+    if (manifest.about_text && manifest.about_text.length > 0) {
+      const bio = document.getElementById('about-bio');
+      bio.innerHTML = manifest.about_text.map(p => `<p>${p}</p>`).join('');
+    }
+
     PHOTOS = (manifest.photos || []).map(item => {
       const filename = typeof item === 'object' ? item.filename : item;
       const src = (typeof item === 'object' && item.src) ? item.src : 'pictures/documentary_photography/compressed/' + filename.replace(/\.[^.]+$/, '.jpg');

@@ -139,7 +139,7 @@ function vcInit() {
     pause:  `<svg viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>`,
     vol:    `<svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>`,
     muted:  `<svg viewBox="0 0 24 24"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>`,
-    gear:   `<svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54A.484.484 0 0 0 13.92 4h-3.84a.484.484 0 0 0-.48.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.72 10.47c-.12.22-.07.47.12.61l2.03 1.58c-.05.3-.07.63-.07.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>`,
+    gear:   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>`,
     expand: `<svg viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>`,
     shrink: `<svg viewBox="0 0 24 24"><path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/></svg>`,
   };
@@ -228,35 +228,62 @@ function vcInit() {
   document.addEventListener('fullscreenchange', () => {
     fsBtn.innerHTML = document.fullscreenElement ? SVG.shrink : SVG.expand;
   });
+
+  window._vcShowControls = showVC;
 }
 vcInit();
 
 const _osdVolSVG  = `<svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>`;
 const _osdMuteSVG = `<svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>`;
 
+function vcPulseCtrl(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.classList.remove('ctrl-pulse');
+  void el.offsetWidth;
+  el.classList.add('ctrl-pulse');
+}
+
 let vcOsdTimer;
+let vcSeekAccum = 0;
 function vcShowOSD(type, value) {
   const osd = document.getElementById('vc-osd');
   if (!osd) return;
+  osd.style.background = 'none';
+  osd.style.padding = '0';
+  osd.style.filter = 'drop-shadow(0 2px 10px rgba(0,0,0,1))';
   if (type === 'vol') {
-    const pct = Math.round(value * 100);
     osd.style.left = '50%';
     osd.style.right = '';
     osd.style.transform = 'translate(-50%, -50%)';
+    const pct = Math.round(value * 100);
     osd.innerHTML =
-      `<div style="display:flex;align-items:center;justify-content:center;gap:7px;margin-bottom:7px">${pct === 0 ? _osdMuteSVG : _osdVolSVG}<span style="font-size:15px;font-weight:400">${pct}%</span></div>` +
-      `<div style="width:84px;height:3px;background:rgba(255,255,255,0.28);border-radius:2px;margin:0 auto">` +
-        `<div style="width:${pct}%;height:100%;background:#fff;border-radius:2px"></div></div>`;
+      `<div class="osd-seek-row" style="flex-direction:column;gap:6px;align-items:center">` +
+        `<div style="display:flex;align-items:center;gap:7px">${pct === 0 ? _osdMuteSVG : _osdVolSVG}<span style="font-size:15px;font-weight:400">${pct}%</span></div>` +
+        `<div style="width:84px;height:3px;background:rgba(255,255,255,0.28);border-radius:2px">` +
+          `<div style="width:${pct}%;height:100%;background:#fff;border-radius:2px"></div></div>` +
+      `</div>`;
   } else {
+    if (vcSeekAccum === 0 || Math.sign(value) === Math.sign(vcSeekAccum)) {
+      vcSeekAccum += value;
+    } else {
+      vcSeekAccum = value;
+    }
+    const secs = Math.abs(vcSeekAccum);
+    const fwd = vcSeekAccum > 0;
     osd.style.transform = 'translateY(-50%)';
-    if (value > 0) { osd.style.left = ''; osd.style.right = '20px'; }
-    else            { osd.style.left = '20px'; osd.style.right = ''; }
-    const secs = Math.abs(value);
-    osd.innerHTML = `<div style="font-size:16px;font-weight:400;letter-spacing:0.04em">${value > 0 ? secs + 's »' : '« ' + secs + 's'}</div>`;
+    if (fwd) { osd.style.left = ''; osd.style.right = '24px'; }
+    else      { osd.style.left = '24px'; osd.style.right = ''; }
+    const ch = fwd ? '›' : '‹';
+    osd.innerHTML =
+      `<div class="osd-seek-row">` +
+        `<div class="osd-chevrons ${fwd ? 'fwd' : 'bwd'}"><span class="osd-c2">${ch}</span><span class="osd-c1">${ch}</span></div>` +
+        `<span class="osd-stime">${fwd ? '+' : '−'}${secs}s</span>` +
+      `</div>`;
   }
   osd.style.opacity = '1';
   clearTimeout(vcOsdTimer);
-  vcOsdTimer = setTimeout(() => { osd.style.opacity = '0'; }, 900);
+  vcOsdTimer = setTimeout(() => { osd.style.opacity = '0'; vcSeekAccum = 0; }, 900);
 }
 
 /* ════ LOADER ════ */
@@ -867,33 +894,43 @@ document.addEventListener('keydown', e => {
         break;
 
       case 'ArrowLeft':
-        e.preventDefault(); v.currentTime = Math.max(0, v.currentTime - 5); vcShowOSD('seek', -5); break;
+        e.preventDefault(); v.currentTime = Math.max(0, v.currentTime - 5);
+        if (v.currentTime === 0) vcSeekAccum = 0;
+        vcShowOSD('seek', -5); if (window._vcShowControls) window._vcShowControls(); break;
       case 'ArrowRight':
-        e.preventDefault(); v.currentTime = Math.min(dur, v.currentTime + 5); vcShowOSD('seek', 5); break;
+        e.preventDefault(); v.currentTime = Math.min(dur, v.currentTime + 5);
+        if (v.currentTime === dur) vcSeekAccum = 0;
+        vcShowOSD('seek', 5); if (window._vcShowControls) window._vcShowControls(); break;
 
       case 'j': case 'J':
-        e.preventDefault(); v.currentTime = Math.max(0, v.currentTime - 10); vcShowOSD('seek', -10); break;
+        e.preventDefault(); v.currentTime = Math.max(0, v.currentTime - 10);
+        if (v.currentTime === 0) vcSeekAccum = 0;
+        vcShowOSD('seek', -10); if (window._vcShowControls) window._vcShowControls(); break;
       case 'l': case 'L':
-        e.preventDefault(); v.currentTime = Math.min(dur, v.currentTime + 10); vcShowOSD('seek', 10); break;
+        e.preventDefault(); v.currentTime = Math.min(dur, v.currentTime + 10);
+        if (v.currentTime === dur) vcSeekAccum = 0;
+        vcShowOSD('seek', 10); if (window._vcShowControls) window._vcShowControls(); break;
 
       case ',':
-        e.preventDefault(); v.pause(); v.currentTime = Math.max(0, v.currentTime - 1 / 30); break;
+        e.preventDefault(); v.pause(); v.currentTime = Math.max(0, v.currentTime - 1 / 30);
+        if (window._vcShowControls) window._vcShowControls(); break;
       case '.':
-        e.preventDefault(); v.pause(); v.currentTime = Math.min(dur, v.currentTime + 1 / 30); break;
+        e.preventDefault(); v.pause(); v.currentTime = Math.min(dur, v.currentTime + 1 / 30);
+        if (window._vcShowControls) window._vcShowControls(); break;
 
       case 'Home':
-        e.preventDefault(); v.currentTime = 0; break;
+        e.preventDefault(); v.currentTime = 0; if (window._vcShowControls) window._vcShowControls(); break;
       case 'End':
-        e.preventDefault(); v.currentTime = dur; break;
+        e.preventDefault(); v.currentTime = dur; if (window._vcShowControls) window._vcShowControls(); break;
 
       case 'ArrowUp':
         e.preventDefault();
         v.volume = Math.min(1, Math.round((v.volume + 0.05) * 100) / 100);
-        v.muted = false; vcShowOSD('vol', v.volume); break;
+        v.muted = false; vcShowOSD('vol', v.volume); if (window._vcShowControls) window._vcShowControls(); break;
       case 'ArrowDown':
         e.preventDefault();
         v.volume = Math.max(0, Math.round((v.volume - 0.05) * 100) / 100);
-        vcShowOSD('vol', v.volume); break;
+        vcShowOSD('vol', v.volume); if (window._vcShowControls) window._vcShowControls(); break;
 
       case 'm': case 'M':
         v.muted = !v.muted; vcShowOSD('vol', v.muted ? 0 : v.volume); break;

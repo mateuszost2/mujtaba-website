@@ -158,8 +158,10 @@ section { padding: calc(var(--section-gap) / 2) 40px; max-width: 1280px; margin:
 .film-modal-video video { width: 100%; height: 100%; display: block; }
 .vc { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.7)); padding: 22px 4px 4px; opacity: 0; transition: opacity 0.2s; pointer-events: none; }
 .vc.visible { opacity: 1; pointer-events: auto; }
-.vc-prog { position: relative; height: 3px; background: rgba(255,255,255,0.28); margin: 0 8px 6px; cursor: pointer; border-radius: 2px; transition: height 0.12s; }
+.vc-prog { position: relative; height: 3px; background: rgba(255,255,255,0.28); margin: 0 8px 6px; cursor: pointer; border-radius: 2px; transition: height 0.12s; transform-origin: bottom; }
 .vc-prog:hover { height: 5px; }
+@keyframes osd-seek-pulse { 0%{transform:scale(1)} 25%{transform:scale(1.14)} 100%{transform:scale(1)} }
+.osd-seek-row { animation: osd-seek-pulse 0.28s ease-out; }
 .vc-prog-fill { height: 100%; background: #fff; border-radius: 2px; pointer-events: none; }
 .vc-prog-thumb { position: absolute; top: 50%; transform: translate(-50%, -50%) scale(0); width: 11px; height: 11px; border-radius: 50%; background: #fff; pointer-events: none; transition: transform 0.12s; }
 .vc-prog:hover .vc-prog-thumb { transform: translate(-50%, -50%) scale(1); }
@@ -167,8 +169,18 @@ section { padding: calc(var(--section-gap) / 2) 40px; max-width: 1280px; margin:
 .vc-btn { background: none; border: none; color: #fff; cursor: pointer; padding: 5px 6px; display: flex; align-items: center; justify-content: center; opacity: 0.85; transition: opacity 0.15s; flex-shrink: 0; }
 .vc-btn:hover { opacity: 1; }
 .vc-btn svg { width: 20px; height: 20px; fill: currentColor; display: block; }
+#fm-quality-btn svg { fill: none; stroke: currentColor; }
 .vc-time { font-size: 10.5px; font-family: 'DM Sans', sans-serif; color: rgba(255,255,255,0.82); letter-spacing: 0.02em; padding: 0 2px; white-space: nowrap; flex-shrink: 0; margin-left: 10px; }
-.vc-osd { position: absolute; top: 50%; background: rgba(0,0,0,0.45); color: #fff; font-family: 'DM Sans', sans-serif; padding: 9px 14px; border-radius: 6px; pointer-events: none; opacity: 0; transition: opacity 0.15s; white-space: nowrap; text-align: center; }
+.vc-osd { position: absolute; top: 50%; color: #fff; font-family: 'DM Sans', sans-serif; border-radius: 6px; pointer-events: none; opacity: 0; transition: opacity 0.15s; white-space: nowrap; text-align: center; }
+.osd-seek-row { display: flex; align-items: center; gap: 9px; }
+.osd-chevrons { position: relative; display: inline-block; font-size: 38px; line-height: 1; font-weight: 200; }
+.osd-c2 { display: block; }
+.osd-c1 { position: absolute; top: 0; left: 0; right: 0; }
+.osd-chevrons.fwd .osd-c1 { animation: osd-onto-fwd 0.28s ease-out both; }
+.osd-chevrons.bwd .osd-c1 { animation: osd-onto-bwd 0.28s ease-out both; }
+@keyframes osd-onto-fwd { from { opacity: 0.6; transform: translateX(100%); } to { opacity: 1; transform: translateX(0); } }
+@keyframes osd-onto-bwd { from { opacity: 0.6; transform: translateX(-100%); } to { opacity: 1; transform: translateX(0); } }
+.osd-stime { font-size: 13px; letter-spacing: 0.05em; font-weight: 400; }
 .vc-flex { flex: 1; }
 .vc-vol-group { display: flex; align-items: center; gap: 0; }
 .vc-vol-slider { -webkit-appearance: none; appearance: none; width: 0; max-width: 64px; height: 3px; border-radius: 2px; outline: none; cursor: pointer; background: linear-gradient(to right, #fff var(--vp, 100%), rgba(255,255,255,0.28) var(--vp, 100%)); flex-shrink: 0; opacity: 0; transition: width 0.2s ease, opacity 0.2s ease, margin 0.2s ease; overflow: hidden; }

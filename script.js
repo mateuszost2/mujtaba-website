@@ -40,7 +40,18 @@ function setupHeroVideo(src) {
   if (heroHls) { heroHls.destroy(); heroHls = null; }
   if (!src) return;
   if (src.endsWith('.m3u8') && typeof Hls !== 'undefined' && Hls.isSupported()) {
-    heroHls = new Hls({ startLevel: -1, capLevelToPlayerSize: true, autoStartLoad: true });
+    heroHls = new Hls({
+      startLevel: -1,
+      capLevelToPlayerSize: true,
+      autoStartLoad: true,
+      maxBufferLength: 30,
+      maxMaxBufferLength: 90,
+      maxBufferSize: 60 * 1000 * 1000,
+      abrBandWidthFactor: 0.9,
+      abrBandWidthUpFactor: 0.6,
+      abrEwmaDefaultEstimate: 1000000,
+      nudgeMaxRetry: 5,
+    });
     heroHls.loadSource(src);
     heroHls.attachMedia(heroVideo);
     heroHls.on(Hls.Events.MANIFEST_PARSED, () => heroVideo.play().catch(() => {}));
@@ -62,7 +73,17 @@ function setFilmVideo(src) {
   if (qWrap) qWrap.style.display = 'none';
   if (!src) { video.src = ''; video.load(); return; }
   if (src.endsWith('.m3u8') && typeof Hls !== 'undefined' && Hls.isSupported()) {
-    filmHls = new Hls({ startLevel: -1, capLevelToPlayerSize: true });
+    filmHls = new Hls({
+      startLevel: -1,
+      capLevelToPlayerSize: true,
+      maxBufferLength: 30,
+      maxMaxBufferLength: 90,
+      maxBufferSize: 60 * 1000 * 1000,
+      abrBandWidthFactor: 0.9,
+      abrBandWidthUpFactor: 0.6,
+      abrEwmaDefaultEstimate: 1000000,
+      nudgeMaxRetry: 5,
+    });
     filmHls.loadSource(src);
     filmHls.attachMedia(video);
     filmHls.on(Hls.Events.MANIFEST_PARSED, () => {

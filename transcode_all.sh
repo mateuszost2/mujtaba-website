@@ -24,11 +24,18 @@ for FOLDER in "${VIDEO_FOLDERS[@]}"; do
     ORIG=$(basename "${FILE%.*}")
     BASENAME=$(echo "$ORIG" | tr '[:upper:]' '[:lower:]' | tr ' -' '_' | tr -cd 'a-z0-9_' | sed 's/__*/_/g' | sed 's/^_//;s/_$//')
     HLS="$DIR/hls/$BASENAME/$BASENAME.m3u8"
-    if [ -f "$HLS" ]; then
-      echo "[skip] $FILE (HLS already exists)"
+    # Check source height to know if 2K/4K variants should exist
+    SRC_H=$(ffprobe -v error -select_streams v:0 -show_entries stream=height -of csv=p=0 "$FILE" 2>/dev/null | head -1)
+    SRC_H=${SRC_H:-0}
+    NEED_RECODE=0
+    [ ! -f "$HLS" ] && NEED_RECODE=1
+    [ "$SRC_H" -ge 2160 ] && [ ! -f "$DIR/hls/$BASENAME/${BASENAME}_2160p.m3u8" ] && NEED_RECODE=1
+    [ "$SRC_H" -ge 1440 ] && [ "$SRC_H" -lt 2160 ] && [ ! -f "$DIR/hls/$BASENAME/${BASENAME}_1440p.m3u8" ] && NEED_RECODE=1
+    if [ "$NEED_RECODE" -eq 0 ]; then
+      echo "[skip] $FILE (HLS complete)"
       skip=$((skip + 1))
     else
-      echo "[transcode] $FILE"
+      echo "[transcode] $FILE (source: ${SRC_H}p)"
       bash "$TRANSCODE" "$FILE" >> "$LOG" 2>&1
       count=$((count + 1))
     fi

@@ -29,21 +29,28 @@ encode() {
     -c:a aac -ar 48000 -ac 2 \
     -vf "scale=-2:${H}" \
     -b:v "${BV}k" -maxrate "${MR}k" -bufsize "${BS}k" \
+    -force_key_frames "expr:gte(t,n_forced*6)" \
+    -sc_threshold 0 \
     -hls_time 6 -hls_list_size 0 \
+    -hls_flags independent_segments \
     -hls_segment_filename "$HLS_DIR/${BASENAME}_${H}p_%04d.ts" \
     "$HLS_DIR/${BASENAME}_${H}p.m3u8" 2>&1
   echo "[transcode] ${H}p done."
 }
 
-encode 1080 3000 3500 6000
-encode 720  1500 2000 3000
-encode 480  600  800  1200
+encode 2160 15000 18000 30000
+encode 1440  8000 10000 16000
+encode 1080  3000  3500  6000
+encode 720   1500  2000  3000
+encode 480    600   800  1200
 
 # Master playlist
 PLAYLIST="$HLS_DIR/$BASENAME.m3u8"
 printf '#EXTM3U\n#EXT-X-VERSION:3\n' > "$PLAYLIST"
-[ "$SRC_HEIGHT" -ge 1080 ] && printf '#EXT-X-STREAM-INF:BANDWIDTH=3000000,RESOLUTION=1920x1080\n%s_1080p.m3u8\n' "$BASENAME" >> "$PLAYLIST"
-[ "$SRC_HEIGHT" -ge 720  ] && printf '#EXT-X-STREAM-INF:BANDWIDTH=1500000,RESOLUTION=1280x720\n%s_720p.m3u8\n'  "$BASENAME" >> "$PLAYLIST"
+[ "$SRC_HEIGHT" -ge 2160 ] && printf '#EXT-X-STREAM-INF:BANDWIDTH=15000000,RESOLUTION=3840x2160\n%s_2160p.m3u8\n' "$BASENAME" >> "$PLAYLIST"
+[ "$SRC_HEIGHT" -ge 1440 ] && printf '#EXT-X-STREAM-INF:BANDWIDTH=8000000,RESOLUTION=2560x1440\n%s_1440p.m3u8\n'  "$BASENAME" >> "$PLAYLIST"
+[ "$SRC_HEIGHT" -ge 1080 ] && printf '#EXT-X-STREAM-INF:BANDWIDTH=3000000,RESOLUTION=1920x1080\n%s_1080p.m3u8\n'  "$BASENAME" >> "$PLAYLIST"
+[ "$SRC_HEIGHT" -ge 720  ] && printf '#EXT-X-STREAM-INF:BANDWIDTH=1500000,RESOLUTION=1280x720\n%s_720p.m3u8\n'    "$BASENAME" >> "$PLAYLIST"
 printf '#EXT-X-STREAM-INF:BANDWIDTH=600000,RESOLUTION=854x480\n%s_480p.m3u8\n' "$BASENAME" >> "$PLAYLIST"
 
 echo "[transcode] Done: $PLAYLIST"

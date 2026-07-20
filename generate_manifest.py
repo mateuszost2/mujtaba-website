@@ -184,7 +184,7 @@ manifest = {
 }
 
 # Preserve custom fields not managed by this script
-for key in ('about_text',):
+for key in ('about_text', 'hero_position'):
     if key in existing_manifest:
         manifest[key] = existing_manifest[key]
 

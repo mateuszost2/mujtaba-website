@@ -153,14 +153,17 @@ def enrich(files, folder, thumb_folder=None):
     for f in files:
         meta = metadata.get(f, {})
         sanitized = sanitize(f)
+        basename = os.path.splitext(sanitized)[0]
+        hls_path = f"{folder}/hls/{basename}/{basename}.m3u8"
+        src = hls_path if os.path.exists(hls_path) else f"{folder}/{sanitized}"
         result.append({
             'filename': sanitized,
             'title': meta.get('title', ''),
             'year': meta.get('year', ''),
             'role': meta.get('role', ''),
             'description': meta.get('description', ''),
-            'thumb': (thumb_folder or folder) + '/' + os.path.splitext(sanitized)[0] + '.jpg',
-            'src': folder + '/' + sanitized,
+            'thumb': (thumb_folder or folder) + '/' + basename + '.jpg',
+            'src': src,
         })
     return result
 

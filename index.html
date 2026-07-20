@@ -126,9 +126,7 @@
     </svg>
   </button>
   <div id="hero-video-wrap">
-    <video id="hero-video" autoplay muted loop playsinline preload="auto" title="Background reel">
-      <source id="hero-video-source" src="" type="video/mp4">
-    </video>
+    <video id="hero-video" autoplay muted loop playsinline preload="auto" title="Background reel"></video>
   </div>
   <div class="hero-content"></div>
 </section>
@@ -252,9 +250,10 @@
       <button class="modal-close" id="film-modal-close" aria-label="Close">✕</button>
     </div>
     <div class="film-modal-video">
-      <video id="fm-video" controls controlsList="nodownload" oncontextmenu="return false;">
-        <source id="fm-source" src="" type="video/mp4">
-      </video>
+      <video id="fm-video" controls controlsList="nodownload" oncontextmenu="return false;"></video>
+      <div id="fm-quality-wrap" style="display:none;text-align:right;padding:4px 12px 0;">
+        <button id="fm-quality-btn" style="background:rgba(0,0,0,0.55);border:1px solid rgba(255,255,255,0.18);color:#fff;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;padding:3px 9px;cursor:pointer;font-family:'DM Sans',sans-serif;">Auto</button>
+      </div>
     </div>
     <div class="film-modal-details" id="fm-details" style="display:none;">
       <div class="film-modal-detail-row" id="fm-role-row" style="display:none;">
@@ -300,6 +299,7 @@
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.15/dist/hls.min.js"></script>
 <script src="script.js"></script>
 
 </body>

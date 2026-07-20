@@ -249,11 +249,28 @@
       </div>
       <button class="modal-close" id="film-modal-close" aria-label="Close">✕</button>
     </div>
-    <div class="film-modal-video">
-      <video id="fm-video" controls controlsList="nodownload" oncontextmenu="return false;"></video>
-      <div id="fm-quality-wrap" style="display:none;">
-        <div id="fm-quality-menu"></div>
-        <button id="fm-quality-btn" title="Quality">⚙</button>
+    <div class="film-modal-video" id="fm-video-wrap">
+      <video id="fm-video" controlsList="nodownload" oncontextmenu="return false;"></video>
+      <div class="vc-osd" id="vc-osd"></div>
+      <div class="vc" id="fm-vc">
+        <div class="vc-prog" id="vc-prog">
+          <div class="vc-prog-fill" id="vc-fill"></div>
+          <div class="vc-prog-thumb" id="vc-thumb"></div>
+        </div>
+        <div class="vc-bar">
+          <button class="vc-btn" id="vc-play" aria-label="Play/Pause"></button>
+          <div class="vc-vol-group">
+            <button class="vc-btn" id="vc-mute" aria-label="Mute"></button>
+            <input type="range" class="vc-vol-slider" id="vc-vol" min="0" max="1" step="0.02" value="1">
+          </div>
+          <span class="vc-time" id="vc-time">0:00 / 0:00</span>
+          <div class="vc-flex"></div>
+          <div class="vc-quality" id="fm-quality-wrap" style="display:none">
+            <div class="vc-quality-menu" id="fm-quality-menu"></div>
+            <button class="vc-btn" id="fm-quality-btn" aria-label="Quality"></button>
+          </div>
+          <button class="vc-btn" id="vc-fs" aria-label="Fullscreen"></button>
+        </div>
       </div>
     </div>
     <div class="film-modal-details" id="fm-details" style="display:none;">

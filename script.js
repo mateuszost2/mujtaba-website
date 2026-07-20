@@ -68,7 +68,7 @@ function setFilmVideo(src) {
     filmHls.on(Hls.Events.MANIFEST_PARSED, () => {
       video.play().catch(() => {});
       if (filmHls.levels && filmHls.levels.length > 1 && qWrap) {
-        qWrap.style.display = 'block';
+        qWrap.style.display = 'flex';
         updateQualityMenu();
       }
     });
@@ -98,11 +98,11 @@ function updateQualityMenu() {
 }
 
 document.addEventListener('click', e => {
-  const btn = document.getElementById('fm-quality-btn');
+  const gearBtn = document.getElementById('fm-quality-btn');
   const menu = document.getElementById('fm-quality-menu');
-  if (!btn || !menu) return;
+  if (!gearBtn || !menu) return;
 
-  if (e.target === btn) {
+  if (e.target === gearBtn || gearBtn.contains(e.target)) {
     if (!filmHls) return;
     updateQualityMenu();
     menu.classList.toggle('open');
@@ -120,6 +120,144 @@ document.addEventListener('click', e => {
 
   menu.classList.remove('open');
 });
+
+function vcInit() {
+  const wrap = document.getElementById('fm-video-wrap');
+  const video = document.getElementById('fm-video');
+  const vc = document.getElementById('fm-vc');
+  const playBtn = document.getElementById('vc-play');
+  const muteBtn = document.getElementById('vc-mute');
+  const volSlider = document.getElementById('vc-vol');
+  const fsBtn = document.getElementById('vc-fs');
+  const prog = document.getElementById('vc-prog');
+  const fill = document.getElementById('vc-fill');
+  const thumb = document.getElementById('vc-thumb');
+  const timeEl = document.getElementById('vc-time');
+
+  const SVG = {
+    play:   `<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>`,
+    pause:  `<svg viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>`,
+    vol:    `<svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>`,
+    muted:  `<svg viewBox="0 0 24 24"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>`,
+    gear:   `<svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54A.484.484 0 0 0 13.92 4h-3.84a.484.484 0 0 0-.48.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.72 10.47c-.12.22-.07.47.12.61l2.03 1.58c-.05.3-.07.63-.07.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>`,
+    expand: `<svg viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>`,
+    shrink: `<svg viewBox="0 0 24 24"><path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/></svg>`,
+  };
+
+  playBtn.innerHTML = SVG.play;
+  muteBtn.innerHTML = SVG.vol;
+  fsBtn.innerHTML = SVG.expand;
+  document.getElementById('fm-quality-btn').innerHTML = SVG.gear;
+
+  let hideTimer;
+  function showVC() {
+    vc.classList.add('visible');
+    wrap.classList.add('show-cursor');
+    clearTimeout(hideTimer);
+    if (!video.paused) {
+      hideTimer = setTimeout(() => {
+        const qMenu = document.getElementById('fm-quality-menu');
+        if (qMenu && qMenu.classList.contains('open')) return;
+        vc.classList.remove('visible');
+        wrap.classList.remove('show-cursor');
+      }, 2500);
+    }
+  }
+
+  function fmtTime(s) {
+    s = Math.floor(s || 0);
+    return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
+  }
+
+  let showRemaining = false;
+  timeEl.style.cursor = 'pointer';
+  timeEl.addEventListener('click', () => { showRemaining = !showRemaining; updateProg(); });
+
+  function updateProg() {
+    const pct = video.duration ? video.currentTime / video.duration : 0;
+    fill.style.width = (pct * 100) + '%';
+    thumb.style.left = (pct * 100) + '%';
+    if (showRemaining) {
+      const rem = (video.duration || 0) - (video.currentTime || 0);
+      timeEl.textContent = '-' + fmtTime(rem) + ' / ' + fmtTime(video.duration);
+    } else {
+      timeEl.textContent = fmtTime(video.currentTime) + ' / ' + fmtTime(video.duration);
+    }
+  }
+
+  video.addEventListener('play',        () => { playBtn.innerHTML = SVG.pause; showVC(); });
+  video.addEventListener('pause',       () => { playBtn.innerHTML = SVG.play;  showVC(); });
+  video.addEventListener('timeupdate',  updateProg);
+  function updateVol() {
+    const vol = (video.muted || video.volume === 0) ? 0 : video.volume;
+    muteBtn.innerHTML = vol === 0 ? SVG.muted : SVG.vol;
+    volSlider.value = vol;
+    volSlider.style.setProperty('--vp', (vol * 100) + '%');
+  }
+  video.addEventListener('volumechange', updateVol);
+  video.addEventListener('click',       () => { video.paused ? video.play() : video.pause(); });
+
+  wrap.addEventListener('mousemove',  showVC);
+  wrap.addEventListener('mouseleave', () => {
+    if (!video.paused) {
+      clearTimeout(hideTimer);
+      hideTimer = setTimeout(() => {
+        vc.classList.remove('visible');
+        wrap.classList.remove('show-cursor');
+      }, 600);
+    }
+  });
+  wrap.addEventListener('touchstart', showVC, { passive: true });
+
+  playBtn.addEventListener('click', () => { video.paused ? video.play() : video.pause(); });
+  muteBtn.addEventListener('click', () => { video.muted = !video.muted; });
+  volSlider.addEventListener('input', () => {
+    video.volume = parseFloat(volSlider.value);
+    video.muted = video.volume === 0;
+  });;
+
+  prog.addEventListener('click', e => {
+    const r = prog.getBoundingClientRect();
+    video.currentTime = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width)) * (video.duration || 0);
+  });
+
+  fsBtn.addEventListener('click', () => {
+    if (document.fullscreenElement) document.exitFullscreen();
+    else wrap.requestFullscreen().catch(() => {});
+  });
+  document.addEventListener('fullscreenchange', () => {
+    fsBtn.innerHTML = document.fullscreenElement ? SVG.shrink : SVG.expand;
+  });
+}
+vcInit();
+
+const _osdVolSVG  = `<svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>`;
+const _osdMuteSVG = `<svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>`;
+
+let vcOsdTimer;
+function vcShowOSD(type, value) {
+  const osd = document.getElementById('vc-osd');
+  if (!osd) return;
+  if (type === 'vol') {
+    const pct = Math.round(value * 100);
+    osd.style.left = '50%';
+    osd.style.right = '';
+    osd.style.transform = 'translate(-50%, -50%)';
+    osd.innerHTML =
+      `<div style="display:flex;align-items:center;justify-content:center;gap:7px;margin-bottom:7px">${pct === 0 ? _osdMuteSVG : _osdVolSVG}<span style="font-size:15px;font-weight:400">${pct}%</span></div>` +
+      `<div style="width:84px;height:3px;background:rgba(255,255,255,0.28);border-radius:2px;margin:0 auto">` +
+        `<div style="width:${pct}%;height:100%;background:#fff;border-radius:2px"></div></div>`;
+  } else {
+    osd.style.transform = 'translateY(-50%)';
+    if (value > 0) { osd.style.left = ''; osd.style.right = '20px'; }
+    else            { osd.style.left = '20px'; osd.style.right = ''; }
+    const secs = Math.abs(value);
+    osd.innerHTML = `<div style="font-size:16px;font-weight:400;letter-spacing:0.04em">${value > 0 ? secs + 's »' : '« ' + secs + 's'}</div>`;
+  }
+  osd.style.opacity = '1';
+  clearTimeout(vcOsdTimer);
+  vcOsdTimer = setTimeout(() => { osd.style.opacity = '0'; }, 900);
+}
 
 /* ════ LOADER ════ */
 const heroVideo = document.getElementById('hero-video');
@@ -392,6 +530,10 @@ function closeFilmModal() {
     if (qWrap) qWrap.style.display = 'none';
     const qMenu = document.getElementById('fm-quality-menu');
     if (qMenu) qMenu.classList.remove('open');
+    const vc = document.getElementById('fm-vc');
+    if (vc) vc.classList.remove('visible');
+    const vcWrap = document.getElementById('fm-video-wrap');
+    if (vcWrap) vcWrap.classList.remove('show-cursor');
     unlockScroll();
     if (filmPrevFocus) filmPrevFocus.focus();
   }
@@ -711,9 +853,74 @@ privacyModal.addEventListener('click', e => { if (e.target === privacyModal) clo
 /* ════ KEYBOARD ════ */
 document.addEventListener('keydown', e => {
   if (filmModal.classList.contains('open')) {
-    if (e.key === 'Escape') closeFilmModal();
-    if (e.key === 'ArrowLeft') { e.preventDefault(); const v = document.getElementById('fm-video'); v.currentTime = Math.max(0, v.currentTime - 10); }
-    if (e.key === 'ArrowRight') { e.preventDefault(); const v = document.getElementById('fm-video'); v.currentTime = Math.min(v.duration || 0, v.currentTime + 10); }
+    const v = document.getElementById('fm-video');
+    const tag = e.target.tagName;
+    const noInput = tag !== 'BUTTON' && tag !== 'INPUT';
+    const dur = v.duration || 0;
+
+    switch (e.key) {
+      case 'Escape': closeFilmModal(); break;
+
+      case ' ':
+      case 'k': case 'K':
+        if (noInput) { e.preventDefault(); v.paused ? v.play() : v.pause(); }
+        break;
+
+      case 'ArrowLeft':
+        e.preventDefault(); v.currentTime = Math.max(0, v.currentTime - 5); vcShowOSD('seek', -5); break;
+      case 'ArrowRight':
+        e.preventDefault(); v.currentTime = Math.min(dur, v.currentTime + 5); vcShowOSD('seek', 5); break;
+
+      case 'j': case 'J':
+        e.preventDefault(); v.currentTime = Math.max(0, v.currentTime - 10); vcShowOSD('seek', -10); break;
+      case 'l': case 'L':
+        e.preventDefault(); v.currentTime = Math.min(dur, v.currentTime + 10); vcShowOSD('seek', 10); break;
+
+      case ',':
+        e.preventDefault(); v.pause(); v.currentTime = Math.max(0, v.currentTime - 1 / 30); break;
+      case '.':
+        e.preventDefault(); v.pause(); v.currentTime = Math.min(dur, v.currentTime + 1 / 30); break;
+
+      case 'Home':
+        e.preventDefault(); v.currentTime = 0; break;
+      case 'End':
+        e.preventDefault(); v.currentTime = dur; break;
+
+      case 'ArrowUp':
+        e.preventDefault();
+        v.volume = Math.min(1, Math.round((v.volume + 0.05) * 100) / 100);
+        v.muted = false; vcShowOSD('vol', v.volume); break;
+      case 'ArrowDown':
+        e.preventDefault();
+        v.volume = Math.max(0, Math.round((v.volume - 0.05) * 100) / 100);
+        vcShowOSD('vol', v.volume); break;
+
+      case 'm': case 'M':
+        v.muted = !v.muted; vcShowOSD('vol', v.muted ? 0 : v.volume); break;
+
+      case 'f': case 'F': {
+        const wrap = document.getElementById('fm-video-wrap');
+        if (document.fullscreenElement) document.exitFullscreen();
+        else wrap.requestFullscreen().catch(() => {});
+        break;
+      }
+      case 't': case 'T':
+        filmModal.classList.toggle('theater'); break;
+
+      case 'i': case 'I':
+        if (document.pictureInPictureEnabled) {
+          if (document.pictureInPictureElement) document.exitPictureInPicture().catch(() => {});
+          else v.requestPictureInPicture().catch(() => {});
+        }
+        break;
+
+      default:
+        if (noInput && e.key >= '0' && e.key <= '9') {
+          e.preventDefault();
+          v.currentTime = dur * parseInt(e.key) / 10;
+        }
+    }
+    return;
   }
   if (lightbox.classList.contains('open')) {
     if (e.key === 'Escape') closeLightbox();

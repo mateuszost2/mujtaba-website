@@ -35,6 +35,130 @@ function titleFromFile(filename) {
 /* ════ HLS PLAYER ════ */
 let heroHls = null;
 let filmHls = null;
+let qualityController = null;
+
+/* ════ QUALITY CONTROLLERS ════
+   Unifies hls.js levels and the Vimeo Player SDK's quality API (Plus/Pro/
+   Business only — on a free Vimeo account getQualities() resolves with 0-1
+   entries, so the gear menu simply never shows, no code change needed when
+   the account upgrades) behind the same {getOptions, setOption, onChange}. */
+function createHlsQualityController(hls) {
+  return {
+    getOptions: () => {
+      const levels = hls.levels || [];
+      const options = [{ id: '-1', label: 'Auto' }];
+      for (let i = levels.length - 1; i >= 0; i--) {
+        options.push({ id: String(i), label: levels[i].height + 'p' });
+      }
+      return Promise.resolve({ current: String(hls.currentLevel), options });
+    },
+    setOption: id => { hls.nextLevel = parseInt(id, 10); },
+    onChange: cb => { hls.on(Hls.Events.LEVEL_SWITCHED, cb); },
+  };
+}
+
+function createVimeoQualityController(player) {
+  return {
+    getOptions: () => player.getQualities().then(qualities => {
+      const options = qualities.map(q => ({ id: q.id, label: q.label }));
+      if (!options.some(o => o.id === 'auto')) options.unshift({ id: 'auto', label: 'Auto' });
+      return player.getQuality().then(current => ({ current, options }));
+    }),
+    setOption: id => { player.setQuality(id).catch(() => {}); },
+    onChange: cb => { player.on('qualitychange', cb); },
+  };
+}
+
+/* ════ FILM MODAL PLAYER ADAPTER ════
+   Unifies the native <video> element and a Vimeo Player SDK instance behind
+   one small interface so the custom control bar (vcInit) and keyboard
+   shortcuts don't need to know which backend is playing. */
+const idlePlayer = {
+  kind: 'idle',
+  state: { currentTime: 0, duration: 0, volume: 1, muted: false, paused: true },
+  play() {}, pause() {}, togglePlay() {},
+  seekTo() {}, seekRelative() {},
+  setVolume() {}, setMuted() {},
+  on() {}, destroy() {},
+};
+let currentPlayer = idlePlayer;
+
+function createNativeAdapter(video) {
+  const state = { currentTime: 0, duration: 0, volume: video.volume, muted: video.muted, paused: true };
+  const handlers = {};
+  function sync() {
+    state.currentTime = video.currentTime || 0;
+    state.duration = video.duration || 0;
+    state.volume = video.volume;
+    state.muted = video.muted;
+    state.paused = video.paused;
+  }
+  sync();
+  const onPlay  = () => { sync(); handlers.onPlayState && handlers.onPlayState(); };
+  const onPause = () => { sync(); handlers.onPlayState && handlers.onPlayState(); };
+  const onTime  = () => { sync(); handlers.onProgress  && handlers.onProgress(); };
+  const onVol   = () => { sync(); handlers.onVolume    && handlers.onVolume(); };
+  const onClick = () => { video.paused ? video.play().catch(() => {}) : video.pause(); };
+  video.addEventListener('play', onPlay);
+  video.addEventListener('pause', onPause);
+  video.addEventListener('timeupdate', onTime);
+  video.addEventListener('volumechange', onVol);
+  video.addEventListener('click', onClick);
+  return {
+    kind: 'native',
+    state,
+    play: () => video.play().catch(() => {}),
+    pause: () => video.pause(),
+    togglePlay: () => { video.paused ? video.play().catch(() => {}) : video.pause(); },
+    seekTo: t => { video.currentTime = Math.max(0, Math.min(video.duration || 0, t)); sync(); },
+    seekRelative: d => { video.currentTime = Math.max(0, Math.min(video.duration || 0, (video.currentTime || 0) + d)); sync(); },
+    setVolume: v => { video.volume = v; sync(); },
+    setMuted: b => { video.muted = b; sync(); },
+    on: (name, cb) => { handlers[name] = cb; },
+    destroy: () => {
+      video.removeEventListener('play', onPlay);
+      video.removeEventListener('pause', onPause);
+      video.removeEventListener('timeupdate', onTime);
+      video.removeEventListener('volumechange', onVol);
+      video.removeEventListener('click', onClick);
+    },
+  };
+}
+
+function createVimeoAdapter(player) {
+  const state = { currentTime: 0, duration: 0, volume: 1, muted: false, paused: true };
+  const handlers = {};
+  player.getVolume().then(v => { state.volume = v; }).catch(() => {});
+  player.getMuted().then(m => { state.muted = m; }).catch(() => {});
+  player.getPaused().then(p => { state.paused = p; }).catch(() => {});
+  player.getDuration().then(d => { state.duration = d; }).catch(() => {});
+  const onPlay  = () => { state.paused = false; handlers.onPlayState && handlers.onPlayState(); };
+  const onPause = () => { state.paused = true;  handlers.onPlayState && handlers.onPlayState(); };
+  const onTime  = data => { state.currentTime = data.seconds; state.duration = data.duration; handlers.onProgress && handlers.onProgress(); };
+  const onVol   = data => { state.volume = data.volume; state.muted = data.volume === 0; handlers.onVolume && handlers.onVolume(); };
+  player.on('play', onPlay);
+  player.on('pause', onPause);
+  player.on('timeupdate', onTime);
+  player.on('volumechange', onVol);
+  return {
+    kind: 'vimeo',
+    state,
+    play: () => player.play().catch(() => {}),
+    pause: () => player.pause().catch(() => {}),
+    togglePlay: () => { state.paused ? player.play().catch(() => {}) : player.pause().catch(() => {}); },
+    seekTo: t => { const c = Math.max(0, t); player.setCurrentTime(c).catch(() => {}); state.currentTime = c; },
+    seekRelative: d => { const c = Math.max(0, state.currentTime + d); player.setCurrentTime(c).catch(() => {}); state.currentTime = c; },
+    setVolume: v => { player.setVolume(v).catch(() => {}); state.volume = v; if (v > 0) state.muted = false; },
+    setMuted: b => { player.setMuted(b).catch(() => {}); state.muted = b; },
+    on: (name, cb) => { handlers[name] = cb; },
+    destroy: () => {
+      player.off('play', onPlay);
+      player.off('pause', onPause);
+      player.off('timeupdate', onTime);
+      player.off('volumechange', onVol);
+    },
+  };
+}
 
 function setupHeroVideo(src) {
   if (heroHls) { heroHls.destroy(); heroHls = null; }
@@ -66,12 +190,50 @@ function setupHeroVideo(src) {
   }
 }
 
-function setFilmVideo(src) {
+function setFilmVideo(item) {
+  const src = item && item.src;
   const video = document.getElementById('fm-video');
-  if (filmHls) { filmHls.destroy(); filmHls = null; }
+  const wrap = document.getElementById('fm-video-wrap');
   const qWrap = document.getElementById('fm-quality-wrap');
+
+  if (filmHls) { filmHls.destroy(); filmHls = null; }
+  currentPlayer.destroy();
+  currentPlayer = idlePlayer;
+  qualityController = null;
+  const oldVimeoFrame = document.getElementById('fm-vimeo-iframe');
+  if (oldVimeoFrame) oldVimeoFrame.remove();
   if (qWrap) qWrap.style.display = 'none';
-  if (!src) { video.src = ''; video.load(); return; }
+
+  if (!src) { video.style.display = ''; video.src = ''; video.load(); return; }
+
+  if (src.startsWith('vimeo:')) {
+    video.style.display = 'none';
+    const vimeoId = src.slice('vimeo:'.length);
+    const iframe = document.createElement('iframe');
+    iframe.id = 'fm-vimeo-iframe';
+    iframe.src = `https://player.vimeo.com/video/${vimeoId}?controls=0&autoplay=1&dnt=1&title=0&byline=0&portrait=0`;
+    iframe.allow = 'autoplay; fullscreen; picture-in-picture';
+    iframe.setAttribute('allowfullscreen', '');
+    wrap.insertBefore(iframe, wrap.firstChild);
+    const vimeoPlayer = new Vimeo.Player(iframe);
+    currentPlayer = createVimeoAdapter(vimeoPlayer);
+    if (window._vcBindPlayer) window._vcBindPlayer(currentPlayer);
+    vimeoPlayer.getQualities().then(qualities => {
+      const stillActive = document.getElementById('fm-vimeo-iframe') === iframe;
+      if (stillActive && qualities && qualities.length > 1 && qWrap) {
+        qualityController = createVimeoQualityController(vimeoPlayer);
+        qualityController.onChange(updateQualityMenu);
+        qWrap.style.display = 'flex';
+        updateQualityMenu();
+      }
+    }).catch(() => {});
+    return;
+  }
+
+  video.style.display = '';
+  currentPlayer = createNativeAdapter(video);
+  if (window._vcBindPlayer) window._vcBindPlayer(currentPlayer);
+
   if (src.endsWith('.m3u8') && typeof Hls !== 'undefined' && Hls.isSupported()) {
     filmHls = new Hls({
       startLevel: -1,
@@ -89,11 +251,12 @@ function setFilmVideo(src) {
     filmHls.on(Hls.Events.MANIFEST_PARSED, () => {
       video.play().catch(() => {});
       if (filmHls.levels && filmHls.levels.length > 1 && qWrap) {
+        qualityController = createHlsQualityController(filmHls);
+        qualityController.onChange(updateQualityMenu);
         qWrap.style.display = 'flex';
         updateQualityMenu();
       }
     });
-    filmHls.on(Hls.Events.LEVEL_SWITCHED, updateQualityMenu);
   } else if (src.endsWith('.m3u8') && video.canPlayType('application/vnd.apple.mpegurl')) {
     video.src = src;
     video.load();
@@ -107,15 +270,12 @@ function setFilmVideo(src) {
 
 function updateQualityMenu() {
   const menu = document.getElementById('fm-quality-menu');
-  if (!menu || !filmHls) return;
-  const cur = filmHls.currentLevel;
-  const levels = filmHls.levels || [];
-  let html = `<button class="quality-opt${cur === -1 ? ' active' : ''}" data-lvl="-1">Auto</button>`;
-  for (let i = levels.length - 1; i >= 0; i--) {
-    const l = levels[i];
-    html += `<button class="quality-opt${cur === i ? ' active' : ''}" data-lvl="${i}">${l.height}p</button>`;
-  }
-  menu.innerHTML = html;
+  if (!menu || !qualityController) return;
+  qualityController.getOptions().then(({ current, options }) => {
+    menu.innerHTML = options.map(o =>
+      `<button class="quality-opt${o.id === current ? ' active' : ''}" data-id="${o.id}">${o.label}</button>`
+    ).join('');
+  }).catch(() => {});
 }
 
 document.addEventListener('click', e => {
@@ -124,7 +284,7 @@ document.addEventListener('click', e => {
   if (!gearBtn || !menu) return;
 
   if (e.target === gearBtn || gearBtn.contains(e.target)) {
-    if (!filmHls) return;
+    if (!qualityController) return;
     updateQualityMenu();
     menu.classList.toggle('open');
     return;
@@ -132,8 +292,7 @@ document.addEventListener('click', e => {
 
   const opt = e.target.closest('.quality-opt');
   if (opt && menu.contains(opt)) {
-    const lvl = parseInt(opt.dataset.lvl, 10);
-    filmHls.nextLevel = lvl;
+    if (qualityController) qualityController.setOption(opt.dataset.id);
     menu.classList.remove('open');
     setTimeout(updateQualityMenu, 200);
     return;
@@ -144,7 +303,6 @@ document.addEventListener('click', e => {
 
 function vcInit() {
   const wrap = document.getElementById('fm-video-wrap');
-  const video = document.getElementById('fm-video');
   const vc = document.getElementById('fm-vc');
   const playBtn = document.getElementById('vc-play');
   const muteBtn = document.getElementById('vc-mute');
@@ -175,7 +333,7 @@ function vcInit() {
     vc.classList.add('visible');
     wrap.classList.add('show-cursor');
     clearTimeout(hideTimer);
-    if (!video.paused) {
+    if (!currentPlayer.state.paused) {
       hideTimer = setTimeout(() => {
         const qMenu = document.getElementById('fm-quality-menu');
         if (qMenu && qMenu.classList.contains('open')) return;
@@ -195,32 +353,42 @@ function vcInit() {
   timeEl.addEventListener('click', () => { showRemaining = !showRemaining; updateProg(); });
 
   function updateProg() {
-    const pct = video.duration ? video.currentTime / video.duration : 0;
+    const { currentTime, duration } = currentPlayer.state;
+    const pct = duration ? currentTime / duration : 0;
     fill.style.width = (pct * 100) + '%';
     thumb.style.left = (pct * 100) + '%';
     if (showRemaining) {
-      const rem = (video.duration || 0) - (video.currentTime || 0);
-      timeEl.textContent = '-' + fmtTime(rem) + ' / ' + fmtTime(video.duration);
+      const rem = (duration || 0) - (currentTime || 0);
+      timeEl.textContent = '-' + fmtTime(rem) + ' / ' + fmtTime(duration);
     } else {
-      timeEl.textContent = fmtTime(video.currentTime) + ' / ' + fmtTime(video.duration);
+      timeEl.textContent = fmtTime(currentTime) + ' / ' + fmtTime(duration);
     }
   }
 
-  video.addEventListener('play',        () => { playBtn.innerHTML = SVG.pause; showVC(); });
-  video.addEventListener('pause',       () => { playBtn.innerHTML = SVG.play;  showVC(); });
-  video.addEventListener('timeupdate',  updateProg);
   function updateVol() {
-    const vol = (video.muted || video.volume === 0) ? 0 : video.volume;
+    const { volume, muted } = currentPlayer.state;
+    const vol = muted || volume === 0 ? 0 : volume;
     muteBtn.innerHTML = vol === 0 ? SVG.muted : SVG.vol;
     volSlider.value = vol;
     volSlider.style.setProperty('--vp', (vol * 100) + '%');
   }
-  video.addEventListener('volumechange', updateVol);
-  video.addEventListener('click',       () => { video.paused ? video.play() : video.pause(); });
+
+  function bindPlayer(player) {
+    player.on('onPlayState', () => {
+      playBtn.innerHTML = player.state.paused ? SVG.play : SVG.pause;
+      showVC();
+    });
+    player.on('onProgress', updateProg);
+    player.on('onVolume', updateVol);
+    updateProg();
+    updateVol();
+    playBtn.innerHTML = player.state.paused ? SVG.play : SVG.pause;
+  }
+  window._vcBindPlayer = bindPlayer;
 
   wrap.addEventListener('mousemove',  showVC);
   wrap.addEventListener('mouseleave', () => {
-    if (!video.paused) {
+    if (!currentPlayer.state.paused) {
       clearTimeout(hideTimer);
       hideTimer = setTimeout(() => {
         vc.classList.remove('visible');
@@ -230,16 +398,18 @@ function vcInit() {
   });
   wrap.addEventListener('touchstart', showVC, { passive: true });
 
-  playBtn.addEventListener('click', () => { video.paused ? video.play() : video.pause(); });
-  muteBtn.addEventListener('click', () => { video.muted = !video.muted; });
+  playBtn.addEventListener('click', () => currentPlayer.togglePlay());
+  muteBtn.addEventListener('click', () => currentPlayer.setMuted(!currentPlayer.state.muted));
   volSlider.addEventListener('input', () => {
-    video.volume = parseFloat(volSlider.value);
-    video.muted = video.volume === 0;
-  });;
+    const v = parseFloat(volSlider.value);
+    currentPlayer.setVolume(v);
+    currentPlayer.setMuted(v === 0);
+  });
 
   prog.addEventListener('click', e => {
     const r = prog.getBoundingClientRect();
-    video.currentTime = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width)) * (video.duration || 0);
+    const pct = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width));
+    currentPlayer.seekTo(pct * (currentPlayer.state.duration || 0));
   });
 
   fsBtn.addEventListener('click', () => {
@@ -571,6 +741,12 @@ function closeFilmModal() {
     videoWrap.style.opacity = '';
     const video = document.getElementById('fm-video');
     if (filmHls) { filmHls.destroy(); filmHls = null; }
+    currentPlayer.destroy();
+    currentPlayer = idlePlayer;
+    qualityController = null;
+    const vimeoFrame = document.getElementById('fm-vimeo-iframe');
+    if (vimeoFrame) vimeoFrame.remove();
+    video.style.display = '';
     video.pause();
     video.src = '';
     video.load();
@@ -623,7 +799,7 @@ function updateFilmModal() {
   descRow.style.display = f.description ? 'flex' : 'none';
   document.getElementById('fm-details').style.display = (f.role || f.description) ? 'flex' : 'none';
   document.getElementById('fm-counter').textContent = (currentFilm + 1) + ' / ' + currentFilmList.length;
-  setFilmVideo(f.src);
+  setFilmVideo(f);
 }
 function prevFilm() { currentFilm = (currentFilm - 1 + currentFilmList.length) % currentFilmList.length; updateFilmModal(); }
 function nextFilm() { currentFilm = (currentFilm + 1) % currentFilmList.length; updateFilmModal(); }
@@ -901,60 +1077,66 @@ privacyModal.addEventListener('click', e => { if (e.target === privacyModal) clo
 /* ════ KEYBOARD ════ */
 document.addEventListener('keydown', e => {
   if (filmModal.classList.contains('open')) {
-    const v = document.getElementById('fm-video');
     const tag = e.target.tagName;
     const noInput = tag !== 'BUTTON' && tag !== 'INPUT';
-    const dur = v.duration || 0;
+    const dur = currentPlayer.state.duration || 0;
 
     switch (e.key) {
       case 'Escape': closeFilmModal(); break;
 
       case ' ':
       case 'k': case 'K':
-        if (noInput) { e.preventDefault(); v.paused ? v.play() : v.pause(); }
+        if (noInput) { e.preventDefault(); currentPlayer.togglePlay(); }
         break;
 
       case 'ArrowLeft':
-        e.preventDefault(); v.currentTime = Math.max(0, v.currentTime - 5);
-        if (v.currentTime === 0) vcSeekAccum = 0;
+        e.preventDefault(); currentPlayer.seekRelative(-5);
+        if (currentPlayer.state.currentTime === 0) vcSeekAccum = 0;
         vcShowOSD('seek', -5); if (window._vcShowControls) window._vcShowControls(); break;
       case 'ArrowRight':
-        e.preventDefault(); v.currentTime = Math.min(dur, v.currentTime + 5);
-        if (v.currentTime === dur) vcSeekAccum = 0;
+        e.preventDefault(); currentPlayer.seekRelative(5);
+        if (currentPlayer.state.currentTime === dur) vcSeekAccum = 0;
         vcShowOSD('seek', 5); if (window._vcShowControls) window._vcShowControls(); break;
 
       case 'j': case 'J':
-        e.preventDefault(); v.currentTime = Math.max(0, v.currentTime - 10);
-        if (v.currentTime === 0) vcSeekAccum = 0;
+        e.preventDefault(); currentPlayer.seekRelative(-10);
+        if (currentPlayer.state.currentTime === 0) vcSeekAccum = 0;
         vcShowOSD('seek', -10); if (window._vcShowControls) window._vcShowControls(); break;
       case 'l': case 'L':
-        e.preventDefault(); v.currentTime = Math.min(dur, v.currentTime + 10);
-        if (v.currentTime === dur) vcSeekAccum = 0;
+        e.preventDefault(); currentPlayer.seekRelative(10);
+        if (currentPlayer.state.currentTime === dur) vcSeekAccum = 0;
         vcShowOSD('seek', 10); if (window._vcShowControls) window._vcShowControls(); break;
 
       case ',':
-        e.preventDefault(); v.pause(); v.currentTime = Math.max(0, v.currentTime - 1 / 30);
+        e.preventDefault(); currentPlayer.pause(); currentPlayer.seekRelative(-1 / 30);
         if (window._vcShowControls) window._vcShowControls(); break;
       case '.':
-        e.preventDefault(); v.pause(); v.currentTime = Math.min(dur, v.currentTime + 1 / 30);
+        e.preventDefault(); currentPlayer.pause(); currentPlayer.seekRelative(1 / 30);
         if (window._vcShowControls) window._vcShowControls(); break;
 
       case 'Home':
-        e.preventDefault(); v.currentTime = 0; if (window._vcShowControls) window._vcShowControls(); break;
+        e.preventDefault(); currentPlayer.seekTo(0); if (window._vcShowControls) window._vcShowControls(); break;
       case 'End':
-        e.preventDefault(); v.currentTime = dur; if (window._vcShowControls) window._vcShowControls(); break;
+        e.preventDefault(); currentPlayer.seekTo(dur); if (window._vcShowControls) window._vcShowControls(); break;
 
-      case 'ArrowUp':
+      case 'ArrowUp': {
         e.preventDefault();
-        v.volume = Math.min(1, Math.round((v.volume + 0.05) * 100) / 100);
-        v.muted = false; vcShowOSD('vol', v.volume); if (window._vcShowControls) window._vcShowControls(); break;
-      case 'ArrowDown':
+        const vol = Math.min(1, Math.round((currentPlayer.state.volume + 0.05) * 100) / 100);
+        currentPlayer.setVolume(vol); currentPlayer.setMuted(false);
+        vcShowOSD('vol', vol); if (window._vcShowControls) window._vcShowControls(); break;
+      }
+      case 'ArrowDown': {
         e.preventDefault();
-        v.volume = Math.max(0, Math.round((v.volume - 0.05) * 100) / 100);
-        vcShowOSD('vol', v.volume); if (window._vcShowControls) window._vcShowControls(); break;
+        const vol = Math.max(0, Math.round((currentPlayer.state.volume - 0.05) * 100) / 100);
+        currentPlayer.setVolume(vol);
+        vcShowOSD('vol', vol); if (window._vcShowControls) window._vcShowControls(); break;
+      }
 
-      case 'm': case 'M':
-        v.muted = !v.muted; vcShowOSD('vol', v.muted ? 0 : v.volume); break;
+      case 'm': case 'M': {
+        const nowMuted = !currentPlayer.state.muted;
+        currentPlayer.setMuted(nowMuted);
+        vcShowOSD('vol', nowMuted ? 0 : currentPlayer.state.volume); break;
+      }
 
       case 'f': case 'F': {
         const wrap = document.getElementById('fm-video-wrap');
@@ -966,7 +1148,8 @@ document.addEventListener('keydown', e => {
         filmModal.classList.toggle('theater'); break;
 
       case 'i': case 'I':
-        if (document.pictureInPictureEnabled) {
+        if (currentPlayer.kind === 'native' && document.pictureInPictureEnabled) {
+          const v = document.getElementById('fm-video');
           if (document.pictureInPictureElement) document.exitPictureInPicture().catch(() => {});
           else v.requestPictureInPicture().catch(() => {});
         }
@@ -975,7 +1158,7 @@ document.addEventListener('keydown', e => {
       default:
         if (noInput && e.key >= '0' && e.key <= '9') {
           e.preventDefault();
-          v.currentTime = dur * parseInt(e.key) / 10;
+          currentPlayer.seekTo(dur * parseInt(e.key) / 10);
         }
     }
     return;
@@ -991,7 +1174,9 @@ document.addEventListener('keydown', e => {
 });
 
 /* ════ CONTACT FORM ════ */
-document.getElementById('contact-form').addEventListener('submit', async function(e) {
+/* Disabled for now (see index.html) — email-only until the form works. */
+const contactForm = document.getElementById('contact-form');
+if (contactForm) contactForm.addEventListener('submit', async function(e) {
   e.preventDefault();
   const status = document.getElementById('form-status');
   const btn = document.getElementById('form-btn');

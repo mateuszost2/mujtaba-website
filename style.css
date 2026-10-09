@@ -156,6 +156,7 @@ section { padding: calc(var(--section-gap) / 2) 40px; max-width: 1280px; margin:
 .film-modal-video { position: relative; width: 100%; aspect-ratio: 16/9; background: #000; cursor: none; }
 .film-modal-video.show-cursor { cursor: default; }
 .film-modal-video video { width: 100%; height: 100%; display: block; }
+.film-modal-video iframe { width: 100%; height: 100%; display: block; border: 0; }
 .vc { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.7)); padding: 22px 4px 4px; opacity: 0; transition: opacity 0.2s; pointer-events: none; }
 .vc.visible { opacity: 1; pointer-events: auto; }
 .vc-prog { position: relative; height: 3px; background: rgba(255,255,255,0.28); margin: 0 8px 6px; cursor: pointer; border-radius: 2px; transition: height 0.12s; transform-origin: bottom; }
@@ -239,6 +240,9 @@ section { padding: calc(var(--section-gap) / 2) 40px; max-width: 1280px; margin:
 .about-text p { font-size: 14px; color: var(--text2); line-height: 1.8; margin-bottom: 20px; max-width: 440px; }
 
 #contact .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+/* Contact form temporarily disabled — center the email-only intro. */
+#contact .contact-grid.contact-grid--email-only { grid-template-columns: 1fr; justify-items: center; text-align: center; }
+.contact-grid--email-only .contact-intro p { max-width: 480px; }
 .contact-intro h2 { font-family: 'Cormorant Garamond', serif; font-size: clamp(28px,4vw,42px); font-weight: 300; font-style: italic; line-height: 1.2; color: var(--text); margin-bottom: 20px; }
 .contact-intro p { font-size: 14px; color: var(--text2); line-height: 1.8; max-width: 360px; }
 .contact-email { display: inline-block; margin-top: 28px; font-family: 'Cormorant Garamond', serif; font-size: 15px; color: var(--accent); text-decoration: none; letter-spacing: 0.04em; transition: opacity var(--trans); }

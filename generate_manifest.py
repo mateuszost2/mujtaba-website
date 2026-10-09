@@ -1,10 +1,18 @@
 import os
 import json
 import subprocess
+import urllib.request
+import urllib.error
 from PIL import Image
+from dotenv import load_dotenv
+
+load_dotenv()
 
 VIDEO_EXT = {'.mp4', '.mov', '.webm'}
 IMAGE_EXT = {'.jpg', '.jpeg', '.png', '.webp'}
+VIMEO_STATE_PATH = 'vimeo_state.json'
+VIMEO_ACCESS_TOKEN = os.getenv('VIMEO_ACCESS_TOKEN')
+VIMEO_USER = os.getenv('VIMEO_USER')
 
 # ── Load metadata ──
 def load_metadata():
@@ -144,6 +152,83 @@ def load_existing_manifest():
                 return {}
     return {}
 
+# ── Vimeo profile auto-pull (authenticated, public-scope token) ──
+# vimeo_state.json persists per-video category + any manual title/description
+# overrides across runs — the only thing a human (or, later, the admin panel)
+# needs to touch is the "category" field for newly discovered videos, which
+# default to "none" until assigned.
+def load_vimeo_state():
+    if os.path.exists(VIMEO_STATE_PATH):
+        with open(VIMEO_STATE_PATH, 'r', encoding='utf-8') as f:
+            try:
+                return json.load(f)
+            except:
+                return {}
+    return {}
+
+def save_vimeo_state(state):
+    with open(VIMEO_STATE_PATH, 'w', encoding='utf-8') as f:
+        json.dump(state, f, indent=2, ensure_ascii=False)
+
+def best_thumb(pictures):
+    sizes = (pictures or {}).get('sizes') or []
+    if not sizes:
+        return ''
+    return sorted(sizes, key=lambda s: s.get('width', 0))[len(sizes) // 2].get('link', '')
+
+def fetch_vimeo_profile_videos(token, user):
+    videos = []
+    fields = 'uri,name,description,pictures.sizes.link,pictures.sizes.width'
+    url = f'https://api.vimeo.com/users/{user}/videos?per_page=100&fields={fields}'
+    headers = {
+        'Authorization': f'Bearer {token}',
+        'Accept': 'application/vnd.vimeo.*+json;version=3.4',
+    }
+    while url:
+        req = urllib.request.Request(url, headers=headers)
+        try:
+            with urllib.request.urlopen(req, timeout=15) as resp:
+                data = json.load(resp)
+        except (urllib.error.URLError, urllib.error.HTTPError, TimeoutError, ValueError) as e:
+            print(f'  vimeo api error: {e}')
+            break
+        for v in data.get('data', []):
+            vimeo_id = v.get('uri', '').split('/')[-1]
+            if not vimeo_id:
+                continue
+            videos.append({
+                'vimeoId': vimeo_id,
+                'title': v.get('name') or '',
+                'description': v.get('description') or '',
+                'thumb': best_thumb(v.get('pictures')),
+            })
+        nxt = (data.get('paging') or {}).get('next')
+        url = f'https://api.vimeo.com{nxt}' if nxt else None
+    return videos
+
+def enrich_vimeo_profile():
+    if not VIMEO_ACCESS_TOKEN or not VIMEO_USER:
+        return {}
+    state = load_vimeo_state()
+    fetched = fetch_vimeo_profile_videos(VIMEO_ACCESS_TOKEN, VIMEO_USER)
+    print(f'\nvimeo profile ({VIMEO_USER}): {len(fetched)} video(s)')
+    by_category = {}
+    for v in fetched:
+        vimeo_id = v['vimeoId']
+        entry = state.setdefault(vimeo_id, {'category': 'none', 'title': '', 'year': '', 'role': '', 'description': ''})
+        item = {
+            'filename': None,
+            'title': entry.get('title') or v['title'],
+            'year': entry.get('year', ''),
+            'role': entry.get('role', ''),
+            'description': entry.get('description') or v['description'],
+            'thumb': v['thumb'],
+            'src': f'vimeo:{vimeo_id}',
+        }
+        by_category.setdefault(entry.get('category') or 'none', []).append(item)
+    save_vimeo_state(state)
+    return by_category
+
 # ── Build manifest ──
 metadata = load_metadata()
 existing_manifest = load_existing_manifest()
@@ -154,6 +239,8 @@ def enrich(files, folder, thumb_folder=None):
         meta = metadata.get(f, {})
         sanitized = sanitize(f)
         basename = os.path.splitext(sanitized)[0]
+        # Local Hetzner-hosted HLS fallback — intentionally kept as-is alongside
+        # the Vimeo path below. Not touched by the Vimeo migration.
         hls_path = f"{folder}/hls/{basename}/{basename}.m3u8"
         src = hls_path if os.path.exists(hls_path) else f"{folder}/{sanitized}"
         result.append({
@@ -174,13 +261,16 @@ main_files         = scan_folder('videos/main_video', VIDEO_EXT)
 photos_files       = process_photo_folder('pictures/documentary_photography')
 about_files        = scan_folder('pictures/about_me_pic', IMAGE_EXT)
 
+vimeo_by_category = enrich_vimeo_profile()
+
 manifest = {
-    'documentaries': enrich(docs_files,   'videos/documentaries', 'videos/documentaries/thumbnails'),
-    'ngo_works':     enrich(ngo_files,    'videos/ngo_works',     'videos/ngo_works/thumbnails'),
-    'travel_films':  enrich(travel_files, 'videos/travel_films',  'videos/travel_films/thumbnails'),
+    'documentaries': enrich(docs_files,   'videos/documentaries', 'videos/documentaries/thumbnails') + vimeo_by_category.get('documentaries', []),
+    'ngo_works':     enrich(ngo_files,    'videos/ngo_works',     'videos/ngo_works/thumbnails')     + vimeo_by_category.get('ngo_works', []),
+    'travel_films':  enrich(travel_files, 'videos/travel_films',  'videos/travel_films/thumbnails')  + vimeo_by_category.get('travel_films', []),
     'main_video':    enrich(main_files,   'videos/main_video'),
     'photos':        enrich(photos_files, 'pictures/documentary_photography/compressed'),
     'about_img':     about_files,
+    'unassigned':    vimeo_by_category.get('none', []),
 }
 
 # Preserve custom fields not managed by this script

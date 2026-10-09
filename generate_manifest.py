@@ -156,7 +156,7 @@ def load_existing_manifest():
 # vimeo_state.json persists per-video category + any manual title/description
 # overrides across runs — the only thing a human (or, later, the admin panel)
 # needs to touch is the "category" field for newly discovered videos, which
-# default to "none" until assigned.
+# default to "hidden" until assigned.
 def load_vimeo_state():
     if os.path.exists(VIMEO_STATE_PATH):
         with open(VIMEO_STATE_PATH, 'r', encoding='utf-8') as f:
@@ -215,7 +215,11 @@ def enrich_vimeo_profile():
     by_category = {}
     for v in fetched:
         vimeo_id = v['vimeoId']
-        entry = state.setdefault(vimeo_id, {'category': 'none', 'title': '', 'year': '', 'role': '', 'description': ''})
+        entry = state.setdefault(vimeo_id, {'category': 'hidden', 'title': '', 'year': '', 'role': '', 'description': ''})
+        # 'none' was the old name for this bucket — normalize on read so old
+        # state files keep working without a manual edit.
+        if not entry.get('category') or entry['category'] == 'none':
+            entry['category'] = 'hidden'
         item = {
             'filename': None,
             'title': entry.get('title') or v['title'],
@@ -225,7 +229,7 @@ def enrich_vimeo_profile():
             'thumb': v['thumb'],
             'src': f'vimeo:{vimeo_id}',
         }
-        by_category.setdefault(entry.get('category') or 'none', []).append(item)
+        by_category.setdefault(entry['category'], []).append(item)
     save_vimeo_state(state)
     return by_category
 
@@ -254,9 +258,16 @@ def enrich(files, folder, thumb_folder=None):
         })
     return result
 
+# 'hidden' used to be called 'none' — fold any pre-existing folder into the
+# new name so files already moved there aren't orphaned.
+if os.path.exists('videos/none') and not os.path.exists('videos/hidden'):
+    os.rename('videos/none', 'videos/hidden')
+    print('renamed: videos/none -> videos/hidden')
+
 docs_files         = process_video_folder('videos/documentaries')
 ngo_files          = process_video_folder('videos/ngo_works')
 travel_files       = process_video_folder('videos/travel_films')
+hidden_files       = process_video_folder('videos/hidden')
 main_files         = scan_folder('videos/main_video', VIDEO_EXT)
 photos_files       = process_photo_folder('pictures/documentary_photography')
 about_files        = scan_folder('pictures/about_me_pic', IMAGE_EXT)
@@ -267,10 +278,10 @@ manifest = {
     'documentaries': enrich(docs_files,   'videos/documentaries', 'videos/documentaries/thumbnails') + vimeo_by_category.get('documentaries', []),
     'ngo_works':     enrich(ngo_files,    'videos/ngo_works',     'videos/ngo_works/thumbnails')     + vimeo_by_category.get('ngo_works', []),
     'travel_films':  enrich(travel_files, 'videos/travel_films',  'videos/travel_films/thumbnails')  + vimeo_by_category.get('travel_films', []),
+    'hidden':        enrich(hidden_files, 'videos/hidden',        'videos/hidden/thumbnails')        + vimeo_by_category.get('hidden', []),
     'main_video':    enrich(main_files,   'videos/main_video'),
     'photos':        enrich(photos_files, 'pictures/documentary_photography/compressed'),
     'about_img':     about_files,
-    'unassigned':    vimeo_by_category.get('none', []),
 }
 
 # Preserve custom fields not managed by this script
